@@ -2,6 +2,8 @@ import json
 from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -29,13 +31,21 @@ def _today_interview_count(user):
 
 @login_required
 def create_interview(request):
-    if _today_interview_count(request.user) >= DAILY_INTERVIEW_LIMIT:
-        return render(request, 'interviews/create.html', {'limit_reached': True})
-
     if request.method == 'POST':
         form = InterviewForm(request.POST)
         if form.is_valid():
             interview = form.save(commit=False)
+            interview.user = request.user
+
+            with transaction.atomic():
+                # Ayni kullanicinin ayni anda gonderdigi istekleri
+                # serilestirmek icin kullanici satirini kilitliyoruz; aksi
+                # halde iki istek ayni "gunluk say" degerini okuyup limiti
+                # birlikte asabilir (race condition).
+                User.objects.select_for_update().get(pk=request.user.pk)
+                if _today_interview_count(request.user) >= DAILY_INTERVIEW_LIMIT:
+                    return render(request, 'interviews/create.html', {'limit_reached': True})
+                interview.save()
 
             try:
                 questions = generate_questions(
@@ -46,18 +56,19 @@ def create_interview(request):
                     question_count=interview.question_count,
                 )
             except GeminiError:
+                interview.delete()
                 form.add_error(
                     None, 'Sorular oluşturulurken bir hata oluştu. Lütfen tekrar dene.'
                 )
             else:
-                interview.user = request.user
-                interview.save()
                 Question.objects.bulk_create([
                     Question(interview=interview, order=order, text=text, category=category)
                     for order, (text, category) in enumerate(questions, start=1)
                 ])
                 return redirect('interview_detail', pk=interview.pk)
     else:
+        if _today_interview_count(request.user) >= DAILY_INTERVIEW_LIMIT:
+            return render(request, 'interviews/create.html', {'limit_reached': True})
         form = InterviewForm()
 
     return render(request, 'interviews/create.html', {'form': form})
