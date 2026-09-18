@@ -89,6 +89,20 @@ DATABASES = {
 }
 
 
+# Cache
+# Hız sınırlama (rate limiting) için kullanılıyor. Vercel'in serverless
+# fonksiyonları süreçler arası bellek paylaşmadığı için LocMemCache yerine
+# veritabanı tabanlı bir cache kullanılıyor (zaten bağlı olduğumuz DB).
+# https://docs.djangoproject.com/en/6.1/topics/cache/#database-caching
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'django_cache_table',
+    }
+}
+
+
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
 
