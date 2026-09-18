@@ -5,7 +5,7 @@ import logging
 from django.conf import settings
 from google import genai
 from google.genai import types
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
 
@@ -27,11 +27,13 @@ class _QuestionList(BaseModel):
 
 
 class _AnswerEvaluation(BaseModel):
-    score: int
+    score: int = Field(ge=1, le=10, description='10 üzerinden 1 ile 10 arasında tam sayı puan.')
     strengths: str
     improvements: str
     sample_answer: str
-    language_score: int | None = None
+    language_score: int | None = Field(
+        default=None, ge=1, le=10, description='10 üzerinden 1 ile 10 arasında tam sayı dil puanı.'
+    )
     language_feedback: str | None = None
 
 
@@ -151,6 +153,8 @@ def evaluate_answer(*, position_label, level_label, language, question_text, ans
         'Deneyimli, adil ve yapıcı bir mülakatçı gibi davran. Kullanıcının verdiği '
         'cevabı, pozisyon ve seviyeye uygun bir beklentiyle değerlendir. Boş, alakasız '
         'veya çok kısa cevaplara düşük puan ver ve nedenini açıkla. '
+        'score alanı 10 üzerinden 1 ile 10 arasında bir tam sayıdır (örneğin 7); '
+        '100 üzerinden puan verme. '
         f'strengths, improvements ve sample_answer alanlarını {language_name} dilinde yaz. '
         + (
             'Bu mülakat İngilizce olduğu için ayrıca language_score (1-10) ve '
