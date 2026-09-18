@@ -3,20 +3,126 @@
 {% block title %}Mülakat - Mülakat Simülatörü{% endblock %}
 
 {% block content %}
-<section class="panel">
+<section class="interview">
     <h1>{{ interview.get_position_display }}</h1>
-    <p>
+    <p class="interview__meta">
         {{ interview.get_level_display }} · {{ interview.get_interview_type_display }} ·
-        {{ interview.get_language_display }} · {{ interview.question_count }} soru
+        {{ interview.get_language_display }}
     </p>
-    <p><em>Soru soru mülakat ekranı Faz 5'te eklenecek. Şimdilik üretilen sorular:</em></p>
-    <ol class="question-list">
-        {% for question in interview.questions.all %}
-            <li>
-                <span class="question-list__category">{{ question.get_category_display }}</span>
-                {{ question.text }}
-            </li>
+
+    <p class="interview__progress" id="progress">
+        İlerleme: <span id="progress-count">{{ answered_count }}</span> / {{ total_count }}
+    </p>
+
+    <div class="chat-history" id="chat-history">
+        {% for question in answered_questions %}
+            <div class="chat-msg chat-msg--question">{{ question.text }}</div>
+            <div class="chat-msg chat-msg--answer">{{ question.answer.text }}</div>
         {% endfor %}
-    </ol>
+    </div>
+
+    {% if current_question %}
+        <div class="chat-current" id="chat-current" data-question-id="{{ current_question.id }}">
+            <div class="chat-msg chat-msg--question">{{ current_question.text }}</div>
+        </div>
+
+        <form id="answer-form" class="answer-form">
+            {% csrf_token %}
+            <textarea id="answer-text" rows="4" placeholder="Cevabını buraya yaz..."></textarea>
+            <p class="answer-form__error" id="answer-error"></p>
+            <button type="submit" id="answer-submit">Cevabı Gönder</button>
+            <p class="answer-form__loading" id="answer-loading">Değerlendiriliyor...</p>
+        </form>
+    {% else %}
+        <div class="interview__done">
+            <p>Tüm sorular tamamlandı. Detaylı rapor yakında eklenecek.</p>
+            <a href="{% url 'panel' %}" class="button-link">Panele Dön</a>
+        </div>
+    {% endif %}
 </section>
+
+<script>
+(function () {
+    var form = document.getElementById('answer-form');
+    if (!form) return;
+
+    var chatHistory = document.getElementById('chat-history');
+    var chatCurrent = document.getElementById('chat-current');
+    var textarea = document.getElementById('answer-text');
+    var submitButton = document.getElementById('answer-submit');
+    var loading = document.getElementById('answer-loading');
+    var errorBox = document.getElementById('answer-error');
+    var progressCount = document.getElementById('progress-count');
+    var answerUrl = '{% url "interview_answer" pk=interview.pk %}';
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        var text = textarea.value.trim();
+        if (!text) {
+            errorBox.textContent = 'Cevap boş olamaz.';
+            return;
+        }
+
+        var questionId = chatCurrent.dataset.questionId;
+        errorBox.textContent = '';
+        submitButton.disabled = true;
+        loading.style.display = 'block';
+
+        fetch(answerUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: JSON.stringify({question_id: questionId, text: text}),
+        })
+            .then(function (response) {
+                return response.json().then(function (data) {
+                    return {ok: response.ok, data: data};
+                });
+            })
+            .then(function (result) {
+                loading.style.display = 'none';
+                submitButton.disabled = false;
+
+                if (!result.ok || result.data.status !== 'ok') {
+                    errorBox.textContent = result.data.message || 'Bir hata oluştu. Lütfen tekrar dene.';
+                    return;
+                }
+
+                var questionBubble = chatCurrent.querySelector('.chat-msg--question');
+                var answerBubble = document.createElement('div');
+                answerBubble.className = 'chat-msg chat-msg--answer';
+                answerBubble.textContent = text;
+                chatHistory.appendChild(questionBubble);
+                chatHistory.appendChild(answerBubble);
+
+                progressCount.textContent = parseInt(progressCount.textContent, 10) + 1;
+                textarea.value = '';
+
+                if (result.data.done) {
+                    chatCurrent.remove();
+                    form.remove();
+                    var doneDiv = document.createElement('div');
+                    doneDiv.className = 'interview__done';
+                    doneDiv.innerHTML = '<p>Tüm sorular tamamlandı. Detaylı rapor yakında eklenecek.</p>' +
+                        '<a href="{% url "panel" %}" class="button-link">Panele Dön</a>';
+                    chatHistory.parentNode.appendChild(doneDiv);
+                } else {
+                    chatCurrent.dataset.questionId = result.data.next_question.id;
+                    var newQuestionBubble = document.createElement('div');
+                    newQuestionBubble.className = 'chat-msg chat-msg--question';
+                    newQuestionBubble.textContent = result.data.next_question.text;
+                    chatCurrent.appendChild(newQuestionBubble);
+                }
+            })
+            .catch(function () {
+                loading.style.display = 'none';
+                submitButton.disabled = false;
+                errorBox.textContent = 'Bağlantı hatası. Lütfen tekrar dene.';
+            });
+    });
+})();
+</script>
 {% endblock %}
