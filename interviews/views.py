@@ -84,11 +84,21 @@ def interview_detail(request, pk):
     if interview.status == 'completed':
         return redirect('interview_report', pk=interview.pk)
 
+    current_question = _current_question(interview)
+    if current_question is None:
+        # Tum sorular cevaplanmis ama mulakat "completed" olarak
+        # isaretlenmemis: son cevaptan sonraki tamamlama adimi (ozet +
+        # durum guncelleme) daha once bir zaman asimi/hata yuzunden
+        # bitmemis olabilir. Kullaniciyi bos bir sayfada birakmamak icin
+        # tamamlama adimini burada tekrar deneyip rapora yonlendiriyoruz.
+        _complete_interview(interview)
+        return redirect('interview_report', pk=interview.pk)
+
     answered_questions = interview.questions.filter(answer__isnull=False).order_by('order')
     context = {
         'interview': interview,
         'answered_questions': answered_questions,
-        'current_question': _current_question(interview),
+        'current_question': current_question,
         'answered_count': answered_questions.count(),
         'total_count': interview.question_count,
     }

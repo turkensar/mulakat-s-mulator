@@ -4,6 +4,7 @@ import logging
 
 from django.conf import settings
 from google import genai
+from google.genai import types
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -43,7 +44,22 @@ class _InterviewSummary(BaseModel):
 def _get_client():
     global _client
     if _client is None:
-        _client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        # SDK varsayılanı 5 denemeye kadar, deneme arası 60 saniyeye kadar
+        # bekleyebiliyor (toplamda dakikalarca sürebilir - bunu bu projede
+        # bizzat yaşadık). Vercel'in fonksiyon zaman aşımı içinde kalabilmek
+        # için deneme sayısını ve bekleme süresini sıkı tutuyoruz. 429 (kota
+        # aşımı) tekrar denenmeye değmez, o yüzden retry listesinden çıkarıldı.
+        _client = genai.Client(
+            api_key=settings.GEMINI_API_KEY,
+            http_options=types.HttpOptions(
+                retry_options=types.HttpRetryOptions(
+                    attempts=2,
+                    initial_delay=1.0,
+                    max_delay=2.0,
+                    http_status_codes=[500, 502, 503, 504],
+                ),
+            ),
+        )
     return _client
 
 
@@ -65,7 +81,7 @@ def _create_interaction(*, prompt, system_instruction, schema, thinking_level):
                 'schema_': schema,
             },
             generation_config={'thinking_level': thinking_level},
-            timeout=60,
+            timeout=25,
         )
     except Exception as exc:
         logger.exception('Gemini API çağrısı başarısız oldu.')
