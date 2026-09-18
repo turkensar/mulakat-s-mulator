@@ -1,0 +1,101 @@
+/* Giriş ve kayıt sayfaları (docs/mulakat2.md §12): form bloğu 20px, iri alanlar, pill buton */
+
+.auth {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-4);
+}
+
+.auth h1 {
+    font-size: clamp(2.25rem, 7vw, 3rem);
+}
+
+.auth__head p {
+    margin: var(--space-2) 0 0;
+    color: var(--ink-soft);
+}
+
+.auth__card {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+    padding: var(--space-6);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+    box-shadow: 8px 8px 0 var(--line);
+}
+
+.field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.field input {
+    display: block;
+    width: 100%;
+    height: var(--button-height);
+    padding: 0 var(--space-4);
+    background: var(--bg);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+    color: var(--ink);
+    font: inherit;
+}
+
+.field input:focus-visible {
+    background: var(--surface);
+    border-color: var(--violet);
+}
+
+.field--error input {
+    border-color: var(--coral);
+}
+
+.field__error {
+    margin: 6px 0 0;
+    padding-left: var(--space-3);
+    border-left: 4px solid var(--coral);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.field__help {
+    margin-top: 6px;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+}
+
+.field__help ul {
+    margin: var(--space-1) 0 0;
+    padding-left: 1.2em;
+}
+
+.auth__card .btn {
+    width: 100%;
+    margin-top: var(--space-2);
+}
+
+.auth__alt {
+    margin: var(--space-6) 0 0;
+    color: var(--ink-soft);
+    text-align: center;
+}
+
+.auth__alt a {
+    color: var(--violet);
+    font-weight: 700;
+    text-underline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+    .auth {
+        padding-top: var(--space-8);
+    }
+
+    .auth__card {
+        padding: var(--space-4);
+        box-shadow: 6px 6px 0 var(--line);
+    }
+}

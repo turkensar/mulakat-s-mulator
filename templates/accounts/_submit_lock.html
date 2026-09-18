@@ -1,0 +1,20 @@
+<script>
+    (function () {
+        var form = document.getElementById('auth-form');
+        var button = document.getElementById('auth-submit');
+        var label = button.textContent;
+
+        // Çift tıklama iki POST demek; kayıt ve giriş hız sınırına sayılır.
+        form.addEventListener('submit', function () {
+            button.disabled = true;
+            button.textContent = button.dataset.busy;
+        });
+        // Geri tuşuyla dönüldüğünde sayfa önbellekten gelir; buton kilitli kalmasın.
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                button.disabled = false;
+                button.textContent = label;
+            }
+        });
+    })();
+</script>

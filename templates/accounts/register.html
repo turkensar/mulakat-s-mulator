@@ -2,21 +2,25 @@
 
 {% block title %}Kayıt Ol - Mülakat Simülatörü{% endblock %}
 
+{% block body_class %}ds{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="/static/css/auth.css">{% endblock %}
+
 {% block content %}
-<section class="auth-form">
-    <h1>Kayıt Ol</h1>
-    <form method="post">
+<section class="auth">
+    <header class="auth__head">
+        <h1>Provaya başlayalım</h1>
+        <p>Birkaç saniyede hesabını oluştur, ilk mülakatına geç.</p>
+    </header>
+
+    <form method="post" class="auth__card" id="auth-form">
         {% csrf_token %}
-        {{ form.non_field_errors }}
-        {% for field in form %}
-            <div class="form-field">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {{ field.errors }}
-            </div>
-        {% endfor %}
-        <button type="submit">Kayıt Ol</button>
+        {% include 'accounts/_fields.html' %}
+        <button type="submit" class="btn btn--primary" id="auth-submit" data-busy="Hesabın oluşturuluyor...">Kayıt ol</button>
     </form>
-    <p>Zaten hesabın var mı? <a href="{% url 'login' %}">Giriş yap</a></p>
+
+    <p class="auth__alt">Zaten hesabın var mı? <a href="{% url 'login' %}">Giriş yap</a></p>
 </section>
+
+{% include 'accounts/_submit_lock.html' %}
 {% endblock %}

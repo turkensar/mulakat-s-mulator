@@ -2,21 +2,25 @@
 
 {% block title %}Giriş Yap - Mülakat Simülatörü{% endblock %}
 
+{% block body_class %}ds{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="/static/css/auth.css">{% endblock %}
+
 {% block content %}
-<section class="auth-form">
-    <h1>Giriş Yap</h1>
-    <form method="post">
+<section class="auth">
+    <header class="auth__head">
+        <h1>Tekrar hoş geldin</h1>
+        <p>Kaldığın yerden provaya devam et.</p>
+    </header>
+
+    <form method="post" class="auth__card" id="auth-form">
         {% csrf_token %}
-        {{ form.non_field_errors }}
-        {% for field in form %}
-            <div class="form-field">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {{ field.errors }}
-            </div>
-        {% endfor %}
-        <button type="submit">Giriş Yap</button>
+        {% include 'accounts/_fields.html' %}
+        <button type="submit" class="btn btn--primary" id="auth-submit" data-busy="Giriş yapılıyor...">Giriş yap</button>
     </form>
-    <p>Hesabın yok mu? <a href="{% url 'register' %}">Kayıt ol</a></p>
+
+    <p class="auth__alt">Hesabın yok mu? <a href="{% url 'register' %}">Kayıt ol</a></p>
 </section>
+
+{% include 'accounts/_submit_lock.html' %}
 {% endblock %}
