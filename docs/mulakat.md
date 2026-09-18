@@ -259,7 +259,7 @@ ALLOWED_HOSTS=
 
 Her faz bitince çalıştığı test edilir, commit atılır, sonra bir sonrakine geçilir.
 
-- [~] **Faz 1 – Kurulum:** Django projesi, ortam değişkenleri, basit bir ana sayfa hazır. Supabase bağlantısı ve Vercel'de yayına alma bilinçli olarak sona bırakıldı (şu an SQLite ile lokal çalışıyor).
+- [~] **Faz 1 – Kurulum:** Django projesi, ortam değişkenleri, basit bir ana sayfa, Supabase bağlantısı (PostgreSQL) hazır ve test edildi. Vercel'de yayına alma henüz yapılmadı.
 - [x] **Faz 2 – Kullanıcı sistemi:** Kayıt, giriş, çıkış, giriş gerektiren sayfaların korunması.
 - [x] **Faz 3 – Modeller ve form:** Interview, Question, Answer modelleri; mülakat oluşturma formu. Bu aşamada AI yok, sabit örnek sorular kullanılır.
 - [x] **Faz 4 – Gemini ile soru üretme:** `gemini.py` servisi, soru üretme çağrısı, JSON şeması, hata yönetimi.
