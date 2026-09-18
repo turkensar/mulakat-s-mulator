@@ -77,7 +77,7 @@ Kullanıcı hedeflediği pozisyonu, seviyesini, mülakat türünü ve dilini se�
 | Deploy | Vercel |
 | Ortam değişkenleri | `python-dotenv` (lokal), Vercel Environment Variables (canlı) |
 
-**Tasarım yönü:** Gençlere hitap eden modern, sade ve temiz bir arayüz. Mobilde de rahat kullanılabilmeli.
+**Tasarım yönü:** Gençlere hitap eden, canlı renkli, enerjik ve modern bir arayüz. Ayrıntılar Bölüm 12'de; arayüzle ilgili her işte önce o bölüm okunmalı.
 
 ---
 
@@ -279,3 +279,63 @@ Her faz bitince çalıştığı test edilir, commit atılır, sonra bir sonrakin
 - Gemini çağrılarında temperature / top_p / top_k kullanma; JSON şemasıyla structured output kullan.
 - Arayüz metinleri Türkçe; kod, değişken ve fonksiyon isimleri İngilizce.
 - Her fazın sonunda neyin yapıldığını ve nasıl test edileceğini kısaca özetle.
+
+---
+
+## 12. Arayüz ve Tasarım Sistemi
+
+**Konsept:** "Mülakattan önce prova." Site gergin bir sınav ortamı gibi değil, enerjik ve cesaret veren bir antrenman alanı gibi hissettirmeli. Açık zemin üzerinde canlı, doygun renkler; büyük ve karakterli başlıklar; dokunması keyifli, iri seçim butonları.
+
+**Yapılmayacaklar:** Koyu lacivert/siyah zemin üzerine tek bir mor vurgu, standart `<select>` açılır menüler, her şeyin aynı gri gölgeli kartlarla doldurulması, BÜYÜK HARFLİ küçük etiketler, her bölümde tekrarlanan giriş animasyonları.
+
+### 12.1 Renk Paleti
+
+Tüm renkler `static/css/tokens.css` içinde CSS değişkeni olarak tanımlanır; kodda renk kodu doğrudan yazılmaz.
+
+| Değişken | Hex | Kullanım |
+|---|---|---|
+| `--bg` | `#F7F5FF` | Sayfa zemini (hafif lila beyaz) |
+| `--surface` | `#FFFFFF` | Form alanları, rapor blokları |
+| `--ink` | `#1C1240` | Ana metin ve başlıklar (koyu mürdüm) |
+| `--ink-soft` | `#5B5378` | İkincil metin |
+| `--violet` | `#6B3BFF` | Ana marka rengi, birincil butonlar, **Teknik** mülakat |
+| `--coral` | `#FF5A7A` | **İK** mülakat, düşük puan (1–4) |
+| `--sun` | `#FFC93C` | **Karışık** mülakat, orta puan (5–7), vurgu |
+| `--mint` | `#1FCB94` | Yüksek puan (8–10), başarı mesajları |
+| `--line` | `#E4DEF7` | İnce kenarlıklar |
+
+Renkler anlam taşır: mülakat türü ve puan aralığı her ekranda aynı renkle gösterilir (panelde, raporda, mülakat ekranında). Böylece kullanıcı renge bakarak neyle karşı karşıya olduğunu anlar.
+
+### 12.2 Tipografi
+
+Google Fonts üzerinden (Türkçe karakter desteği var):
+- **Başlıklar:** Bricolage Grotesque (700–800), büyük ve sıkı satır aralığıyla. Ana sayfa başlığı masaüstünde 64–72px, mobilde 40px civarı.
+- **Metin ve arayüz:** DM Sans (400, 500, 700), gövde metni 17px, satır aralığı 1.6.
+- Metin satırları 70 karakteri geçmez.
+
+### 12.3 Temel Bileşenler
+
+- **Seçim çipleri (en önemli bileşen):** Mülakat oluşturma formundaki tüm açılır menüler kaldırılır. Her seçenek, tıklanabilir iri bir çip/kart olur. Seçilince ilgili renkle dolar, hafifçe büyür. Arka planda gerçek radio input'lar durur (erişilebilirlik ve form gönderimi için), görünüm CSS ile verilir.
+  - Pozisyon: ikonlu kartlar (her pozisyona bir emoji veya basit ikon).
+  - Tür: Teknik (violet), İK (coral), Karışık (sun).
+  - Dil: bayraklı iki büyük buton (🇹🇷 Türkçe / 🇬🇧 English).
+  - Soru sayısı: 5 / 8 / 10 yazan yuvarlak rozetler, yanında tahmini süre ("~10 dk").
+- **Butonlar:** Birincil buton violet zemin, beyaz yazı, tam yuvarlak kenar (pill), 52px yükseklik. Üzerine gelince hafif yukarı kalkar ve altında aynı renkte, kaydırılmış düz bir gölge belirir (bulanık gri gölge değil).
+- **Köşe yuvarlaklığı:** Hiyerarşiye göre değişir: çipler ve butonlar tam yuvarlak, form blokları 20px, küçük rozetler 8px.
+- **Puan halkası:** Raporda genel skor büyük, renkli bir dairesel halka içinde gösterilir; halkanın rengi puan aralığına göre değişir.
+
+### 12.4 Sayfa Bazında Yönlendirme
+
+- **Ana sayfa:** Solda büyük başlık ("Mülakattan önce provanı yap" gibi) ve tek bir birincil buton, sağda örnek bir mülakat sohbetinden canlandırılmış bir kesit (AI sorusu + kullanıcı cevabı + küçük puan rozeti). Sayfadaki tek animasyon bu kesitte: mesajların sırayla belirmesi.
+- **Mülakat oluşturma:** Seçimler adım adım gruplanır (Pozisyon → Seviye → Tür → Dil → Soru sayısı). Her grup başlığı sade ve cümle düzeninde. Sayfanın altında sabit bir özet çubuğu seçimleri gösterir ve "Mülakatı başlat" butonunu barındırır.
+- **Mülakat ekranı:** Sohbet düzeni. AI soruları solda violet tonlu balonlarda, kullanıcı cevapları sağda beyaz balonlarda. Üstte renkli ilerleme çubuğu. Değerlendirme beklenirken "Cevabın değerlendiriliyor" yazan, üç noktası nabız gibi atan bir gösterge.
+- **Rapor:** En üstte puan halkası ve genel özet. Altında her soru için açılır bölüm; puan rozeti rengi puan aralığını gösterir. Güçlü yönler mint, gelişim alanları coral kenar çizgisiyle ayrılır.
+- **Panel:** Mülakatlar liste halinde; her satırda tür rengi, pozisyon, dil bayrağı, tarih ve puan rozeti. Hiç mülakat yoksa boş durum ekranı ve "İlk mülakatını başlat" butonu.
+
+### 12.5 Kalite Kuralları
+
+- Mobil öncelikli: 375px genişlikte her ekran rahat kullanılmalı, çipler alt alta sarılmalı.
+- Klavye ile gezinmede görünür odak halkası (violet).
+- `prefers-reduced-motion` açıksa animasyonlar kapatılır.
+- Metin ve zemin arasında yeterli kontrast (özellikle sun sarısı üzerinde koyu metin kullanılır, beyaz değil).
+- Koyu tema şimdilik yok; ileride aynı değişkenlerin koyu versiyonlarıyla eklenebilir.
