@@ -184,6 +184,16 @@ LOGOUT_REDIRECT_URL = '/'
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 GEMINI_MODEL = os.environ.get('GEMINI_MODEL') or 'gemini-3.8-flash'
+# Ücretsiz katman kotası MODEL BAŞINA sayılır (günde 20 istek). Birincil modelin kotası
+# dolunca sırayla bu yedek modellere geçilir; her birinin ayrı günlük payı vardır.
+GEMINI_FALLBACK_MODELS = [
+    model.strip()
+    for model in (
+        os.environ.get('GEMINI_FALLBACK_MODELS')
+        or 'gemini-3.7-flash,gemini-3.6-flash,gemini-3.5-flash,gemini-3.1-flash-lite'
+    ).split(',')
+    if model.strip()
+]
 
 
 # Email

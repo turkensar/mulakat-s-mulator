@@ -13,7 +13,14 @@ from django.views.decorators.http import require_POST
 
 from .forms import InterviewForm
 from .models import Answer, DAILY_INTERVIEW_LIMIT, Question
-from .services.gemini import GeminiError, evaluate_answer, generate_questions, summarize_interview
+from .services.gemini import (
+    GeminiError, GeminiQuotaError, evaluate_answer, generate_questions, summarize_interview,
+)
+
+QUOTA_MESSAGE = (
+    'Yapay zeka servisinin ücretsiz kullanım kotası şu an dolu. '
+    'Birkaç dakika sonra ya da yarın tekrar dene.'
+)
 
 
 def home(request):
@@ -65,6 +72,9 @@ def create_interview(request):
                     language=interview.language,
                     question_count=interview.question_count,
                 )
+            except GeminiQuotaError:
+                interview.delete()
+                form.add_error(None, QUOTA_MESSAGE)
             except GeminiError:
                 interview.delete()
                 form.add_error(
@@ -168,6 +178,11 @@ def submit_answer(request, pk):
             language=interview.language,
             question_text=question.text,
             answer_text=answer_text,
+        )
+    except GeminiQuotaError:
+        return JsonResponse(
+            {'status': 'error', 'message': f'{QUOTA_MESSAGE} Yazdığın cevap korundu.'},
+            status=503,
         )
     except GeminiError:
         return JsonResponse(

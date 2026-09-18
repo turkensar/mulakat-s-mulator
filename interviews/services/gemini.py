@@ -4,6 +4,7 @@ import logging
 import time
 
 from django.conf import settings
+from django.core.cache import cache
 from google import genai
 from google.genai import types
 from pydantic import BaseModel, Field
@@ -17,11 +18,19 @@ logger = logging.getLogger(__name__)
 # altında kalmalıdır (45 x 2 = 90 sn < 120 sn).
 _CALL_TIMEOUT_SECONDS = 45
 
+# Kotası dolu görülen model bu süre boyunca atlanır; her çağrıda boşuna 429 almamak için.
+# Önbellek veritabanında olduğu için Vercel'in ayrı fonksiyon örnekleri arasında paylaşılır.
+_QUOTA_SKIP_SECONDS = 600
+
 _client = None
 
 
 class GeminiError(Exception):
     """Gemini API çağrısı başarısız olduğunda veya beklenmeyen bir yanıt geldiğinde fırlatılır."""
+
+
+class GeminiQuotaError(GeminiError):
+    """Denenen tüm modellerin (ücretsiz) kullanım kotası dolu olduğunda fırlatılır."""
 
 
 class _QuestionItem(BaseModel):
@@ -82,38 +91,84 @@ _LANGUAGE_NAMES = {
 }
 
 
-def _create_interaction(*, prompt, system_instruction, schema, thinking_level):
-    started = time.monotonic()
+def _is_quota_error(exc):
+    # SDK'nın RateLimitError'ı status_code=429 taşır; özel modül yolunu içe aktarmadan ayırt ederiz.
+    return getattr(exc, 'status_code', None) == 429
+
+
+def _quota_cache_key(model):
+    return f'gemini:quota-exhausted:{model}'
+
+
+def _candidate_models():
+    """Sırayla denenecek modeller: birincil, sonra yedekler.
+
+    Kotası yakın zamanda dolduğu görülenler atlanır; hepsi doluysa (kota o arada
+    yenilenmiş olabilir) hepsi yine denenir.
+    """
+    models = [settings.GEMINI_MODEL] + [
+        model for model in settings.GEMINI_FALLBACK_MODELS if model != settings.GEMINI_MODEL
+    ]
     try:
-        interaction = _get_client().interactions.create(
-            model=settings.GEMINI_MODEL,
-            input=prompt,
-            system_instruction=system_instruction,
-            response_format={
-                'type': 'text',
-                'mime_type': 'application/json',
-                'schema_': schema,
-            },
-            generation_config={'thinking_level': thinking_level},
-            timeout=_CALL_TIMEOUT_SECONDS,
+        available = [model for model in models if not cache.get(_quota_cache_key(model))]
+    except Exception:
+        # Önbellek erişilemezse modelleri atlamadan devam et; çağrı başarısız olmasın.
+        available = models
+    return available or models
+
+
+def _mark_quota_exhausted(model):
+    try:
+        cache.set(_quota_cache_key(model), True, _QUOTA_SKIP_SECONDS)
+    except Exception:
+        logger.warning('Kota bilgisi önbelleğe yazılamadı (model=%s).', model)
+
+
+def _create_interaction(*, prompt, system_instruction, schema, thinking_level):
+    last_quota_error = None
+
+    for model in _candidate_models():
+        started = time.monotonic()
+        try:
+            interaction = _get_client().interactions.create(
+                model=model,
+                input=prompt,
+                system_instruction=system_instruction,
+                response_format={
+                    'type': 'text',
+                    'mime_type': 'application/json',
+                    'schema_': schema,
+                },
+                generation_config={'thinking_level': thinking_level},
+                timeout=_CALL_TIMEOUT_SECONDS,
+            )
+        except Exception as exc:
+            if _is_quota_error(exc):
+                # Bu modelin günlük payı dolu: sıradaki modele geç.
+                logger.warning(
+                    'Gemini kotası dolu (model=%s), sıradaki modele geçiliyor.', model
+                )
+                _mark_quota_exhausted(model)
+                last_quota_error = exc
+                continue
+            logger.exception(
+                'Gemini API çağrısı başarısız oldu (model=%s, thinking=%s, %.1f sn).',
+                model, thinking_level, time.monotonic() - started,
+            )
+            raise GeminiError('Gemini API çağrısı başarısız oldu.') from exc
+
+        # Süre kaydı: canlıda gerçek gecikmeleri Vercel loglarından görüp ayar yapabilmek için.
+        logger.info(
+            'Gemini çağrısı tamamlandı (model=%s, thinking=%s, %.1f sn).',
+            model, thinking_level, time.monotonic() - started,
         )
-    except Exception as exc:
-        logger.exception(
-            'Gemini API çağrısı başarısız oldu (model=%s, thinking=%s, %.1f sn).',
-            settings.GEMINI_MODEL, thinking_level, time.monotonic() - started,
-        )
-        raise GeminiError('Gemini API çağrısı başarısız oldu.') from exc
 
-    # Süre kaydı: canlıda gerçek gecikmeleri Vercel loglarından görüp ayar yapabilmek için.
-    logger.info(
-        'Gemini çağrısı tamamlandı (model=%s, thinking=%s, %.1f sn).',
-        settings.GEMINI_MODEL, thinking_level, time.monotonic() - started,
-    )
+        if interaction.output_text is None:
+            raise GeminiError('Gemini API boş bir yanıt döndürdü.')
 
-    if interaction.output_text is None:
-        raise GeminiError('Gemini API boş bir yanıt döndürdü.')
+        return interaction.output_text
 
-    return interaction.output_text
+    raise GeminiQuotaError('Tüm Gemini modellerinin kullanım kotası dolu.') from last_quota_error
 
 
 def generate_questions(*, position_label, level_label, interview_type_label, language, question_count):
