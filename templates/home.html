@@ -1,8 +1,57 @@
 {% extends 'base.html' %}
 
+{% block body_class %}ds{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/chat.css">
+<link rel="stylesheet" href="/static/css/home.css">
+{% endblock %}
+
 {% block content %}
-<section class="landing">
-    <h1>AI Mülakat Simülatörü</h1>
-    <p>İş mülakatlarına gerçekçi bir ortamda, istediğin kadar pratik yap.</p>
+<section class="home">
+    <div class="home__copy">
+        <h1>Mülakattan önce <span class="home__mark">provanı</span> yap</h1>
+        <p class="home__lead">
+            Yapay zeka mülakatçı sana pozisyonuna uygun sorular sorar, cevaplarını puanlar
+            ve nerede gelişebileceğini gösterir. Stressiz, istediğin kadar pratik.
+        </p>
+        <div class="home__actions">
+            {% if user.is_authenticated %}
+                <a href="{% url 'interview_create' %}" class="btn btn--primary">Yeni mülakat başlat</a>
+                <a href="{% url 'panel' %}" class="home__link">Panelime git</a>
+            {% else %}
+                <a href="{% url 'register' %}" class="btn btn--primary">Provaya başla</a>
+                <p class="home__note">Hesabın var mı? <a href="{% url 'login' %}">Giriş yap</a></p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="demo" role="group" aria-label="Örnek bir mülakattan kesit">
+        <div class="demo__head">
+            <div class="demo__title">
+                <strong>Frontend Geliştirici</strong>
+                <span class="badge badge--type">Teknik</span>
+            </div>
+            <p class="demo__count"><strong>1</strong> / 5 soru cevaplandı</p>
+            <div class="demo__bar" aria-hidden="true"><span></span></div>
+        </div>
+
+        <div class="demo__thread">
+            <div class="msg msg--ai demo__step" style="--delay: 0.6s">
+                <span class="msg__avatar" aria-hidden="true">🎙️</span>
+                <div class="msg__body">
+                    <p class="msg__label">Soru 2 · Teknik</p>
+                    <div class="bubble">CSS'te flex ile grid arasındaki fark nedir? Hangisini ne zaman seçersin?</div>
+                </div>
+            </div>
+            <div class="msg msg--me demo__step" style="--delay: 2.2s">
+                <div class="bubble">Flex tek eksende, grid iki eksende yerleşim yapar. Kart listesi için grid, navbar için flex kullanırım.</div>
+            </div>
+            <div class="demo__score band-high demo__step" style="--delay: 3.8s">
+                <span class="score-badge">8 / 10</span>
+                <span>Net ve örnekli bir cevap.</span>
+            </div>
+        </div>
+    </div>
 </section>
 {% endblock %}
