@@ -7,10 +7,10 @@
 {% block extra_css %}<link rel="stylesheet" href="/static/css/detail.css">{% endblock %}
 
 {% block content %}
-<section class="session session--{{ interview.interview_type }}">
+<section class="session type--{{ interview.interview_type }}">
     <header class="session__head">
         <h1>{{ interview.get_position_display }}</h1>
-        <ul class="session__badges">
+        <ul class="badges">
             <li class="badge">{{ interview.get_level_display }}</li>
             <li class="badge badge--type">{{ interview.get_interview_type_display }}</li>
             <li class="badge">{% include 'interviews/_flag.html' with code=interview.language %}{{ interview.get_language_display }}</li>

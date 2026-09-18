@@ -1,54 +1,13 @@
 /* Mülakat ekranı (docs/mulakat2.md §12.4): sohbet düzeni, renkli ilerleme çubuğu */
 
 .session {
-    --type-color: var(--violet);
-    --type-ink: var(--on-violet);
     max-width: 760px;
     margin: 0 auto;
     padding: var(--space-8) var(--space-4) 0;
 }
 
-/* Mülakat türü her ekranda aynı renkle gösterilir (§12.1) */
-.session--technical { --type-color: var(--violet); --type-ink: var(--on-violet); }
-.session--behavioral { --type-color: var(--coral); --type-ink: var(--on-coral); }
-.session--mixed { --type-color: var(--sun); --type-ink: var(--on-sun); }
-
 .session__head h1 {
     font-size: clamp(1.9rem, 5vw, 2.75rem);
-}
-
-.session__badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin: var(--space-3) 0 0;
-    padding: 0;
-    list-style: none;
-}
-
-.badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 2px var(--space-3);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-badge);
-    font-size: 0.9rem;
-    font-weight: 700;
-    line-height: 1.7;
-}
-
-.badge--type {
-    background: var(--type-color);
-    border-color: var(--type-color);
-    color: var(--type-ink);
-}
-
-.badge .flag {
-    width: 22px;
-    height: 15px;
-    border-radius: 3px;
 }
 
 /* İlerleme: sohbet uzasa da üstte görünür kalır */
