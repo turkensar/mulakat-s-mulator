@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Kayıt Ol - Mülakat Simülatörü{% endblock %}
+
+{% block content %}
+<section class="auth-form">
+    <h1>Kayıt Ol</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="form-field">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <button type="submit">Kayıt Ol</button>
+    </form>
+    <p>Zaten hesabın var mı? <a href="{% url 'login' %}">Giriş yap</a></p>
+</section>
+{% endblock %}

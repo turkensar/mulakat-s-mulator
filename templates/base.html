@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mülakat Simülatörü{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/base.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="navbar__brand">AI Mülakat Simülatörü</a>
+        <div class="navbar__links">
+            {% if user.is_authenticated %}
+                <a href="{% url 'panel' %}">Panel</a>
+                <form action="{% url 'logout' %}" method="post" class="navbar__logout-form">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    <button type="submit" class="navbar__logout-button">Çıkış</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Giriş</a>
+                <a href="{% url 'register' %}">Kayıt Ol</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
