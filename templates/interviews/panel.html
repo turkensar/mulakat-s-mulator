@@ -6,5 +6,6 @@
 <section class="panel">
     <h1>Merhaba, {{ user.username }}</h1>
     <p>Geçmiş mülakatların burada listelenecek.</p>
+    <a href="{% url 'interview_create' %}" class="button-link">+ Yeni Mülakat</a>
 </section>
 {% endblock %}

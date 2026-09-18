@@ -114,13 +114,46 @@ body {
     font-size: 0.9rem;
 }
 
-.form-field input {
+.form-field input,
+.form-field select {
     background: #1e293b;
     border: 1px solid #334155;
     border-radius: 6px;
     padding: 10px 12px;
     color: #f1f5f9;
     font-size: 1rem;
+}
+
+.button-link {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    background: #6366f1;
+    color: white;
+    text-decoration: none;
+}
+
+.button-link:hover {
+    background: #4f46e5;
+}
+
+.question-list {
+    margin-top: 16px;
+    padding-left: 20px;
+    color: #cbd5e1;
+}
+
+.question-list li {
+    margin-bottom: 12px;
+}
+
+.question-list__category {
+    display: inline-block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #a5b4fc;
+    margin-right: 8px;
 }
 
 .form-field .errorlist {

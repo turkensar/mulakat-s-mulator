@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Mülakat - Mülakat Simülatörü{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <h1>{{ interview.get_position_display }}</h1>
+    <p>
+        {{ interview.get_level_display }} · {{ interview.get_interview_type_display }} ·
+        {{ interview.get_language_display }} · {{ interview.question_count }} soru
+    </p>
+    <p><em>Soru soru mülakat ekranı Faz 5'te eklenecek. Şimdilik üretilen sorular:</em></p>
+    <ol class="question-list">
+        {% for question in interview.questions.all %}
+            <li>
+                <span class="question-list__category">{{ question.get_category_display }}</span>
+                {{ question.text }}
+            </li>
+        {% endfor %}
+    </ol>
+</section>
+{% endblock %}

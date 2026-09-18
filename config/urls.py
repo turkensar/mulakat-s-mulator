@@ -24,4 +24,5 @@ urlpatterns = [
     path('', home, name='home'),
     path('panel/', panel, name='panel'),
     path('', include('accounts.urls')),
+    path('', include('interviews.urls')),
 ]

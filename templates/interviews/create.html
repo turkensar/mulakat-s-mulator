@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Yeni Mülakat - Mülakat Simülatörü{% endblock %}
+
+{% block content %}
+<section class="auth-form">
+    <h1>Yeni Mülakat</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="form-field">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <button type="submit">Mülakatı Başlat</button>
+    </form>
+</section>
+{% endblock %}
