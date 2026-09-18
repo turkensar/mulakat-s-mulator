@@ -136,6 +136,13 @@ LOGIN_REDIRECT_URL = '/panel/'
 LOGOUT_REDIRECT_URL = '/'
 
 
+# Gemini API
+# https://ai.google.dev/gemini-api/docs
+
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+GEMINI_MODEL = 'gemini-3.8-flash'
+
+
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 

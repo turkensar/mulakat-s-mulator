@@ -14,8 +14,14 @@ media/
 # Ortam değişkenleri
 .env
 
+# Bu makineye özel (Avast SSL kesintisi için birleştirilmiş CA bundle)
+.local/
+
 # IDE
 .idea/
+
+# Claude Code
+.claude/
 
 # Vercel
 .vercel/
