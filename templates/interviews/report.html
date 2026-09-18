@@ -1,45 +1,125 @@
 {% extends 'base.html' %}
+{% load interview_extras %}
 
 {% block title %}Rapor - Mülakat Simülatörü{% endblock %}
 
+{% block body_class %}ds{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="/static/css/report.css">{% endblock %}
+
 {% block content %}
-<section class="report">
-    <h1>{{ interview.get_position_display }}</h1>
-    <p class="interview__meta">
-        {{ interview.get_level_display }} · {{ interview.get_interview_type_display }} ·
-        {{ interview.get_language_display }} · {{ interview.completed_at|date:"d.m.Y H:i" }}
-    </p>
+<article class="report type--{{ interview.interview_type }}">
+    <header class="report__head">
+        <h1>{{ interview.get_position_display }}</h1>
+        <ul class="badges">
+            <li class="badge">{{ interview.get_level_display }}</li>
+            <li class="badge badge--type">{{ interview.get_interview_type_display }}</li>
+            <li class="badge">{% include 'interviews/_flag.html' with code=interview.language %}{{ interview.get_language_display }}</li>
+            <li class="badges__note">{{ interview.completed_at|date:"j E Y" }}</li>
+        </ul>
+    </header>
 
-    <div class="report__overall">
-        <div class="report__score">{{ interview.overall_score }} <span>/ 10</span></div>
-        {% if interview.summary %}
-            <p class="report__summary">{{ interview.summary }}</p>
-            <p class="report__highlight"><strong>Güçlü yön:</strong> {{ interview.top_strength }}</p>
-            <p class="report__highlight"><strong>Gelişim alanı:</strong> {{ interview.top_improvement }}</p>
-        {% else %}
-            <p class="report__summary">Genel özet oluşturulamadı.</p>
-        {% endif %}
-    </div>
+    <section class="hero band-{{ interview.overall_score|score_band }}" aria-labelledby="hero-title">
+        <div class="ring" role="img" aria-label="Genel skor: {{ interview.overall_score|floatformat:1 }} / 10">
+            <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+                <circle class="ring__track" cx="60" cy="60" r="52" pathLength="100"></circle>
+                <circle class="ring__value" cx="60" cy="60" r="52" pathLength="100"
+                        style="stroke-dasharray: {% widthratio interview.overall_score 10 100 %} 100"></circle>
+            </svg>
+            <div class="ring__label" aria-hidden="true">
+                <strong>{{ interview.overall_score|floatformat:1 }}</strong>
+                <span>/ 10</span>
+            </div>
+        </div>
 
-    <h2>Soru Detayları</h2>
-    {% for answer in answers %}
-        <div class="report__question">
-            <p class="report__question-text">
-                <span class="report__question-order">{{ forloop.counter }}.</span>
-                {{ answer.question.text }}
-            </p>
-            <p class="report__answer-text">{{ answer.text }}</p>
-            <p class="report__question-score">Puan: {{ answer.score }} / 10</p>
-            <p><strong>Güçlü yönler:</strong> {{ answer.strengths }}</p>
-            <p><strong>Geliştirilecek yönler:</strong> {{ answer.improvements }}</p>
-            <p><strong>Örnek iyi cevap:</strong> {{ answer.sample_answer }}</p>
-            {% if answer.language_score %}
-                <p><strong>Dil kullanımı puanı:</strong> {{ answer.language_score }} / 10</p>
-                <p><strong>Dil kullanımı yorumu:</strong> {{ answer.language_feedback }}</p>
+        <div class="hero__text">
+            <h2 id="hero-title">Genel değerlendirme</h2>
+            {% if interview.summary %}
+                <p class="hero__summary">{{ interview.summary|inline_markup }}</p>
+                <div class="insights">
+                    <div class="insight insight--strength">
+                        <h3>En belirgin güçlü yönün</h3>
+                        <p>{{ interview.top_strength|inline_markup }}</p>
+                    </div>
+                    <div class="insight insight--improve">
+                        <h3>Öncelikli gelişim alanın</h3>
+                        <p>{{ interview.top_improvement|inline_markup }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <p class="notice">Genel özet oluşturulamadı. Soru soru değerlendirmelerin aşağıda.</p>
             {% endif %}
         </div>
-    {% endfor %}
+    </section>
 
-    <a href="{% url 'panel' %}" class="button-link">Panele Dön</a>
-</section>
+    <section class="answers" aria-labelledby="answers-title">
+        <div class="answers__head">
+            <h2 id="answers-title">Soru soru değerlendirme</h2>
+            <button type="button" class="linkbtn" id="toggle-all" hidden>Tümünü aç</button>
+        </div>
+
+        {% for answer in answers %}
+        <details class="qa band-{{ answer.score|score_band }}"{% if forloop.first %} open{% endif %}>
+            <summary class="qa__summary">
+                <span class="qa__num" aria-hidden="true">{{ forloop.counter }}</span>
+                <span class="qa__question">{{ answer.question.text|inline_markup }}</span>
+                <span class="score-badge"><span class="visually-hidden">Puan: </span>{{ answer.score }} / 10</span>
+            </summary>
+            <div class="qa__body">
+                <div class="qa__block qa__block--mine">
+                    <h3>Cevabın</h3>
+                    <p>{{ answer.text }}</p>
+                </div>
+                <div class="qa__block qa__block--strength">
+                    <h3>Güçlü yönler</h3>
+                    <p>{{ answer.strengths|inline_markup }}</p>
+                </div>
+                <div class="qa__block qa__block--improve">
+                    <h3>Geliştirilecek yönler</h3>
+                    <p>{{ answer.improvements|inline_markup }}</p>
+                </div>
+                <div class="qa__block qa__block--sample">
+                    <h3>Örnek iyi cevap</h3>
+                    <p>{{ answer.sample_answer|inline_markup }}</p>
+                </div>
+                {% if answer.language_score %}
+                <div class="qa__block qa__block--language band-{{ answer.language_score|score_band }}">
+                    <h3>Dil kullanımı <span class="score-badge">{{ answer.language_score }} / 10</span></h3>
+                    <p>{{ answer.language_feedback|inline_markup }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </details>
+        {% endfor %}
+    </section>
+
+    <div class="report__actions">
+        <a href="{% url 'interview_create' %}" class="btn btn--primary">Yeni mülakat başlat</a>
+        <a href="{% url 'panel' %}" class="btn btn--ghost">Panele dön</a>
+    </div>
+</article>
+
+<script>
+(function () {
+    var button = document.getElementById('toggle-all');
+    var items = document.querySelectorAll('.qa');
+    if (!button || items.length < 2) return;
+
+    function refresh() {
+        var allOpen = Array.prototype.every.call(items, function (item) { return item.open; });
+        button.textContent = allOpen ? 'Tümünü kapat' : 'Tümünü aç';
+    }
+
+    button.hidden = false;
+    button.addEventListener('click', function () {
+        var open = button.textContent === 'Tümünü aç';
+        Array.prototype.forEach.call(items, function (item) { item.open = open; });
+        refresh();
+    });
+    Array.prototype.forEach.call(items, function (item) {
+        item.addEventListener('toggle', refresh);
+    });
+    refresh();
+})();
+</script>
 {% endblock %}

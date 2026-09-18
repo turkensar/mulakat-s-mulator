@@ -138,11 +138,6 @@ body {
     background: #4f46e5;
 }
 
-.interview__meta {
-    color: #94a3b8;
-    margin-top: 0;
-}
-
 .errorlist {
     color: #f87171;
     font-size: 0.85rem;
@@ -209,73 +204,4 @@ body {
 
 .interview-list__item a:hover {
     text-decoration: underline;
-}
-
-.report {
-    max-width: 640px;
-    margin: 48px auto;
-    padding: 0 24px;
-}
-
-.report__overall {
-    background: #1e293b;
-    border-radius: 12px;
-    padding: 24px;
-    margin: 24px 0 32px;
-}
-
-.report__score {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #a5b4fc;
-    margin-bottom: 12px;
-}
-
-.report__score span {
-    font-size: 1.25rem;
-    color: #94a3b8;
-    font-weight: 400;
-}
-
-.report__summary {
-    color: #e2e8f0;
-    line-height: 1.6;
-}
-
-.report__highlight {
-    color: #cbd5e1;
-    margin: 8px 0 0;
-}
-
-.report h2 {
-    margin-top: 0;
-}
-
-.report__question {
-    background: #1e293b;
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin-bottom: 16px;
-    line-height: 1.6;
-}
-
-.report__question-order {
-    color: #a5b4fc;
-    font-weight: 700;
-}
-
-.report__question-text {
-    font-weight: 600;
-}
-
-.report__answer-text {
-    color: #cbd5e1;
-    background: #0f172a;
-    border-radius: 6px;
-    padding: 10px 12px;
-}
-
-.report__question-score {
-    color: #a5b4fc;
-    font-weight: 600;
 }

@@ -1,0 +1,322 @@
+/* Rapor sayfası (docs/mulakat2.md §12.3, §12.4): puan halkası, açılır soru bölümleri */
+
+.report {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4) var(--space-12);
+}
+
+.report__head h1 {
+    font-size: clamp(1.9rem, 5vw, 2.75rem);
+}
+
+/* Genel skor: halka rengi puan aralığına göre değişir */
+.hero {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    align-items: center;
+    gap: var(--space-8);
+    margin-top: var(--space-8);
+    padding: var(--space-8);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+}
+
+.ring {
+    position: relative;
+    width: 200px;
+    aspect-ratio: 1;
+    justify-self: center;
+}
+
+.ring svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.ring circle {
+    fill: none;
+    stroke-width: 10;
+}
+
+.ring__track {
+    stroke: var(--line);
+}
+
+.ring__value {
+    stroke: var(--band);
+    stroke-linecap: round;
+    /* Sayfadaki tek giriş animasyonu: halka boşluktan puana kadar dolar */
+    animation: ring-fill 0.9s ease-out;
+}
+
+@keyframes ring-fill {
+    from { stroke-dasharray: 0 100; }
+}
+
+.ring__label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    text-align: center;
+}
+
+.ring__label strong {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.ring__label span {
+    color: var(--ink-soft);
+    font-weight: 500;
+}
+
+.hero__text h2 {
+    font-size: 1.5rem;
+}
+
+.hero__summary {
+    margin: var(--space-3) 0 0;
+    white-space: pre-line;
+}
+
+.insights {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+}
+
+.insight {
+    padding: var(--space-2) var(--space-4);
+    background: var(--bg);
+    border-left: 6px solid var(--mint);
+    border-radius: 0 var(--radius-badge) var(--radius-badge) 0;
+}
+
+.insight--improve {
+    border-left-color: var(--coral);
+}
+
+.insight h3 {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.insight p {
+    margin: var(--space-1) 0 0;
+    white-space: pre-line;
+}
+
+/* Soru soru değerlendirme */
+.answers {
+    margin-top: var(--space-12);
+}
+
+.answers__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.answers__head h2 {
+    font-size: clamp(1.5rem, 4vw, 1.9rem);
+}
+
+.linkbtn {
+    padding: var(--space-2) var(--space-1);
+    background: none;
+    border: 0;
+    color: var(--violet);
+    font: 700 1rem var(--font-body);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+
+.linkbtn[hidden] {
+    display: none;
+}
+
+.qa {
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+}
+
+.qa + .qa {
+    margin-top: var(--space-3);
+}
+
+.qa[open] {
+    border-color: var(--band);
+}
+
+.qa__summary {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-4) var(--space-4) var(--space-4);
+    list-style: none;
+    cursor: pointer;
+}
+
+.qa__summary::-webkit-details-marker {
+    display: none;
+}
+
+.qa__summary::after {
+    content: '';
+    flex: none;
+    width: 10px;
+    height: 10px;
+    margin: 9px var(--space-1) 0;
+    border-right: 2px solid var(--ink-soft);
+    border-bottom: 2px solid var(--ink-soft);
+    transform: rotate(45deg);
+    transition: transform 0.15s ease;
+}
+
+.qa[open] .qa__summary::after {
+    margin-top: 12px;
+    transform: rotate(-135deg);
+}
+
+.qa__num {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    margin-top: 1px;
+    background: var(--ink);
+    border-radius: var(--radius-pill);
+    color: var(--surface);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.qa__question {
+    flex: 1;
+    min-width: 0;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.qa__summary .score-badge {
+    flex: none;
+    margin-top: 1px;
+}
+
+.qa__body {
+    padding: 0 var(--space-4) var(--space-6);
+}
+
+.qa__block + .qa__block {
+    margin-top: var(--space-4);
+}
+
+.qa__block h3 {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-1);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.qa__block p {
+    margin: 0;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+}
+
+.qa__block--mine {
+    padding: var(--space-3) var(--space-4);
+    background: var(--bg);
+    border-radius: var(--radius-block);
+}
+
+/* Güçlü yönler mint, gelişim alanları coral kenar çizgisiyle ayrılır (§12.4) */
+.qa__block--strength,
+.qa__block--improve,
+.qa__block--language {
+    padding-left: var(--space-4);
+    border-left: 6px solid var(--mint);
+}
+
+.qa__block--improve {
+    border-left-color: var(--coral);
+}
+
+.qa__block--language {
+    border-left-color: var(--band);
+}
+
+.qa__block--sample {
+    padding: var(--space-3) var(--space-4);
+    border: 2px dashed var(--line);
+    border-radius: var(--radius-block);
+}
+
+.report code,
+.report .qa__question code {
+    padding: 1px 6px;
+    background: var(--bg);
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.report__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-12);
+}
+
+@media (max-width: 640px) {
+    .hero {
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+        padding: var(--space-6) var(--space-4);
+    }
+
+    .ring {
+        width: 168px;
+    }
+
+    .ring__label strong {
+        font-size: 3rem;
+    }
+
+    .insights {
+        grid-template-columns: 1fr;
+    }
+
+    .qa__body {
+        padding: 0 var(--space-4) var(--space-4);
+    }
+
+    .report__actions .btn {
+        width: 100%;
+    }
+}
+
+@media (min-width: 641px) {
+    .qa__body {
+        padding-left: 60px;
+    }
+}
