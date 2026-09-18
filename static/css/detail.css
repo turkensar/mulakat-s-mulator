@@ -45,7 +45,7 @@
     transition: width 0.4s ease;
 }
 
-/* Sohbet */
+/* Sohbet: balon stilleri chat.css'te */
 .thread {
     display: flex;
     flex-direction: column;
@@ -53,69 +53,10 @@
     padding: var(--space-4) 0 var(--space-6);
 }
 
-.msg {
-    display: flex;
-    gap: var(--space-3);
-    min-width: 0;
-    /* scrollIntoView, yapışkan ilerleme şeridinin altında ve cevap alanının üstünde bıraksın */
+/* scrollIntoView, yapışkan ilerleme şeridinin altında ve cevap alanının üstünde bıraksın */
+.thread .msg {
     scroll-margin-top: 110px;
     scroll-margin-bottom: 220px;
-}
-
-.msg[hidden] {
-    display: none;
-}
-
-.msg--ai {
-    align-self: flex-start;
-    max-width: min(100%, 44rem);
-}
-
-.msg--me {
-    align-self: flex-end;
-    max-width: min(88%, 40rem);
-}
-
-.msg__avatar {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    background: var(--ink);
-    border-radius: var(--radius-pill);
-    font-size: 1.1rem;
-    line-height: 1;
-}
-
-.msg__body {
-    min-width: 0;
-}
-
-.msg__label {
-    margin: 0 0 var(--space-1) var(--space-1);
-    color: var(--ink-soft);
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.bubble {
-    padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-block);
-    overflow-wrap: anywhere;
-    white-space: pre-wrap;
-}
-
-.msg--ai .bubble {
-    background: var(--violet);
-    color: var(--on-violet);
-    border-top-left-radius: 6px;
-}
-
-.msg--me .bubble {
-    background: var(--surface);
-    border: 2px solid var(--line);
-    border-top-right-radius: 6px;
 }
 
 /* Değerlendirme beklerken: üç nokta nabız gibi atar */
