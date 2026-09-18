@@ -1,0 +1,261 @@
+/* Mülakat ekranı (docs/mulakat2.md §12.4): sohbet düzeni, renkli ilerleme çubuğu */
+
+.session {
+    --type-color: var(--violet);
+    --type-ink: var(--on-violet);
+    max-width: 760px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4) 0;
+}
+
+/* Mülakat türü her ekranda aynı renkle gösterilir (§12.1) */
+.session--technical { --type-color: var(--violet); --type-ink: var(--on-violet); }
+.session--behavioral { --type-color: var(--coral); --type-ink: var(--on-coral); }
+.session--mixed { --type-color: var(--sun); --type-ink: var(--on-sun); }
+
+.session__head h1 {
+    font-size: clamp(1.9rem, 5vw, 2.75rem);
+}
+
+.session__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-badge);
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.7;
+}
+
+.badge--type {
+    background: var(--type-color);
+    border-color: var(--type-color);
+    color: var(--type-ink);
+}
+
+.badge .flag {
+    width: 22px;
+    height: 15px;
+    border-radius: 3px;
+}
+
+/* İlerleme: sohbet uzasa da üstte görünür kalır */
+.progress-strip {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin-top: var(--space-6);
+    padding: var(--space-3) 0;
+    background: var(--bg);
+}
+
+.progress-strip__text {
+    margin: 0 0 var(--space-2);
+    font-weight: 700;
+}
+
+.progress-strip__text span {
+    color: var(--ink-soft);
+    font-weight: 400;
+}
+
+.progress {
+    height: 14px;
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+}
+
+.progress__fill {
+    height: 100%;
+    background: var(--type-color);
+    border-radius: var(--radius-pill);
+    transition: width 0.4s ease;
+}
+
+/* Sohbet */
+.thread {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-4) 0 var(--space-6);
+}
+
+.msg {
+    display: flex;
+    gap: var(--space-3);
+    min-width: 0;
+    /* scrollIntoView, yapışkan ilerleme şeridinin altında ve cevap alanının üstünde bıraksın */
+    scroll-margin-top: 110px;
+    scroll-margin-bottom: 220px;
+}
+
+.msg[hidden] {
+    display: none;
+}
+
+.msg--ai {
+    align-self: flex-start;
+    max-width: min(100%, 44rem);
+}
+
+.msg--me {
+    align-self: flex-end;
+    max-width: min(88%, 40rem);
+}
+
+.msg__avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    background: var(--ink);
+    border-radius: var(--radius-pill);
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.msg__body {
+    min-width: 0;
+}
+
+.msg__label {
+    margin: 0 0 var(--space-1) var(--space-1);
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.bubble {
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-block);
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.msg--ai .bubble {
+    background: var(--violet);
+    color: var(--on-violet);
+    border-top-left-radius: 6px;
+}
+
+.msg--me .bubble {
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-top-right-radius: 6px;
+}
+
+/* Değerlendirme beklerken: üç nokta nabız gibi atar */
+.msg--thinking .bubble {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    color: var(--ink);
+    white-space: normal;
+}
+
+.thinking__dots {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.thinking__dots i {
+    width: 10px;
+    height: 10px;
+    background: var(--violet);
+    border-radius: var(--radius-pill);
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+.thinking__dots i:nth-child(2) { animation-delay: 0.15s; }
+.thinking__dots i:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes pulse {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+/* Cevap alanı: sohbet uzasa da altta görünür kalır */
+.composer {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    padding: var(--space-3) 0 calc(var(--space-4) + env(safe-area-inset-bottom));
+    background: var(--bg);
+    box-shadow: 0 -16px 16px var(--bg);
+}
+
+.composer textarea {
+    display: block;
+    width: 100%;
+    min-height: 96px;
+    max-height: 40vh;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+    color: var(--ink);
+    font: inherit;
+    line-height: 1.5;
+    resize: none;
+    field-sizing: content;
+}
+
+.composer textarea:focus-visible {
+    border-color: var(--violet);
+}
+
+.composer textarea[readonly] {
+    background: var(--bg);
+}
+
+.composer__error {
+    margin-top: var(--space-3);
+}
+
+.composer__actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+}
+
+.composer__hint {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+    .composer textarea {
+        min-height: 72px;
+    }
+
+    .composer__hint {
+        display: none;
+    }
+
+    .composer__actions {
+        justify-content: flex-end;
+    }
+
+    .composer .btn {
+        width: 100%;
+    }
+}
