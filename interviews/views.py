@@ -26,7 +26,9 @@ def panel(request):
 
 
 def _today_interview_count(user):
-    return user.interviews.filter(created_at__date=timezone.now().date()).count()
+    # created_at__date yerel saat diliminde (TIME_ZONE) karşılaştırır; now().date()
+    # ise UTC tarihini verir ve gece yarısından sonraki ilk saatlerde tutmaz.
+    return user.interviews.filter(created_at__date=timezone.localdate()).count()
 
 
 @login_required
