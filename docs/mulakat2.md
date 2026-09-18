@@ -260,7 +260,7 @@ ALLOWED_HOSTS=
 
 Her faz bitince çalıştığı test edilir, commit atılır, sonra bir sonrakine geçilir.
 
-- [~] **Faz 1 – Kurulum:** Django projesi, ortam değişkenleri, basit bir ana sayfa, Supabase bağlantısı (PostgreSQL) hazır ve test edildi. Vercel'de yayına alma henüz yapılmadı.
+- [x] **Faz 1 – Kurulum:** Django projesi, ortam değişkenleri, ana sayfa, Supabase bağlantısı (PostgreSQL) hazır ve test edildi; Vercel'de yayında (https://mulakat-s-mulator.vercel.app, bölge fra1). Canlıda doğrulananlar: sayfalar ve statik dosyalar, HTTPS yönlendirmesi, güvenli çerez, CSRF, canlı veritabanı sorgusu. Canlıda henüz gerçek Gemini ile uçtan uca mülakat denenmedi.
 - [x] **Faz 2 – Kullanıcı sistemi:** Kayıt, giriş, çıkış, giriş gerektiren sayfaların korunması.
 - [x] **Faz 3 – Modeller ve form:** Interview, Question, Answer modelleri; mülakat oluşturma formu. Bu aşamada AI yok, sabit örnek sorular kullanılır.
 - [x] **Faz 4 – Gemini ile soru üretme:** `gemini.py` servisi, soru üretme çağrısı, JSON şeması, hata yönetimi.
