@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -21,8 +22,15 @@ def home(request):
 
 @login_required
 def panel(request):
-    interviews = request.user.interviews.all()
-    return render(request, 'interviews/panel.html', {'interviews': interviews})
+    # Meta.ordering, aggregate içeren sorgularda uygulanmaz; sıralamayı açıkça veriyoruz.
+    interviews = request.user.interviews.annotate(
+        answered_count=Count('questions', filter=Q(questions__answer__isnull=False))
+    ).order_by('-created_at')
+    context = {
+        'in_progress': [i for i in interviews if i.status == 'in_progress'],
+        'completed': [i for i in interviews if i.status == 'completed'],
+    }
+    return render(request, 'interviews/panel.html', context)
 
 
 def _today_interview_count(user):

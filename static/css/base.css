@@ -90,15 +90,13 @@ body {
     margin-bottom: 8px;
 }
 
-.auth-form,
-.panel {
+.auth-form {
     max-width: 420px;
     margin: 48px auto;
     padding: 0 24px;
 }
 
-.auth-form h1,
-.panel h1 {
+.auth-form h1 {
     margin-bottom: 24px;
 }
 
@@ -122,20 +120,6 @@ body {
     padding: 10px 12px;
     color: #f1f5f9;
     font-size: 1rem;
-}
-
-.button-link {
-    display: inline-block;
-    margin-top: 16px;
-    padding: 10px 16px;
-    border-radius: 6px;
-    background: #6366f1;
-    color: white;
-    text-decoration: none;
-}
-
-.button-link:hover {
-    background: #4f46e5;
 }
 
 .errorlist {
@@ -168,40 +152,4 @@ body {
 
 .auth-form p a {
     color: #a5b4fc;
-}
-
-.interview-list {
-    list-style: none;
-    padding: 0;
-    margin: 24px 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.interview-list__item {
-    background: #1e293b;
-    border-radius: 8px;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.interview-list__meta {
-    display: block;
-    color: #94a3b8;
-    font-size: 0.85rem;
-    margin-top: 4px;
-}
-
-.interview-list__item a {
-    color: #a5b4fc;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-.interview-list__item a:hover {
-    text-decoration: underline;
 }

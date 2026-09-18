@@ -1,0 +1,217 @@
+/* Panel (docs/mulakat2.md §12.4): mülakat listesi, boş durum */
+
+.panel {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: var(--space-8) var(--space-4) var(--space-12);
+}
+
+.panel__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4) var(--space-6);
+}
+
+.panel h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    overflow-wrap: anywhere;
+}
+
+.panel__lead {
+    margin: var(--space-2) 0 0;
+    color: var(--ink-soft);
+}
+
+.panel__group {
+    margin-top: var(--space-12);
+}
+
+.panel__group h2 {
+    margin-bottom: var(--space-4);
+    font-size: clamp(1.4rem, 4vw, 1.75rem);
+}
+
+.rows {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Satırın sol kenarındaki şerit mülakat türünün rengidir (§12.1) */
+.row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-6) var(--space-4) calc(var(--space-6) + 8px);
+    overflow: hidden;
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.row::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 8px;
+    background: var(--type-color);
+}
+
+.row:hover {
+    transform: translateY(-2px);
+    border-color: var(--type-color);
+    box-shadow: 0 4px 0 var(--type-color);
+}
+
+.row__main {
+    min-width: 0;
+}
+
+.row__title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+}
+
+.row__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    margin-top: var(--space-2);
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+}
+
+.row__lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.row__lang .flag {
+    width: 22px;
+    height: 15px;
+    border-radius: 3px;
+}
+
+.row__side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.row .score-badge {
+    padding: 2px var(--space-4);
+    font-size: 1.1rem;
+}
+
+.row__count {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.row__bar {
+    display: block;
+    width: 96px;
+    height: 8px;
+    overflow: hidden;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+}
+
+.row__bar > span {
+    display: block;
+    height: 100%;
+    background: var(--type-color);
+}
+
+.row__cta {
+    color: var(--violet);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.row__cta::after {
+    content: ' →';
+}
+
+/* Boş durum */
+.empty {
+    margin-top: var(--space-12);
+    padding: var(--space-12) var(--space-6);
+    background: var(--surface);
+    border: 2px dashed var(--line);
+    border-radius: var(--radius-block);
+    text-align: center;
+}
+
+.empty__icon {
+    display: block;
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.empty h2 {
+    margin-top: var(--space-4);
+    font-size: clamp(1.5rem, 4vw, 1.9rem);
+}
+
+.empty p {
+    margin: var(--space-3) auto var(--space-6);
+    color: var(--ink-soft);
+}
+
+/* Dar ekran: satır tek sütun, yan bilgiler (puan / ilerleme / bağlantı) altta yatay */
+@media (max-width: 520px) {
+    .row {
+        grid-template-columns: 1fr;
+    }
+
+    .row__side {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-2) var(--space-4);
+    }
+
+    .row__cta {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 640px) {
+    .row {
+        gap: var(--space-3);
+        padding: var(--space-4) var(--space-4) var(--space-4) calc(var(--space-4) + 8px);
+    }
+
+    .row__title {
+        font-size: 1.1rem;
+    }
+
+    .empty {
+        padding: var(--space-8) var(--space-4);
+    }
+
+    .panel__head .btn {
+        width: 100%;
+    }
+}
