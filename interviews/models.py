@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 
+DAILY_INTERVIEW_LIMIT = 3
+
 POSITION_CHOICES = [
     ('junior_developer', 'Junior Yazılım Geliştirici'),
     ('frontend_developer', 'Frontend Geliştirici'),

@@ -5,17 +5,29 @@
 {% block content %}
 <section class="auth-form">
     <h1>Yeni Mülakat</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
-        {% for field in form %}
-            <div class="form-field">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {{ field.errors }}
-            </div>
-        {% endfor %}
-        <button type="submit">Mülakatı Başlat</button>
-    </form>
+    {% if limit_reached %}
+        <p>Bugünkü mülakat hakkını kullandın (günde en fazla 3 mülakat). Yarın tekrar deneyebilirsin.</p>
+        <a href="{% url 'panel' %}" class="button-link">Panele Dön</a>
+    {% else %}
+        <form method="post" id="create-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="form-field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <button type="submit" id="create-submit">Mülakatı Başlat</button>
+        </form>
+        <script>
+            document.getElementById('create-form').addEventListener('submit', function () {
+                var button = document.getElementById('create-submit');
+                button.disabled = true;
+                button.textContent = 'Sorular oluşturuluyor...';
+            });
+        </script>
+    {% endif %}
 </section>
 {% endblock %}

@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .forms import InterviewForm
-from .models import Answer, Question
+from .models import Answer, DAILY_INTERVIEW_LIMIT, Question
 from .services.gemini import GeminiError, evaluate_answer, generate_questions, summarize_interview
 
 
@@ -23,8 +23,15 @@ def panel(request):
     return render(request, 'interviews/panel.html', {'interviews': interviews})
 
 
+def _today_interview_count(user):
+    return user.interviews.filter(created_at__date=timezone.now().date()).count()
+
+
 @login_required
 def create_interview(request):
+    if _today_interview_count(request.user) >= DAILY_INTERVIEW_LIMIT:
+        return render(request, 'interviews/create.html', {'limit_reached': True})
+
     if request.method == 'POST':
         form = InterviewForm(request.POST)
         if form.is_valid():
