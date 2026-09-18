@@ -40,6 +40,18 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [h for h in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h]
 
+# Production (DEBUG=False) güvenlik ayarları. Lokal geliştirme http üzerinden
+# çalıştığı için DEBUG=True iken devre dışı.
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    # Vercel TLS'i proxy'de sonlandırır; bu başlık olmadan SSL redirect sonsuz döngüye girer.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # HSTS geri alınması zor bir ayar; küçük başlayıp deploy'un sağlıklı
+    # çalıştığı görülünce artırılmalı.
+    SECURE_HSTS_SECONDS = 3600
+
 
 # Application definition
 
