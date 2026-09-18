@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,9 +27,13 @@ load_dotenv(BASE_DIR / '.env')
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    'SECRET_KEY', 'django-insecure-7a-9#ba_7b@c+^b^p1g4j)&i%n=nx7$c-e97=ct0v=@9h&ft(p'
-)
+try:
+    SECRET_KEY = os.environ['SECRET_KEY']
+except KeyError:
+    raise ImproperlyConfigured(
+        'SECRET_KEY ortam değişkeni tanımlı değil. Lokalde .env dosyasına, '
+        'deploy ortamında (örn. Vercel) environment variables ayarlarına ekleyin.'
+    )
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
