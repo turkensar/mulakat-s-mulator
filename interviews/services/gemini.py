@@ -34,6 +34,12 @@ class _AnswerEvaluation(BaseModel):
     language_feedback: str | None = None
 
 
+class _InterviewSummary(BaseModel):
+    summary: str
+    top_strength: str
+    top_improvement: str
+
+
 def _get_client():
     global _client
     if _client is None:
@@ -169,4 +175,49 @@ def evaluate_answer(*, position_label, level_label, language, question_text, ans
         'sample_answer': parsed.sample_answer,
         'language_score': parsed.language_score,
         'language_feedback': parsed.language_feedback or '',
+    }
+
+
+def summarize_interview(*, position_label, level_label, language, qa_pairs):
+    """Tüm soru/cevap/puanlara bakarak mülakatın genel özetini üretir.
+
+    qa_pairs: (soru_metni, cevap_metni, puan) üçlülerinden oluşan bir liste.
+    Dönen değer: summary, top_strength, top_improvement alanlarını içeren sözlük.
+    """
+    language_name = _LANGUAGE_NAMES[language]
+
+    system_instruction = (
+        'Deneyimli bir işe alım uzmanı gibi davran. Bir mülakatın tüm soru, cevap ve '
+        'puanlarına bakarak genel bir değerlendirme yaz. summary alanı 3-4 cümlelik '
+        'genel bir değerlendirme olmalı; top_strength en belirgin güçlü yönü, '
+        'top_improvement öncelikli gelişim alanını özetlemeli. '
+        f'Tüm alanları {language_name} dilinde yaz.'
+    )
+
+    qa_text = '\n\n'.join(
+        f'Soru {i}: {question}\nCevap: {answer}\nPuan: {score}/10'
+        for i, (question, answer, score) in enumerate(qa_pairs, start=1)
+    )
+    prompt = (
+        f'Pozisyon: {position_label}\n'
+        f'Seviye: {level_label}\n\n'
+        f'{qa_text}'
+    )
+
+    output_text = _create_interaction(
+        prompt=prompt,
+        system_instruction=system_instruction,
+        schema=_InterviewSummary.model_json_schema(),
+        thinking_level='medium',
+    )
+
+    try:
+        parsed = _InterviewSummary.model_validate_json(output_text)
+    except Exception as exc:
+        raise GeminiError('Gemini API yanıtı beklenen JSON şemasına uymuyor.') from exc
+
+    return {
+        'summary': parsed.summary,
+        'top_strength': parsed.top_strength,
+        'top_improvement': parsed.top_improvement,
     }

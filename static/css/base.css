@@ -268,3 +268,108 @@ body {
 .auth-form p a {
     color: #a5b4fc;
 }
+
+.interview-list {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.interview-list__item {
+    background: #1e293b;
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.interview-list__meta {
+    display: block;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.interview-list__item a {
+    color: #a5b4fc;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.interview-list__item a:hover {
+    text-decoration: underline;
+}
+
+.report {
+    max-width: 640px;
+    margin: 48px auto;
+    padding: 0 24px;
+}
+
+.report__overall {
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0 32px;
+}
+
+.report__score {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #a5b4fc;
+    margin-bottom: 12px;
+}
+
+.report__score span {
+    font-size: 1.25rem;
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+.report__summary {
+    color: #e2e8f0;
+    line-height: 1.6;
+}
+
+.report__highlight {
+    color: #cbd5e1;
+    margin: 8px 0 0;
+}
+
+.report h2 {
+    margin-top: 0;
+}
+
+.report__question {
+    background: #1e293b;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.report__question-order {
+    color: #a5b4fc;
+    font-weight: 700;
+}
+
+.report__question-text {
+    font-weight: 600;
+}
+
+.report__answer-text {
+    color: #cbd5e1;
+    background: #0f172a;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+.report__question-score {
+    color: #a5b4fc;
+    font-weight: 600;
+}

@@ -33,11 +33,6 @@
             <button type="submit" id="answer-submit">Cevabı Gönder</button>
             <p class="answer-form__loading" id="answer-loading">Değerlendiriliyor...</p>
         </form>
-    {% else %}
-        <div class="interview__done">
-            <p>Tüm sorular tamamlandı. Detaylı rapor yakında eklenecek.</p>
-            <a href="{% url 'panel' %}" class="button-link">Panele Dön</a>
-        </div>
     {% endif %}
 </section>
 
@@ -102,13 +97,9 @@
                 textarea.value = '';
 
                 if (result.data.done) {
-                    chatCurrent.remove();
-                    form.remove();
-                    var doneDiv = document.createElement('div');
-                    doneDiv.className = 'interview__done';
-                    doneDiv.innerHTML = '<p>Tüm sorular tamamlandı. Detaylı rapor yakında eklenecek.</p>' +
-                        '<a href="{% url "panel" %}" class="button-link">Panele Dön</a>';
-                    chatHistory.parentNode.appendChild(doneDiv);
+                    loading.textContent = 'Mülakat tamamlandı, rapor hazırlanıyor...';
+                    loading.style.display = 'block';
+                    window.location.href = result.data.report_url;
                 } else {
                     chatCurrent.dataset.questionId = result.data.next_question.id;
                     var newQuestionBubble = document.createElement('div');

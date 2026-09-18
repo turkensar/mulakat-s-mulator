@@ -1,13 +1,16 @@
 import json
+from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .forms import InterviewForm
 from .models import Answer, Question
-from .services.gemini import GeminiError, evaluate_answer, generate_questions
+from .services.gemini import GeminiError, evaluate_answer, generate_questions, summarize_interview
 
 
 def home(request):
@@ -16,7 +19,8 @@ def home(request):
 
 @login_required
 def panel(request):
-    return render(request, 'interviews/panel.html')
+    interviews = request.user.interviews.all()
+    return render(request, 'interviews/panel.html', {'interviews': interviews})
 
 
 @login_required
@@ -59,16 +63,43 @@ def _current_question(interview):
 @login_required
 def interview_detail(request, pk):
     interview = get_object_or_404(request.user.interviews, pk=pk)
+    if interview.status == 'completed':
+        return redirect('interview_report', pk=interview.pk)
+
     answered_questions = interview.questions.filter(answer__isnull=False).order_by('order')
-    current_question = _current_question(interview)
     context = {
         'interview': interview,
         'answered_questions': answered_questions,
-        'current_question': current_question,
+        'current_question': _current_question(interview),
         'answered_count': answered_questions.count(),
         'total_count': interview.question_count,
     }
     return render(request, 'interviews/detail.html', context)
+
+
+def _complete_interview(interview):
+    answers = Answer.objects.filter(question__interview=interview).order_by('question__order')
+    scores = [answer.score for answer in answers]
+    interview.overall_score = Decimal(sum(scores)) / Decimal(len(scores))
+
+    try:
+        summary = summarize_interview(
+            position_label=interview.get_position_display(),
+            level_label=interview.get_level_display(),
+            language=interview.language,
+            qa_pairs=[(a.question.text, a.text, a.score) for a in answers],
+        )
+    except GeminiError:
+        summary = None
+
+    if summary:
+        interview.summary = summary['summary']
+        interview.top_strength = summary['top_strength']
+        interview.top_improvement = summary['top_improvement']
+
+    interview.status = 'completed'
+    interview.completed_at = timezone.now()
+    interview.save()
 
 
 @login_required
@@ -124,4 +155,16 @@ def submit_answer(request, pk):
             },
         })
 
-    return JsonResponse({'status': 'ok', 'done': True})
+    _complete_interview(interview)
+    return JsonResponse({
+        'status': 'ok',
+        'done': True,
+        'report_url': reverse('interview_report', kwargs={'pk': interview.pk}),
+    })
+
+
+@login_required
+def interview_report(request, pk):
+    interview = get_object_or_404(request.user.interviews, pk=pk, status='completed')
+    answers = Answer.objects.filter(question__interview=interview).order_by('question__order')
+    return render(request, 'interviews/report.html', {'interview': interview, 'answers': answers})

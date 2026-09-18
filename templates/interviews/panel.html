@@ -5,7 +5,30 @@
 {% block content %}
 <section class="panel">
     <h1>Merhaba, {{ user.username }}</h1>
-    <p>Geçmiş mülakatların burada listelenecek.</p>
     <a href="{% url 'interview_create' %}" class="button-link">+ Yeni Mülakat</a>
+
+    {% if interviews %}
+        <ul class="interview-list">
+            {% for interview in interviews %}
+                <li class="interview-list__item">
+                    <div>
+                        <strong>{{ interview.get_position_display }}</strong>
+                        <span class="interview-list__meta">
+                            {{ interview.get_language_display }} · {{ interview.created_at|date:"d.m.Y" }}
+                        </span>
+                    </div>
+                    {% if interview.status == 'completed' %}
+                        <a href="{% url 'interview_report' pk=interview.pk %}">
+                            Skor: {{ interview.overall_score }} / 10 — Raporu Gör
+                        </a>
+                    {% else %}
+                        <a href="{% url 'interview_detail' pk=interview.pk %}">Devam Et</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Henüz bir mülakatın yok. Yukarıdan yeni bir mülakat başlatabilirsin.</p>
+    {% endif %}
 </section>
 {% endblock %}

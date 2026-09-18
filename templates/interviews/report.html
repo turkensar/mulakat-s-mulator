@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Rapor - Mülakat Simülatörü{% endblock %}
+
+{% block content %}
+<section class="report">
+    <h1>{{ interview.get_position_display }}</h1>
+    <p class="interview__meta">
+        {{ interview.get_level_display }} · {{ interview.get_interview_type_display }} ·
+        {{ interview.get_language_display }} · {{ interview.completed_at|date:"d.m.Y H:i" }}
+    </p>
+
+    <div class="report__overall">
+        <div class="report__score">{{ interview.overall_score }} <span>/ 10</span></div>
+        {% if interview.summary %}
+            <p class="report__summary">{{ interview.summary }}</p>
+            <p class="report__highlight"><strong>Güçlü yön:</strong> {{ interview.top_strength }}</p>
+            <p class="report__highlight"><strong>Gelişim alanı:</strong> {{ interview.top_improvement }}</p>
+        {% else %}
+            <p class="report__summary">Genel özet oluşturulamadı.</p>
+        {% endif %}
+    </div>
+
+    <h2>Soru Detayları</h2>
+    {% for answer in answers %}
+        <div class="report__question">
+            <p class="report__question-text">
+                <span class="report__question-order">{{ forloop.counter }}.</span>
+                {{ answer.question.text }}
+            </p>
+            <p class="report__answer-text">{{ answer.text }}</p>
+            <p class="report__question-score">Puan: {{ answer.score }} / 10</p>
+            <p><strong>Güçlü yönler:</strong> {{ answer.strengths }}</p>
+            <p><strong>Geliştirilecek yönler:</strong> {{ answer.improvements }}</p>
+            <p><strong>Örnek iyi cevap:</strong> {{ answer.sample_answer }}</p>
+            {% if answer.language_score %}
+                <p><strong>Dil kullanımı puanı:</strong> {{ answer.language_score }} / 10</p>
+                <p><strong>Dil kullanımı yorumu:</strong> {{ answer.language_feedback }}</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <a href="{% url 'panel' %}" class="button-link">Panele Dön</a>
+</section>
+{% endblock %}
