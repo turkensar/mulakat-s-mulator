@@ -88,6 +88,7 @@ Kullanıcı hedeflediği pozisyonu, seviyesini, mülakat türünü ve dilini se�
 - **Düşünme seviyesi (thinking level):**
   - Soru üretme: `low` (hızlı cevap, Vercel süre sınırına takılmamak için)
   - Cevap değerlendirme ve genel özet: `medium`
+- **Süreler:** Her çağrının yanıt bekleme zaman aşımı 45 sn'dir (`_CALL_TIMEOUT_SECONDS`); bu toplam süre sınırı değil, "hiç veri gelmeden bekleme" sınırıdır. SDK yalnızca hızlı dönen 5xx hatalarını yeniden dener (`attempts=2` = 1 ilk istek + 2 tekrar), zaman aşımını ve 429'u denemez. Son cevapta iki çağrı (değerlendirme + özet) arka arkaya çalıştığı için `vercel.json`'da `maxDuration` 120 sn'dir (Fluid compute açıkken Hobby planında varsayılan ve en fazla 300 sn). Her çağrının süresi `logger.info` ile kaydedilir; canlıda gerçek gecikmelere göre ayar yapılır.
 - **temperature, top_p, top_k kullanılmayacak.** Bu parametreler Gemini'de deprecated.
 - Tüm AI yanıtları **structured output (JSON şeması)** ile alınacak. Serbest metin parse edilmeyecek.
 - Tüm Gemini çağrıları tek bir servis dosyasında toplanacak: `interviews/services/gemini.py`.

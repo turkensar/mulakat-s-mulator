@@ -1,6 +1,7 @@
 """Tüm Gemini API çağrıları bu dosyada toplanır."""
 
 import logging
+import time
 
 from django.conf import settings
 from google import genai
@@ -8,6 +9,13 @@ from google.genai import types
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
+
+# Yanıt gelmeden beklenebilecek en uzun süre; toplam süre sınırı DEĞİLDİR (yanıt
+# parça parça geliyorsa çağrı bundan uzun sürebilir, canlıda 3.7 ile 45 sn görüldü).
+# Gerçek üst sınır vercel.json'daki maxDuration: son cevapta iki çağrı (değerlendirme
+# + özet) arka arkaya çalışır, bu yüzden 2 x bu değer + veritabanı süresi maxDuration'ın
+# altında kalmalıdır (45 x 2 = 90 sn < 120 sn).
+_CALL_TIMEOUT_SECONDS = 45
 
 _client = None
 
@@ -51,6 +59,9 @@ def _get_client():
         # bizzat yaşadık). Vercel'in fonksiyon zaman aşımı içinde kalabilmek
         # için deneme sayısını ve bekleme süresini sıkı tutuyoruz. 429 (kota
         # aşımı) tekrar denenmeye değmez, o yüzden retry listesinden çıkarıldı.
+        # SDK'da attempts "tekrar sayısı" gibi çalışır: attempts=2, 1 ilk istek + 2
+        # tekrar = 3 istek eder (yerel sahte sunucuyla doğrulandı). Tekrarlar yalnızca
+        # hızlı dönen 5xx içindir; zaman aşımı yeniden denenmez.
         _client = genai.Client(
             api_key=settings.GEMINI_API_KEY,
             http_options=types.HttpOptions(
@@ -72,6 +83,7 @@ _LANGUAGE_NAMES = {
 
 
 def _create_interaction(*, prompt, system_instruction, schema, thinking_level):
+    started = time.monotonic()
     try:
         interaction = _get_client().interactions.create(
             model=settings.GEMINI_MODEL,
@@ -83,11 +95,20 @@ def _create_interaction(*, prompt, system_instruction, schema, thinking_level):
                 'schema_': schema,
             },
             generation_config={'thinking_level': thinking_level},
-            timeout=25,
+            timeout=_CALL_TIMEOUT_SECONDS,
         )
     except Exception as exc:
-        logger.exception('Gemini API çağrısı başarısız oldu.')
+        logger.exception(
+            'Gemini API çağrısı başarısız oldu (model=%s, thinking=%s, %.1f sn).',
+            settings.GEMINI_MODEL, thinking_level, time.monotonic() - started,
+        )
         raise GeminiError('Gemini API çağrısı başarısız oldu.') from exc
+
+    # Süre kaydı: canlıda gerçek gecikmeleri Vercel loglarından görüp ayar yapabilmek için.
+    logger.info(
+        'Gemini çağrısı tamamlandı (model=%s, thinking=%s, %.1f sn).',
+        settings.GEMINI_MODEL, thinking_level, time.monotonic() - started,
+    )
 
     if interaction.output_text is None:
         raise GeminiError('Gemini API boş bir yanıt döndürdü.')
