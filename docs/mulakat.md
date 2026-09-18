@@ -259,13 +259,13 @@ ALLOWED_HOSTS=
 
 Her faz bitince çalıştığı test edilir, commit atılır, sonra bir sonrakine geçilir.
 
-- [ ] **Faz 1 – Kurulum:** Django projesi, Supabase bağlantısı, ortam değişkenleri, basit bir ana sayfanın Vercel'de yayında olması.
-- [ ] **Faz 2 – Kullanıcı sistemi:** Kayıt, giriş, çıkış, giriş gerektiren sayfaların korunması.
-- [ ] **Faz 3 – Modeller ve form:** Interview, Question, Answer modelleri; mülakat oluşturma formu. Bu aşamada AI yok, sabit örnek sorular kullanılır.
-- [ ] **Faz 4 – Gemini ile soru üretme:** `gemini.py` servisi, soru üretme çağrısı, JSON şeması, hata yönetimi.
-- [ ] **Faz 5 – Mülakat ekranı ve değerlendirme:** Sohbet arayüzü, cevap gönderme, soru soru değerlendirme.
-- [ ] **Faz 6 – Rapor ve panel:** Genel skor, genel özet, rapor sayfası, geçmiş mülakatlar paneli.
-- [ ] **Faz 7 – Cilalama:** Günlük limit, hata mesajları, yükleniyor göstergeleri, mobil uyum, arayüz iyileştirmeleri.
+- [~] **Faz 1 – Kurulum:** Django projesi, ortam değişkenleri, basit bir ana sayfa hazır. Supabase bağlantısı ve Vercel'de yayına alma bilinçli olarak sona bırakıldı (şu an SQLite ile lokal çalışıyor).
+- [x] **Faz 2 – Kullanıcı sistemi:** Kayıt, giriş, çıkış, giriş gerektiren sayfaların korunması.
+- [x] **Faz 3 – Modeller ve form:** Interview, Question, Answer modelleri; mülakat oluşturma formu. Bu aşamada AI yok, sabit örnek sorular kullanılır.
+- [x] **Faz 4 – Gemini ile soru üretme:** `gemini.py` servisi, soru üretme çağrısı, JSON şeması, hata yönetimi.
+- [x] **Faz 5 – Mülakat ekranı ve değerlendirme:** Sohbet arayüzü, cevap gönderme, soru soru değerlendirme.
+- [x] **Faz 6 – Rapor ve panel:** Genel skor, genel özet, rapor sayfası, geçmiş mülakatlar paneli.
+- [x] **Faz 7 – Cilalama:** Günlük limit, hata mesajları, yükleniyor göstergeleri, mobil uyum, arayüz iyileştirmeleri.
 - [ ] **Sonraki aşamalar:** Bölüm 2.2'deki özellikler.
 
 ---
