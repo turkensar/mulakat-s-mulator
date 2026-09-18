@@ -1,0 +1,49 @@
+/* Tasarım token'ları — docs/mulakat2.md §12. Kodda renk kodu doğrudan yazılmaz. */
+
+:root {
+    /* Renk paleti (§12.1) */
+    --bg: #F7F5FF;
+    --surface: #FFFFFF;
+    --ink: #1C1240;
+    --ink-soft: #5B5378;
+    --violet: #6B3BFF;
+    --coral: #FF5A7A;
+    --sun: #FFC93C;
+    --mint: #1FCB94;
+    --line: #E4DEF7;
+
+    /* Palet uzantıları */
+    --violet-deep: #4A1FCC; /* birincil butonun kaydırılmış düz gölgesi */
+
+    /* Renk dolgusu üzerindeki yazı rengi. Beyaz yazı yalnızca violet üzerinde
+       yeterli kontrast verir (5.7:1); coral 3.0:1, mint 2.1:1, sun 1.5:1. */
+    --on-violet: var(--surface);
+    --on-coral: var(--ink);
+    --on-sun: var(--ink);
+    --on-mint: var(--ink);
+
+    /* Tipografi (§12.2) */
+    --font-display: 'Bricolage Grotesque', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --text-body: 17px;
+    --leading-body: 1.6;
+    --measure: 70ch;
+
+    /* Köşe yuvarlaklığı (§12.3) */
+    --radius-pill: 999px;
+    --radius-block: 20px;
+    --radius-badge: 8px;
+
+    /* Boşluk ölçeği */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-12: 48px;
+
+    /* Etkileşim */
+    --focus-ring: 3px solid var(--violet);
+    --button-height: 52px;
+}

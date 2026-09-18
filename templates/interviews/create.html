@@ -2,32 +2,126 @@
 
 {% block title %}Yeni Mülakat - Mülakat Simülatörü{% endblock %}
 
+{% block body_class %}ds{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="/static/css/create.css">{% endblock %}
+
 {% block content %}
-<section class="auth-form">
-    <h1>Yeni Mülakat</h1>
-    {% if limit_reached %}
-        <p>Bugünkü mülakat hakkını kullandın (günde en fazla 3 mülakat). Yarın tekrar deneyebilirsin.</p>
-        <a href="{% url 'panel' %}" class="button-link">Panele Dön</a>
-    {% else %}
-        <form method="post" id="create-form">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
-            {% for field in form %}
-                <div class="form-field">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {{ field.errors }}
-                </div>
-            {% endfor %}
-            <button type="submit" id="create-submit">Mülakatı Başlat</button>
-        </form>
-        <script>
-            document.getElementById('create-form').addEventListener('submit', function () {
-                var button = document.getElementById('create-submit');
-                button.disabled = true;
-                button.textContent = 'Sorular oluşturuluyor...';
-            });
-        </script>
-    {% endif %}
+{% if limit_reached %}
+<section class="create create--limit">
+    <h1>Bugünlük bu kadar</h1>
+    <p>Bugünkü mülakat hakkını kullandın (günde en fazla 3 mülakat). Yarın tekrar deneyebilirsin; geçmiş mülakatlarına panelden bakabilirsin.</p>
+    <a href="{% url 'panel' %}" class="btn btn--primary">Panele dön</a>
 </section>
+{% else %}
+{% with steps=form.steps %}
+<form method="post" id="create-form" class="create">
+    {% csrf_token %}
+
+    <header class="create__intro">
+        <h1>Provanı kuralım</h1>
+        <p>Beş küçük seçim yap, sana özel sorular hazırlansın.</p>
+    </header>
+
+    {% if form.non_field_errors %}
+        <div class="notice create__notice" role="alert">
+            {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+    {% endif %}
+
+    {% for step in steps %}
+    <section class="step" aria-labelledby="step-{{ step.name }}">
+        <h2 class="step__title" id="step-{{ step.name }}">
+            <span class="step__num" aria-hidden="true">{{ step.number }}</span>{{ step.title }}
+        </h2>
+        <div class="chips chips--{{ step.name }}" role="radiogroup" aria-labelledby="step-{{ step.name }}">
+            {% for opt in step.options %}
+            <div class="chip{% if opt.color %} chip--{{ opt.color }}{% endif %}">
+                <input type="radio" name="{{ opt.name }}" id="{{ opt.id }}" value="{{ opt.value }}"
+                       data-summary="{{ opt.summary }}" data-color="{{ opt.color }}"
+                       required{% if opt.checked %} checked{% endif %}>
+                <label for="{{ opt.id }}">
+                    {% if step.name == 'position' %}
+                        <span class="chip__icon" aria-hidden="true">{{ opt.icon }}</span>
+                        <span class="chip__label">{{ opt.label }}</span>
+                    {% elif step.name == 'interview_type' %}
+                        <span class="chip__label">{{ opt.label }}</span>
+                        <span class="chip__hint">{{ opt.hint }}</span>
+                    {% elif step.name == 'language' %}
+                        {% include 'interviews/_flag.html' with code=opt.flag %}
+                        <span class="chip__label">{{ opt.label }}</span>
+                    {% elif step.name == 'question_count' %}
+                        <span class="chip__badge">{{ opt.label }}</span>
+                        <span class="chip__hint">{{ opt.duration }}</span>
+                    {% else %}
+                        <span class="chip__label">{{ opt.label }}</span>
+                    {% endif %}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+        {% if step.errors %}<p class="step__error" role="alert">{{ step.errors.0 }}</p>{% endif %}
+    </section>
+    {% endfor %}
+
+    <div class="summary" role="region" aria-label="Seçimlerin özeti">
+        <div class="summary__inner">
+            <ul class="summary__picks" id="summary-picks" hidden>
+                {% for step in steps %}
+                <li class="pick" data-field="{{ step.name }}" data-placeholder="{{ step.short_name }}">{{ step.short_name }}</li>
+                {% endfor %}
+            </ul>
+            <p class="summary__count" id="summary-count" aria-live="polite"></p>
+            <button type="submit" class="btn btn--primary" id="create-submit">Mülakatı başlat</button>
+        </div>
+    </div>
+</form>
+{% endwith %}
+
+<script>
+    (function () {
+        var form = document.getElementById('create-form');
+        var button = document.getElementById('create-submit');
+        var picks = document.getElementById('summary-picks');
+        var count = document.getElementById('summary-count');
+        var total = picks.children.length;
+        var submitLabel = button.textContent;
+
+        function update() {
+            var done = 0;
+            Array.prototype.forEach.call(picks.children, function (pick) {
+                var checked = form.querySelector('input[name="' + pick.dataset.field + '"]:checked');
+                pick.className = 'pick';
+                if (checked) {
+                    done += 1;
+                    pick.classList.add('pick--filled');
+                    if (checked.dataset.color) {
+                        pick.classList.add('pick--' + checked.dataset.color);
+                    }
+                    pick.textContent = checked.dataset.summary;
+                } else {
+                    pick.textContent = pick.dataset.placeholder;
+                }
+            });
+            count.textContent = done === total ? 'Hazırsın!' : done + ' / ' + total + ' seçildi';
+            button.disabled = done !== total;
+        }
+
+        picks.hidden = false;
+        form.addEventListener('change', update);
+        form.addEventListener('submit', function () {
+            button.disabled = true;
+            button.textContent = 'Sorular hazırlanıyor...';
+        });
+        // Geri tuşuyla dönüldüğünde sayfa önbellekten gelir; buton kilitli kalmasın.
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                button.textContent = submitLabel;
+                update();
+            }
+        });
+        update();
+    })();
+</script>
+{% endif %}
 {% endblock %}

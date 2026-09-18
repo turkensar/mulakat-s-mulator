@@ -1,0 +1,128 @@
+/* Yeni tasarım sisteminin ortak temeli. Yalnızca <body class="ds"> olan sayfalara
+   uygulanır; sistemine geçirilmemiş sayfalar base.css'teki koyu temada kalır. */
+
+body.ds {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+}
+
+.ds h1,
+.ds h2,
+.ds h3 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+}
+
+.ds p {
+    max-width: var(--measure);
+}
+
+.ds :focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 3px;
+}
+
+/* Gezinme çubuğu */
+.ds .navbar {
+    border-bottom: 1px solid var(--line);
+}
+
+.ds .navbar__brand {
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.ds .navbar__links a,
+.ds .navbar__logout-button {
+    color: var(--ink-soft);
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.ds .navbar__links a:hover,
+.ds .navbar__logout-button:hover {
+    color: var(--violet);
+}
+
+/* Bildirim mesajları */
+.ds .messages li {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--mint);
+    border-radius: var(--radius-badge);
+    color: var(--ink);
+}
+
+/* Butonlar (§12.3): pill, 52px, hover'da yukarı kalkıp düz gölge belirir */
+.ds .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    height: var(--button-height);
+    padding: 0 var(--space-8);
+    border: 0;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ds .btn--primary {
+    background: var(--violet);
+    color: var(--on-violet);
+}
+
+.ds .btn--primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 0 var(--violet-deep);
+}
+
+.ds .btn--primary:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 0 0 var(--violet-deep);
+}
+
+.ds .btn:disabled {
+    background: var(--line);
+    color: var(--ink-soft);
+    cursor: not-allowed;
+}
+
+/* Hata bildirimi */
+.ds .notice {
+    padding: var(--space-4) var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--coral);
+    border-radius: var(--radius-block);
+}
+
+.ds .notice p {
+    margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ds *,
+    .ds *::before,
+    .ds *::after {
+        transition: none !important;
+        animation: none !important;
+        scroll-behavior: auto !important;
+    }
+}
