@@ -1,7 +1,12 @@
-/* Yeni tasarım sisteminin ortak temeli. Yalnızca <body class="ds"> olan sayfalara
-   uygulanır; sistemine geçirilmemiş sayfalar base.css'teki koyu temada kalır. */
+/* Sitenin tek teması (docs/mulakat2.md §12). <body class="ds"> base.html'de sabittir;
+   .ds sınıfı ortak bileşen kurallarının kapsamıdır. */
+
+* {
+    box-sizing: border-box;
+}
 
 body.ds {
+    margin: 0;
     background: var(--bg);
     color: var(--ink);
     font-family: var(--font-body);
@@ -30,6 +35,10 @@ body.ds {
 
 /* Gezinme çubuğu */
 .ds .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
     border-bottom: 1px solid var(--line);
 }
 
@@ -39,6 +48,13 @@ body.ds {
     font-size: 1.15rem;
     font-weight: 800;
     letter-spacing: -0.01em;
+    text-decoration: none;
+}
+
+.ds .navbar__links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
 }
 
 .ds .navbar__links a,
@@ -49,13 +65,38 @@ body.ds {
     font-weight: 500;
 }
 
+.ds .navbar__links a {
+    text-decoration: none;
+}
+
 .ds .navbar__links a:hover,
 .ds .navbar__logout-button:hover {
     color: var(--violet);
 }
 
+.ds .navbar__logout-form {
+    display: inline;
+}
+
+/* Çıkış bir POST formu olduğu için buton, bağlantı gibi görünecek şekilde sıfırlanır */
+.ds .navbar__logout-button {
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
 /* Bildirim mesajları */
+.ds .messages {
+    max-width: 480px;
+    margin: var(--space-4) auto 0;
+    padding: 0;
+    list-style: none;
+}
+
 .ds .messages li {
+    margin-bottom: var(--space-2);
+    padding: 10px var(--space-4);
     background: var(--surface);
     border: 1px solid var(--line);
     border-left: 6px solid var(--mint);
