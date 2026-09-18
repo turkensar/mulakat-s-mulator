@@ -39,6 +39,14 @@ except KeyError:
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [h for h in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h]
+# Vercel her deployment'a kendi alan adını sistem değişkeni olarak verir; ALLOWED_HOSTS'a
+# elle yazmadan çalışması ve önizleme adreslerinin 400 vermemesi için otomatik eklenir.
+ALLOWED_HOSTS += [
+    host for host in (
+        os.environ.get(name)
+        for name in ('VERCEL_URL', 'VERCEL_BRANCH_URL', 'VERCEL_PROJECT_PRODUCTION_URL')
+    ) if host
+]
 
 # Production (DEBUG=False) güvenlik ayarları. Lokal geliştirme http üzerinden
 # çalıştığı için DEBUG=True iken devre dışı.
@@ -181,8 +189,15 @@ GEMINI_MODEL = os.environ.get('GEMINI_MODEL') or 'gemini-3.8-flash'
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
+# Uygulama e-posta göndermiyor. Lokalde konsola yazılır; üretimde SMTP arka ucu
+# seçilir (Django'nun `check --deploy`'u konsol ve dummy arka uçlarını hata sayar).
+# SMTP yapılandırılmadığı için ileride kodda e-posta gönderilirse sessizce
+# kaybolmaz, bağlantı hatası verir; o zaman gerçek bir SMTP servisi ayarlanmalıdır.
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': (
+            'django.core.mail.backends.console.EmailBackend' if DEBUG
+            else 'django.core.mail.backends.smtp.EmailBackend'
+        ),
     },
 }
