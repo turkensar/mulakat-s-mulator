@@ -159,3 +159,123 @@
         width: 100%;
     }
 }
+
+/* Sesli mülakat (voice.js): destek yoksa düğmeler hiç görünmez */
+.listen,
+.voice-toggle,
+.composer__privacy {
+    display: none;
+}
+
+/* .btn'in display'i (.ds .btn) bu kuraldan güçlü olduğu için özgüllük eşitlenir */
+.ds .mic {
+    display: none;
+}
+
+.has-tts .listen,
+.has-tts .voice-toggle {
+    display: inline-flex;
+}
+
+.has-stt .mic {
+    display: inline-flex;
+}
+
+.has-stt .composer__privacy {
+    display: block;
+}
+
+.progress-strip__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    margin-bottom: var(--space-2);
+}
+
+.progress-strip__row .progress-strip__text {
+    margin: 0;
+}
+
+.msg__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1) var(--space-2);
+    margin: 0 0 var(--space-1) var(--space-1);
+}
+
+.msg__head .msg__label {
+    margin: 0;
+}
+
+.listen,
+.voice-toggle {
+    align-items: center;
+    gap: 6px;
+    padding: 2px var(--space-3);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-pill);
+    color: var(--ink);
+    font: 700 0.85rem/1.6 var(--font-body);
+    cursor: pointer;
+}
+
+.listen:hover,
+.voice-toggle:hover {
+    border-color: var(--violet);
+}
+
+/* Açık/etkin durum yalnızca renkle değil dolu zeminle de belli olur */
+.listen.is-active,
+.voice-toggle.is-on {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--surface);
+}
+
+.composer__buttons {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.composer__privacy {
+    margin: var(--space-2) 0 0;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+}
+
+.composer__voice {
+    margin-top: var(--space-3);
+}
+
+.mic.is-listening {
+    background: var(--coral);
+    color: var(--on-coral);
+    box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.mic.is-listening::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: var(--ink);
+    border-radius: var(--radius-pill);
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+@media (max-width: 640px) {
+    .composer__buttons {
+        width: 100%;
+    }
+
+    .composer__buttons .btn {
+        width: auto;
+    }
+
+    .composer__buttons #answer-submit {
+        flex: 1;
+    }
+}

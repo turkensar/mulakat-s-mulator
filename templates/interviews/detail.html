@@ -8,7 +8,9 @@
 {% endblock %}
 
 {% block content %}
-<section class="session type--{{ interview.interview_type }}">
+<section class="session type--{{ interview.interview_type }}"
+         data-speech-lang="{% if interview.language == 'tr' %}tr-TR{% else %}en-US{% endif %}"
+         data-speech-name="{% if interview.language == 'tr' %}Türkçe{% else %}İngilizce{% endif %}">
     <header class="session__head">
         <h1>{{ interview.get_position_display }}</h1>
         <ul class="badges">
@@ -20,10 +22,13 @@
     </header>
 
     <div class="progress-strip">
-        <p class="progress-strip__text">
-            <strong id="progress-count">{{ answered_count }}</strong> / {{ total_count }}
-            <span>soru cevaplandı</span>
-        </p>
+        <div class="progress-strip__row">
+            <p class="progress-strip__text">
+                <strong id="progress-count">{{ answered_count }}</strong> / {{ total_count }}
+                <span>soru cevaplandı</span>
+            </p>
+            <button type="button" class="voice-toggle" id="autoread" aria-pressed="false">🔊 Soruları sesli oku</button>
+        </div>
         <div class="progress" id="progress-bar" role="progressbar" aria-label="Mülakat ilerlemesi"
              aria-valuemin="0" aria-valuemax="{{ total_count }}" aria-valuenow="{{ answered_count }}">
             <div class="progress__fill" id="progress-fill"
@@ -36,7 +41,10 @@
         <div class="msg msg--ai">
             <span class="msg__avatar" aria-hidden="true">🎙️</span>
             <div class="msg__body">
-                <p class="msg__label">Soru {{ question.order }} · {{ question.get_category_display }}</p>
+                <div class="msg__head">
+                    <p class="msg__label">Soru {{ question.order }} · {{ question.get_category_display }}</p>
+                    <button type="button" class="listen" aria-label="Soruyu sesli oku">🔊 Dinle</button>
+                </div>
                 <div class="bubble">{{ question.text }}</div>
             </div>
         </div>
@@ -47,7 +55,10 @@
         <div class="msg msg--ai" id="current-question">
             <span class="msg__avatar" aria-hidden="true">🎙️</span>
             <div class="msg__body">
-                <p class="msg__label">Soru {{ current_question.order }} · {{ current_question.get_category_display }}</p>
+                <div class="msg__head">
+                    <p class="msg__label">Soru {{ current_question.order }} · {{ current_question.get_category_display }}</p>
+                    <button type="button" class="listen" aria-label="Soruyu sesli oku">🔊 Dinle</button>
+                </div>
                 <div class="bubble">{{ current_question.text }}</div>
             </div>
         </div>
@@ -67,10 +78,15 @@
         {% csrf_token %}
         <label for="answer-text" class="visually-hidden">Cevabın</label>
         <textarea id="answer-text" rows="3" placeholder="Cevabını buraya yaz..."></textarea>
+        <p class="notice composer__voice" id="voice-note" role="status" hidden></p>
         <p class="notice composer__error" id="answer-error" role="alert" hidden></p>
+        <p class="composer__privacy">🎙️ Sesle yazarken tarayıcın, sesini yazıya çevirmek için kendi ses tanıma hizmetini (örneğin Google) kullanabilir.</p>
         <div class="composer__actions">
             <span class="composer__hint">Ctrl + Enter ile gönder</span>
-            <button type="submit" class="btn btn--primary" id="answer-submit">Cevabı gönder</button>
+            <div class="composer__buttons">
+                <button type="button" class="btn btn--ghost mic" id="mic" aria-pressed="false">🎙️ Sesle yaz</button>
+                <button type="submit" class="btn btn--primary" id="answer-submit">Cevabı gönder</button>
+            </div>
         </div>
     </form>
     {% endif %}
@@ -107,7 +123,13 @@
         var body = element('div', 'msg__body');
         var avatar = element('span', 'msg__avatar', '🎙️');
         avatar.setAttribute('aria-hidden', 'true');
-        body.appendChild(element('p', 'msg__label', 'Soru ' + order + ' · ' + category));
+        var head = element('div', 'msg__head');
+        head.appendChild(element('p', 'msg__label', 'Soru ' + order + ' · ' + category));
+        var listen = element('button', 'listen', '🔊 Dinle');
+        listen.type = 'button';
+        listen.setAttribute('aria-label', 'Soruyu sesli oku');
+        head.appendChild(listen);
+        body.appendChild(head);
         body.appendChild(element('div', 'bubble', text));
         message.appendChild(avatar);
         message.appendChild(body);
@@ -199,6 +221,10 @@
                 thread.insertBefore(question, thinking);
                 reveal(question);
                 textarea.focus({preventScroll: true});
+                // Sesli okuma açıksa voice.js yeni soruyu okur.
+                document.dispatchEvent(new CustomEvent('interview:question', {
+                    detail: {text: next.text, element: question}
+                }));
             })
             .catch(function (error) {
                 thinking.hidden = true;
@@ -223,4 +249,5 @@
     }
 })();
 </script>
+<script src="/static/js/voice.js" defer></script>
 {% endblock %}
