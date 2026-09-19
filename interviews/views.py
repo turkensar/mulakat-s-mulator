@@ -16,6 +16,7 @@ from .models import Answer, DAILY_INTERVIEW_LIMIT, Question
 from .services.gemini import (
     GeminiError, GeminiQuotaError, evaluate_answer, generate_questions, summarize_interview,
 )
+from .stats import build_progress
 
 QUOTA_MESSAGE = (
     'Yapay zeka servisinin ücretsiz kullanım kotası şu an dolu. '
@@ -38,6 +39,11 @@ def panel(request):
         'completed': [i for i in interviews if i.status == 'completed'],
     }
     return render(request, 'interviews/panel.html', context)
+
+
+@login_required
+def progress(request):
+    return render(request, 'interviews/progress.html', build_progress(request.user))
 
 
 def _today_interview_count(user):

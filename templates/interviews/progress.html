@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% load interview_extras %}
+
+{% block title %}Gelişim - Mülakat Simülatörü{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="/static/css/growth.css">{% endblock %}
+
+{% block content %}
+<section class="growth">
+    <header class="growth__head">
+        <h1>Gelişimin</h1>
+        <p class="growth__lead">Skorlarının zaman içindeki değişimi ve üzerinde çalışman gereken yerler.</p>
+    </header>
+
+    {% if not points %}
+        <div class="growth__empty">
+            <span class="growth__empty-icon" aria-hidden="true">📈</span>
+            <h2>Henüz gösterecek bir gelişim yok</h2>
+            <p>Bir mülakatı sonuna kadar tamamladığında skorların ve güçlü/zayıf yönlerin burada görünür.</p>
+            <a href="{% url 'interview_create' %}" class="btn btn--primary">Mülakat başlat</a>
+        </div>
+    {% else %}
+        <dl class="stats">
+            <div class="stat">
+                <dt>Tamamlanan mülakat</dt>
+                <dd><span class="stat__num">{{ stats.count }}</span></dd>
+            </div>
+            <div class="stat band-{{ stats.average|score_band }}">
+                <dt>Ortalama skor</dt>
+                <dd><span class="stat__num stat__num--band">{{ stats.average_text }}</span><span class="stat__of"> / 10</span></dd>
+            </div>
+            <div class="stat band-{{ stats.last|score_band }}">
+                <dt>Son mülakat</dt>
+                <dd>
+                    <span class="stat__num stat__num--band">{{ stats.last_text }}</span><span class="stat__of"> / 10</span>
+                    {% if stats.trend %}
+                        <span class="trend trend--{{ stats.trend }}"><span class="visually-hidden">Öncekine göre </span>{% if stats.trend == 'up' %}▲{% elif stats.trend == 'down' %}▼{% else %}●{% endif %} {{ stats.delta_text }}</span>
+                    {% endif %}
+                </dd>
+            </div>
+        </dl>
+
+        <section class="growth__section" aria-labelledby="chart-title">
+            <h2 id="chart-title">Skor gelişimin</h2>
+            {% if points|length >= 2 %}
+                <div class="chart">
+                    <canvas id="score-chart" role="img" aria-label="Mülakat skorlarının zaman içindeki değişimini gösteren çizgi grafik. Ayrıntılar grafiğin altındaki listede."></canvas>
+                </div>
+                <details class="chart-data">
+                    <summary>Grafiğin verilerini liste olarak göster</summary>
+                    <ol>
+                        {% for p in points %}
+                        <li>{{ p.date }} · {{ p.position }} ({{ p.type }}): {{ p.score_text }} / 10</li>
+                        {% endfor %}
+                    </ol>
+                </details>
+            {% else %}
+                <p class="growth__note">İlk skorun {{ stats.last_text }} / 10. Gelişim çizgisini görmek için bir mülakat daha tamamla.</p>
+                <a href="{% url 'interview_create' %}" class="btn btn--primary">Yeni mülakat başlat</a>
+            {% endif %}
+        </section>
+
+        <section class="growth__section" aria-labelledby="cat-title">
+            <h2 id="cat-title">Alanlara göre ortalama</h2>
+            <ul class="bars">
+                {% for c in categories %}
+                <li class="bar type--{% if c.key == 'teknik' %}technical{% else %}behavioral{% endif %}">
+                    <div class="bar__head">
+                        <span class="bar__label">{{ c.label }}</span>
+                        <span><strong>{{ c.avg_text }}</strong> / 10 · {{ c.count }} soru</span>
+                    </div>
+                    <div class="bar__track" role="img" aria-label="{{ c.label }} ortalaması {{ c.avg_text }} / 10">
+                        <span style="width: {{ c.percent }}%"></span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% if category_insight %}<p class="growth__note">{{ category_insight }}</p>{% endif %}
+        </section>
+
+        <section class="growth__section" aria-labelledby="weak-title">
+            <h2 id="weak-title">Üzerinde çalışman gereken sorular</h2>
+            {% if weakest %}
+                <ul class="weak">
+                    {% for answer in weakest %}
+                    <li>
+                        <a class="weak__item band-{{ answer.score|score_band }}" href="{% url 'interview_report' pk=answer.question.interview_id %}">
+                            <span class="score-badge"><span class="visually-hidden">Puan: </span>{{ answer.score }} / 10</span>
+                            <span class="weak__body">
+                                <span class="weak__question">{{ answer.question.text|inline_markup }}</span>
+                                <span class="weak__meta">{{ answer.question.interview.get_position_display }} · Soru {{ answer.question.order }}</span>
+                            </span>
+                            <span class="weak__cta">Raporda gör</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="growth__note">Harika! Tüm cevapların 8 ve üzerinde puan almış; şu an üzerinde çalışman gereken bir soru görünmüyor.</p>
+            {% endif %}
+        </section>
+    {% endif %}
+</section>
+
+{% if points|length >= 2 %}
+{{ chart_data|json_script:"chart-data" }}
+<script src="/static/vendor/chart.umd.min.js"></script>
+<script>
+(function () {
+    var canvas = document.getElementById('score-chart');
+    if (!canvas || !window.Chart) return;
+
+    var points = JSON.parse(document.getElementById('chart-data').textContent).points;
+    var style = getComputedStyle(document.documentElement);
+    var token = function (name) { return style.getPropertyValue(name).trim(); };
+    var c = {
+        violet: token('--violet'), coral: token('--coral'), sun: token('--sun'), mint: token('--mint'),
+        ink: token('--ink'), soft: token('--ink-soft'), line: token('--line')
+    };
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Puan aralığı renkleri her ekranda aynıdır: 1-4 coral, 5-7 sun, 8-10 mint.
+    function band(score) { return score < 5 ? c.coral : score < 8 ? c.sun : c.mint; }
+
+    // Arka planda üç puan aralığını soluk şeritlerle çizer.
+    var bands = {
+        id: 'scoreBands',
+        beforeDatasetsDraw: function (chart) {
+            var area = chart.chartArea, y = chart.scales.y, ctx = chart.ctx;
+            ctx.save();
+            ctx.globalAlpha = 0.14;
+            [[0, 5, c.coral], [5, 8, c.sun], [8, 10, c.mint]].forEach(function (range) {
+                var top = y.getPixelForValue(range[1]), bottom = y.getPixelForValue(range[0]);
+                ctx.fillStyle = range[2];
+                ctx.fillRect(area.left, top, area.right - area.left, bottom - top);
+            });
+            ctx.restore();
+        }
+    };
+
+    Chart.defaults.font.family = token('--font-body');
+    Chart.defaults.font.size = 14;
+    Chart.defaults.color = c.soft;
+
+    new Chart(canvas, {
+        type: 'line',
+        data: {
+            labels: points.map(function (p) { return p.label; }),
+            datasets: [{
+                data: points.map(function (p) { return p.score; }),
+                borderColor: c.violet,
+                borderWidth: 3,
+                tension: 0.3,
+                pointRadius: 7,
+                pointHoverRadius: 9,
+                pointBackgroundColor: points.map(function (p) { return band(p.score); }),
+                pointBorderColor: c.ink,
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: reduceMotion ? false : {duration: 700},
+            scales: {
+                y: {min: 0, max: 10, ticks: {stepSize: 2}, grid: {color: c.line}},
+                x: {grid: {display: false}}
+            },
+            plugins: {
+                legend: {display: false},
+                tooltip: {
+                    callbacks: {
+                        title: function (items) {
+                            var p = points[items[0].dataIndex];
+                            return p.position + ' · ' + p.type;
+                        },
+                        label: function (item) {
+                            var p = points[item.dataIndex];
+                            return p.date + ' — ' + p.score_text + ' / 10';
+                        }
+                    }
+                }
+            }
+        },
+        plugins: [bands]
+    });
+})();
+</script>
+{% endif %}
+{% endblock %}

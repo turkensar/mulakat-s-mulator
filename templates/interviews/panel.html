@@ -13,7 +13,10 @@
             <p class="panel__lead">Provalarına buradan devam edebilir ya da yeni bir tane başlatabilirsin.</p>
         </div>
         {% if in_progress or completed %}
-            <a href="{% url 'interview_create' %}" class="btn btn--primary">Yeni mülakat</a>
+            <div class="panel__actions">
+                {% if completed %}<a href="{% url 'progress' %}" class="btn btn--ghost">Gelişimim</a>{% endif %}
+                <a href="{% url 'interview_create' %}" class="btn btn--primary">Yeni mülakat</a>
+            </div>
         {% endif %}
     </header>
 

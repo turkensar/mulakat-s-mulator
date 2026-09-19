@@ -17,6 +17,7 @@
         <div class="navbar__links">
             {% if user.is_authenticated %}
                 <a href="{% url 'panel' %}">Panel</a>
+                <a href="{% url 'progress' %}">Gelişim</a>
                 <form action="{% url 'logout' %}" method="post" class="navbar__logout-form">
                     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                     <button type="submit" class="navbar__logout-button">Çıkış</button>

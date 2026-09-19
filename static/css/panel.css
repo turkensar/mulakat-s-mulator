@@ -215,3 +215,16 @@
         width: 100%;
     }
 }
+
+.panel__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+@media (max-width: 640px) {
+    .panel__actions,
+    .panel__actions .btn {
+        width: 100%;
+    }
+}

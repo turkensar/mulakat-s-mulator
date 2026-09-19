@@ -56,7 +56,7 @@ Kullanıcı hedeflediği pozisyonu, seviyesini, mülakat türünü ve dilini se�
 - **Sesli mülakat:** Soruların sesli okunması ve mikrofonla cevap verme. Başlangıçta tarayıcının Web Speech API'si (tr-TR / en-US), ileride Gemini 3.5 Transcribe.
 - **CV'ye özel mülakat:** CV yüklenir (Supabase Storage), sorular kullanıcının deneyimleri üzerinden üretilir.
 - **İlana özel mülakat:** İş ilanı metni yapıştırılır, sorular ilana göre üretilir.
-- **Gelişim grafiği:** Zaman içindeki skor değişimi ve en zayıf konular (Chart.js).
+- **Gelişim grafiği (yapıldı, `/gelisim/`):** Zaman içindeki skor değişimi ve en zayıf konular (Chart.js). Soruların "konusu" saklanmadığı için (yalnızca `teknik`/`davranissal` kategorisi ve pozisyon var; konu çıkarmak ek Gemini çağrısı ve kota demek) "en zayıf konular" şu iki veriyle gösterilir: kategori ortalamaları ve en düşük puanlı (8'in altındaki) 3 soru. Yalnızca tamamlanmış mülakatlar sayılır; grafik için en az 2 mülakat gerekir.
 - **AI takip soruları:** Cevaba göre AI'ın ek soru sorması.
 - **İki dilli arayüz:** Menü ve butonların da İngilizce seçeneği.
 - **Mobil uyum ve PWA.**
@@ -74,6 +74,7 @@ Kullanıcı hedeflediği pozisyonu, seviyesini, mülakat türünü ve dilini se�
 | AI kütüphanesi | `google-genai` (Google'ın resmi Gen AI SDK'sı) |
 | Frontend | Django template'leri içinde HTML, CSS, JavaScript (ayrı framework yok) |
 | Stil | Sade CSS; istenirse Tailwind CSS (CDN) |
+| Grafik | Chart.js 4.5.1 (MIT), `static/vendor/chart.umd.min.js` içinde sabit sürümle projeye dahil; dış CDN'e bağımlılık ve üçüncü tarafa istek yok, yalnızca Gelişim sayfasında yüklenir |
 | Deploy | Vercel |
 | Ortam değişkenleri | `python-dotenv` (lokal), Vercel Environment Variables (canlı) |
 
@@ -222,6 +223,7 @@ Beklenen JSON:
 | `/mulakat/<id>/` | Mülakat ekranı |
 | `/mulakat/<id>/cevap/` | Cevap gönderme (POST, JSON) |
 | `/mulakat/<id>/rapor/` | Değerlendirme raporu |
+| `/gelisim/` | Gelişim: skor grafiği, alan ortalamaları, zayıf sorular |
 
 Kullanıcı sadece kendi mülakatlarına erişebilir; başkasının mülakat id'sine erişim denemesi 404 döner.
 
