@@ -73,6 +73,27 @@
         {% for error in form.job_posting.errors %}<p class="step__error" role="alert">{{ error }}</p>{% endfor %}
     </section>
 
+    <section class="step posting cv" id="cv" aria-labelledby="step-cv" data-max="{{ form.CV_MAX }}">
+        <h2 class="step__title" id="step-cv">
+            <span class="step__num" aria-hidden="true">7</span>Varsa CV'ni yapıştır
+            <span class="step__optional">isteğe bağlı</span>
+        </h2>
+        <p class="posting__hint" id="cv-hint">Sorular CV'ndeki eğitim, deneyim, proje ve becerilere göre hazırlanır. Dosya yüklemek yerine metni yapıştırırsın; böylece neyin gideceğini görüp düzenleyebilirsin.</p>
+        {{ form.cv_text }}
+        <p class="posting__count" id="cv-count" aria-live="polite"></p>
+        {% for error in form.cv_text.errors %}<p class="step__error" role="alert">{{ error }}</p>{% endfor %}
+
+        <div class="cv__privacy" id="cv-privacy">
+            <p><strong>Gizlilik.</strong> Metindeki e-posta, telefon, IBAN/kimlik numarası ve bağlantılar göndermeden önce otomatik silinir; adını ve adresini ise sen çıkar. CV metni bizde saklanmaz, yalnızca soruları hazırlamak için kullanılır.</p>
+            <p>Yapay zeka hizmeti olarak Google Gemini'nin ücretsiz katmanını kullanıyoruz. Bu katmanda gönderilen içerik Google tarafından ürünlerini geliştirmek için kullanılabilir ve insanlar tarafından okunabilir.</p>
+            <label class="cv__consent" for="id_cv_consent">
+                {{ form.cv_consent }}
+                <span>Bunu anladım, CV metnimin bu şekilde işlenmesini kabul ediyorum.</span>
+            </label>
+            {% for error in form.cv_consent.errors %}<p class="step__error" role="alert">{{ error }}</p>{% endfor %}
+        </div>
+    </section>
+
     <div class="summary" role="region" aria-label="Seçimlerin özeti">
         <div class="summary__inner">
             <ul class="summary__picks" id="summary-picks" hidden>
@@ -106,6 +127,20 @@
             postingBox.classList.toggle('posting--over', length > postingMax);
         }
 
+        var cvBox = document.getElementById('cv');
+        var cv = document.getElementById('id_cv_text');
+        var cvCount = document.getElementById('cv-count');
+        var cvConsent = document.getElementById('id_cv_consent');
+        var cvMax = parseInt(cvBox.dataset.max, 10);
+
+        function updateCv() {
+            var length = cv.value.trim().length;
+            cvCount.textContent = length + ' / ' + cvMax;
+            cvBox.classList.toggle('posting--over', length > cvMax);
+            // Onay yalnızca CV yapıştırıldıysa gerekir; tarayıcı da boş bırakmayı engellesin.
+            cvConsent.required = length > 0;
+        }
+
         function update() {
             var done = 0;
             Array.prototype.forEach.call(picks.children, function (pick) {
@@ -129,6 +164,8 @@
         picks.hidden = false;
         posting.addEventListener('input', updatePostingCount);
         updatePostingCount();
+        cv.addEventListener('input', updateCv);
+        updateCv();
         form.addEventListener('change', update);
         form.addEventListener('submit', function () {
             button.disabled = true;

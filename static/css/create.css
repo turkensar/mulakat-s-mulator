@@ -369,3 +369,36 @@
     color: var(--ink);
     font-weight: 700;
 }
+
+/* CV bölümü: kişisel veri uyarısı ve onay kutusu (§2.2 CV'ye özel mülakat) */
+.cv__privacy {
+    margin-top: var(--space-4);
+    padding: var(--space-4) var(--space-6);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--sun);
+    border-radius: var(--radius-block);
+}
+
+.cv__privacy p {
+    margin: 0 0 var(--space-3);
+    font-size: 0.95rem;
+}
+
+.cv__consent {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.cv__consent input {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    accent-color: var(--violet);
+    cursor: pointer;
+}

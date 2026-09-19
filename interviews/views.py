@@ -59,6 +59,9 @@ def create_interview(request):
         if form.is_valid():
             interview = form.save(commit=False)
             interview.user = request.user
+            # CV metni kişisel veridir: modele yazılmaz, yalnızca soru üretimine gider.
+            cv_text = form.cleaned_data['cv_text']
+            interview.cv_based = bool(cv_text)
 
             with transaction.atomic():
                 # Ayni kullanicinin ayni anda gonderdigi istekleri
@@ -78,6 +81,7 @@ def create_interview(request):
                     language=interview.language,
                     question_count=interview.question_count,
                     job_posting=interview.job_posting,
+                    cv_text=cv_text,
                 )
             except GeminiQuotaError:
                 interview.delete()

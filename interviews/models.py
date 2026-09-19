@@ -55,6 +55,9 @@ class Interview(models.Model):
     # İlana özel mülakatta yapıştırılan iş ilanı metni; boşsa genel mülakat. db_default,
     # şema değişikliği sırasında eski kodun (sütunu bilmeyen INSERT'ler) çalışmasını sağlar.
     job_posting = models.TextField('İş ilanı', blank=True, default='', db_default='')
+    # CV'ye özel mülakat: yalnızca bayrak. CV metninin kendisi kişisel veri olduğu için
+    # hiçbir yerde saklanmaz; soru üretiminde kullanılıp atılır.
+    cv_based = models.BooleanField("CV'ye özel", default=False, db_default=False)
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='in_progress')
     overall_score = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     summary = models.TextField(blank=True)

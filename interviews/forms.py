@@ -54,6 +54,21 @@ class InterviewForm(forms.ModelForm):
     JOB_POSTING_MIN = 50
     JOB_POSTING_MAX = 6000
 
+    # CV'ye özel mülakat: CV metni modelin alanı değildir (kişisel veri; saklanmaz), yalnızca
+    # soru üretimine gider. Kişisel veri Gemini'nin ücretsiz katmanına gideceği için açık onay
+    # ister (docs §2.2).
+    CV_MIN = 100
+    CV_MAX = 8000
+    cv_text = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'rows': 10,
+            'placeholder': 'Eğitim, deneyim, proje ve becerilerini buraya yapıştır (ad ve adresini çıkarabilirsin)',
+            'aria-describedby': 'cv-hint cv-privacy cv-count',
+        }),
+    )
+    cv_consent = forms.BooleanField(required=False)
+
     class Meta:
         model = Interview
         fields = FIELD_NAMES + ['job_posting']
@@ -80,6 +95,29 @@ class InterviewForm(forms.ModelForm):
                 'olabilir; görevler ve aranan nitelikler bölümünü bırakman yeterli.'
             )
         return text
+
+    def clean_cv_text(self):
+        text = (self.cleaned_data.get('cv_text') or '').replace('\r\n', '\n').strip()
+        if not text:
+            return ''
+        if len(text) < self.CV_MIN:
+            raise forms.ValidationError(
+                f'CV metni çok kısa. En az {self.CV_MIN} karakter yapıştır ya da bu alanı boş bırak.'
+            )
+        if len(text) > self.CV_MAX:
+            raise forms.ValidationError(
+                f'CV metni çok uzun ({len(text)} karakter). En fazla {self.CV_MAX} karakter '
+                'olabilir; eğitim, deneyim, proje ve beceri bölümlerini bırakman yeterli.'
+            )
+        return text
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get('cv_text') and not cleaned.get('cv_consent'):
+            self.add_error(
+                'cv_consent', 'CV metnini göndermek için gizlilik onayını işaretlemelisin.'
+            )
+        return cleaned
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
