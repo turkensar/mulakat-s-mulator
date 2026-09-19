@@ -313,3 +313,59 @@
         border-radius: var(--radius-block);
     }
 }
+
+/* İlana özel mülakat: isteğe bağlı iş ilanı alanı */
+.step__optional {
+    margin-left: var(--space-2);
+    padding: 2px var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-badge);
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+.posting__hint {
+    margin: 0 0 var(--space-3);
+    color: var(--ink-soft);
+}
+
+.posting textarea {
+    display: block;
+    width: 100%;
+    min-height: 180px;
+    max-height: 60vh;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+    color: var(--ink);
+    font: inherit;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.posting textarea:focus-visible {
+    border-color: var(--violet);
+}
+
+.posting--over textarea {
+    border-color: var(--coral);
+}
+
+.posting__count {
+    margin: var(--space-2) 0 0;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    text-align: right;
+}
+
+/* Sınır aşılınca renk tek başına anlam taşımasın: yazı da kalınlaşır */
+.posting--over .posting__count {
+    color: var(--ink);
+    font-weight: 700;
+}

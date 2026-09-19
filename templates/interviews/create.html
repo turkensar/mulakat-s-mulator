@@ -62,6 +62,17 @@
     </section>
     {% endfor %}
 
+    <section class="step posting" id="posting" aria-labelledby="step-posting" data-max="{{ form.JOB_POSTING_MAX }}">
+        <h2 class="step__title" id="step-posting">
+            <span class="step__num" aria-hidden="true">6</span>Varsa iş ilanını yapıştır
+            <span class="step__optional">isteğe bağlı</span>
+        </h2>
+        <p class="posting__hint" id="posting-hint">Sorular ilandaki görevlere, aranan niteliklere ve teknolojilere göre hazırlanır. Boş bırakırsan pozisyonuna göre genel sorular gelir.</p>
+        {{ form.job_posting }}
+        <p class="posting__count" id="posting-count" aria-live="polite"></p>
+        {% for error in form.job_posting.errors %}<p class="step__error" role="alert">{{ error }}</p>{% endfor %}
+    </section>
+
     <div class="summary" role="region" aria-label="Seçimlerin özeti">
         <div class="summary__inner">
             <ul class="summary__picks" id="summary-picks" hidden>
@@ -84,6 +95,16 @@
         var count = document.getElementById('summary-count');
         var total = picks.children.length;
         var submitLabel = button.textContent;
+        var postingBox = document.getElementById('posting');
+        var posting = document.getElementById('id_job_posting');
+        var postingCount = document.getElementById('posting-count');
+        var postingMax = parseInt(postingBox.dataset.max, 10);
+
+        function updatePostingCount() {
+            var length = posting.value.trim().length;
+            postingCount.textContent = length + ' / ' + postingMax;
+            postingBox.classList.toggle('posting--over', length > postingMax);
+        }
 
         function update() {
             var done = 0;
@@ -106,6 +127,8 @@
         }
 
         picks.hidden = false;
+        posting.addEventListener('input', updatePostingCount);
+        updatePostingCount();
         form.addEventListener('change', update);
         form.addEventListener('submit', function () {
             button.disabled = true;

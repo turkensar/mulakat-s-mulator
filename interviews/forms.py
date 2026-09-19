@@ -49,10 +49,37 @@ OPTION_META = {
 
 
 class InterviewForm(forms.ModelForm):
+    # İlana özel mülakat: isteğe bağlı iş ilanı metni. Çok kısa metin soruları ilana
+    # özelleştirmez; çok uzun metin istem boyutunu ve gecikmeyi büyütür.
+    JOB_POSTING_MIN = 50
+    JOB_POSTING_MAX = 6000
+
     class Meta:
         model = Interview
-        fields = FIELD_NAMES
-        widgets = {name: forms.RadioSelect for name in FIELD_NAMES}
+        fields = FIELD_NAMES + ['job_posting']
+        widgets = {
+            **{name: forms.RadioSelect for name in FIELD_NAMES},
+            'job_posting': forms.Textarea(attrs={
+                'rows': 8,
+                'placeholder': 'İlan metnini buraya yapıştır (görev tanımı, aranan nitelikler, kullanılan teknolojiler...)',
+                'aria-describedby': 'posting-hint posting-count',
+            }),
+        }
+
+    def clean_job_posting(self):
+        text = (self.cleaned_data.get('job_posting') or '').replace('\r\n', '\n').strip()
+        if not text:
+            return ''
+        if len(text) < self.JOB_POSTING_MIN:
+            raise forms.ValidationError(
+                f'İlan metni çok kısa. En az {self.JOB_POSTING_MIN} karakter yapıştır ya da bu alanı boş bırak.'
+            )
+        if len(text) > self.JOB_POSTING_MAX:
+            raise forms.ValidationError(
+                f'İlan metni çok uzun ({len(text)} karakter). En fazla {self.JOB_POSTING_MAX} karakter '
+                'olabilir; görevler ve aranan nitelikler bölümünü bırakman yeterli.'
+            )
+        return text
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

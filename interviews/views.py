@@ -77,6 +77,7 @@ def create_interview(request):
                     interview_type_label=interview.get_interview_type_display(),
                     language=interview.language,
                     question_count=interview.question_count,
+                    job_posting=interview.job_posting,
                 )
             except GeminiQuotaError:
                 interview.delete()

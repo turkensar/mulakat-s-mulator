@@ -15,6 +15,7 @@
             <li class="badge">{{ interview.get_level_display }}</li>
             <li class="badge badge--type">{{ interview.get_interview_type_display }}</li>
             <li class="badge">{% include 'interviews/_flag.html' with code=interview.language %}{{ interview.get_language_display }}</li>
+            {% if interview.job_posting %}<li class="badge">İlana özel</li>{% endif %}
         </ul>
     </header>
 
