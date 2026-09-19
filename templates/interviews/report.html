@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load interview_extras %}
 
-{% block title %}Rapor - Mülakat Simülatörü{% endblock %}
+{% block title %}{% trans "Rapor - Mülakat Simülatörü" %}{% endblock %}
 
 {% block extra_css %}<link rel="stylesheet" href="/static/css/report.css">{% endblock %}
 
@@ -13,14 +14,14 @@
             <li class="badge">{{ interview.get_level_display }}</li>
             <li class="badge badge--type">{{ interview.get_interview_type_display }}</li>
             <li class="badge">{% include 'interviews/_flag.html' with code=interview.language %}{{ interview.get_language_display }}</li>
-            {% if interview.job_posting %}<li class="badge">İlana özel</li>{% endif %}
-            {% if interview.cv_based %}<li class="badge">CV'ye özel</li>{% endif %}
+            {% if interview.job_posting %}<li class="badge">{% trans "İlana özel" %}</li>{% endif %}
+            {% if interview.cv_based %}<li class="badge">{% trans "CV'ye özel" %}</li>{% endif %}
             <li class="badges__note">{{ interview.completed_at|date:"j E Y" }}</li>
         </ul>
     </header>
 
     <section class="hero band-{{ interview.overall_score|score_band }}" aria-labelledby="hero-title">
-        <div class="ring" role="img" aria-label="Genel skor: {{ interview.overall_score|floatformat:1 }} / 10">
+        <div class="ring" role="img" aria-label="{% blocktrans with score=interview.overall_score|floatformat:1 %}Genel skor: {{ score }} / 10{% endblocktrans %}">
             <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
                 <circle class="ring__track" cx="60" cy="60" r="52" pathLength="100"></circle>
                 <circle class="ring__value" cx="60" cy="60" r="52" pathLength="100"
@@ -33,29 +34,29 @@
         </div>
 
         <div class="hero__text">
-            <h2 id="hero-title">Genel değerlendirme</h2>
+            <h2 id="hero-title">{% trans "Genel değerlendirme" %}</h2>
             {% if interview.summary %}
                 <p class="hero__summary">{{ interview.summary|inline_markup }}</p>
                 <div class="insights">
                     <div class="insight insight--strength">
-                        <h3>En belirgin güçlü yönün</h3>
+                        <h3>{% trans "En belirgin güçlü yönün" %}</h3>
                         <p>{{ interview.top_strength|inline_markup }}</p>
                     </div>
                     <div class="insight insight--improve">
-                        <h3>Öncelikli gelişim alanın</h3>
+                        <h3>{% trans "Öncelikli gelişim alanın" %}</h3>
                         <p>{{ interview.top_improvement|inline_markup }}</p>
                     </div>
                 </div>
             {% else %}
-                <p class="notice">Genel özet oluşturulamadı. Soru soru değerlendirmelerin aşağıda.</p>
+                <p class="notice">{% trans "Genel özet oluşturulamadı. Soru soru değerlendirmelerin aşağıda." %}</p>
             {% endif %}
         </div>
     </section>
 
     <section class="answers" aria-labelledby="answers-title">
         <div class="answers__head">
-            <h2 id="answers-title">Soru soru değerlendirme</h2>
-            <button type="button" class="linkbtn" id="toggle-all" hidden>Tümünü aç</button>
+            <h2 id="answers-title">{% trans "Soru soru değerlendirme" %}</h2>
+            <button type="button" class="linkbtn" id="toggle-all" data-label-open="{% trans "Tümünü aç" %}" data-label-close="{% trans "Tümünü kapat" %}" hidden>{% trans "Tümünü aç" %}</button>
         </div>
 
         {% for answer in answers %}
@@ -63,28 +64,28 @@
             <summary class="qa__summary">
                 <span class="qa__num" aria-hidden="true">{{ forloop.counter }}</span>
                 <span class="qa__question">{{ answer.question.text|inline_markup }}</span>
-                <span class="score-badge"><span class="visually-hidden">Puan: </span>{{ answer.score }} / 10</span>
+                <span class="score-badge"><span class="visually-hidden">{% trans "Puan:" %} </span>{{ answer.score }} / 10</span>
             </summary>
             <div class="qa__body">
                 <div class="qa__block qa__block--mine">
-                    <h3>Cevabın</h3>
+                    <h3>{% trans "Cevabın" %}</h3>
                     <p>{{ answer.text }}</p>
                 </div>
                 <div class="qa__block qa__block--strength">
-                    <h3>Güçlü yönler</h3>
+                    <h3>{% trans "Güçlü yönler" %}</h3>
                     <p>{{ answer.strengths|inline_markup }}</p>
                 </div>
                 <div class="qa__block qa__block--improve">
-                    <h3>Geliştirilecek yönler</h3>
+                    <h3>{% trans "Geliştirilecek yönler" %}</h3>
                     <p>{{ answer.improvements|inline_markup }}</p>
                 </div>
                 <div class="qa__block qa__block--sample">
-                    <h3>Örnek iyi cevap</h3>
+                    <h3>{% trans "Örnek iyi cevap" %}</h3>
                     <p>{{ answer.sample_answer|inline_markup }}</p>
                 </div>
                 {% if answer.language_score %}
                 <div class="qa__block qa__block--language band-{{ answer.language_score|score_band }}">
-                    <h3>Dil kullanımı <span class="score-badge">{{ answer.language_score }} / 10</span></h3>
+                    <h3>{% trans "Dil kullanımı" %} <span class="score-badge">{{ answer.language_score }} / 10</span></h3>
                     <p>{{ answer.language_feedback|inline_markup }}</p>
                 </div>
                 {% endif %}
@@ -94,8 +95,8 @@
     </section>
 
     <div class="report__actions">
-        <a href="{% url 'interview_create' %}" class="btn btn--primary">Yeni mülakat başlat</a>
-        <a href="{% url 'panel' %}" class="btn btn--ghost">Panele dön</a>
+        <a href="{% url 'interview_create' %}" class="btn btn--primary">{% trans "Yeni mülakat başlat" %}</a>
+        <a href="{% url 'panel' %}" class="btn btn--ghost">{% trans "Panele dön" %}</a>
     </div>
 </article>
 
@@ -105,14 +106,17 @@
     var items = document.querySelectorAll('.qa');
     if (!button || items.length < 2) return;
 
+    function allOpen() {
+        return Array.prototype.every.call(items, function (item) { return item.open; });
+    }
+
     function refresh() {
-        var allOpen = Array.prototype.every.call(items, function (item) { return item.open; });
-        button.textContent = allOpen ? 'Tümünü kapat' : 'Tümünü aç';
+        button.textContent = allOpen() ? button.dataset.labelClose : button.dataset.labelOpen;
     }
 
     button.hidden = false;
     button.addEventListener('click', function () {
-        var open = button.textContent === 'Tümünü aç';
+        var open = !allOpen();
         Array.prototype.forEach.call(items, function (item) { item.open = open; });
         refresh();
     });

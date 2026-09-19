@@ -9,6 +9,13 @@
     var form = document.getElementById('answer-form');
     if (!root || !textarea || !form) return;
 
+    // Arayüz metinleri sayfaya gömülü JSON'dan gelir (interviews/views.py _detail_js_strings).
+    var T = JSON.parse((document.getElementById('js-strings') || {}).textContent || '{}');
+
+    function fmt(text, values) {
+        return String(text).replace(/%\((\w+)\)s/g, function (match, key) { return values[key]; });
+    }
+
     var speechLang = root.dataset.speechLang || 'tr-TR';
     var langPrefix = speechLang.slice(0, 2).toLowerCase();
     var langName = root.dataset.speechName || speechLang;
@@ -89,7 +96,7 @@
         var available = canSpeak && !!voice;
         html.classList.toggle('has-tts', available);
         if (canSpeak && !voice && synth.getVoices().length) {
-            showNote('Bu cihazda ' + langName + ' konuşma sesi bulunamadı; soruları sesli okuma kullanılamıyor.');
+            showNote(fmt(T.noVoice, {lang: langName}));
         }
     }
 
@@ -97,7 +104,7 @@
         if (!button) return;
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-pressed', active ? 'true' : 'false');
-        button.textContent = active ? '⏹ Durdur' : '🔊 Dinle';
+        button.textContent = active ? T.listenStop : T.listen;
     }
 
     function stopSpeaking() {
@@ -137,21 +144,17 @@
 
     // ---- Mikrofonla yazma --------------------------------------------------
 
-    var ERROR_MESSAGES = {
-        'not-allowed': 'Mikrofon izni verilmedi. Tarayıcının adres çubuğundaki izin ayarından mikrofona izin ver.',
-        'service-not-allowed': 'Bu tarayıcı ses tanıma hizmetine izin vermiyor.',
-        'no-speech': 'Ses algılanmadı. Mikrofona yakın konuşup tekrar dene.',
-        'audio-capture': 'Mikrofon bulunamadı. Bir mikrofon bağlı olduğundan emin ol.',
-        'network': 'Ses tanıma hizmetine ulaşılamadı. İnternet bağlantını kontrol edip tekrar dene.',
-        'language-not-supported': langName + ' için ses tanıma bu tarayıcıda desteklenmiyor.'
-    };
+    var ERROR_MESSAGES = {};
+    Object.keys(T.speechErrors || {}).forEach(function (key) {
+        ERROR_MESSAGES[key] = fmt(T.speechErrors[key], {lang: langName});
+    });
 
     // 'starting': tıklama alındı, tarayıcı izin/hizmet bekliyor; true: dinliyor; false: boşta.
     function setListening(state) {
         if (!mic) return;
         mic.classList.toggle('is-listening', state === true);
         mic.setAttribute('aria-pressed', state ? 'true' : 'false');
-        mic.textContent = state === 'starting' ? '⏳ Başlıyor…' : state ? '⏹ Bitir' : '🎙️ Sesle yaz';
+        mic.textContent = state === 'starting' ? T.micStarting : state ? T.micStop : T.micStart;
     }
 
     function stopListening(discard) {
@@ -176,7 +179,7 @@
         var Recognition = recognitionClass();
         if (!Recognition) return;
         if (textarea.readOnly) {
-            showNote('Cevap gönderilirken sesle yazılamaz; değerlendirme bitince tekrar dene.');
+            showNote(T.micBusy);
             return;
         }
         stopSpeaking();
@@ -196,8 +199,7 @@
         var watchdog = window.setTimeout(function () {
             // Ne başladı ne hata verdi: izin penceresi bekleniyor ya da tarayıcı hizmeti yanıt vermiyor.
             if (recognition !== rec || started || errored) return;
-            showNote('Ses tanıma henüz başlamadı. Adres çubuğunda mikrofon izni penceresi varsa "İzin ver"e bas; ' +
-                'yoksa sayfayı Ctrl+F5 ile yenileyip tekrar dene ya da Chrome/Edge kullan.');
+            showNote(T.micSlow);
         }, 4000);
 
         rec.onstart = function () {
@@ -220,14 +222,14 @@
         rec.onerror = function (event) {
             if (event.error === 'aborted') return;
             errored = true;
-            showNote(ERROR_MESSAGES[event.error] || 'Ses tanıma sırasında bir sorun oluştu (' + event.error + ').');
+            showNote(ERROR_MESSAGES[event.error] || fmt(T.micGeneric, {error: event.error}));
         };
         rec.onend = function () {
             window.clearTimeout(watchdog);
             if (recognition === rec) recognition = null;
             setListening(false);
             // Hiç başlamadan ve hata vermeden kapandıysa kullanıcı sessizlikte kalmasın.
-            if (!started && !errored) showNote('Ses tanıma başlamadan kapandı. Tekrar dene; sürerse Chrome/Edge kullan.');
+            if (!started && !errored) showNote(T.micClosed);
         };
 
         recognition = rec;
@@ -239,7 +241,7 @@
             window.clearTimeout(watchdog);
             recognition = null;
             setListening(false);
-            showNote('Ses tanıma başlatılamadı (' + (e && e.name ? e.name : 'bilinmeyen hata') + '). Birkaç saniye sonra tekrar dene.');
+            showNote(fmt(T.micFailed, {error: e && e.name ? e.name : T.unknownError}));
         }
     }
 

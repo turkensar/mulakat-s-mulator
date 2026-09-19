@@ -3,6 +3,7 @@ hesaplanır, Gemini çağrısı gerektirmez."""
 
 from django.db.models import Avg, Count
 from django.utils import formats, timezone
+from django.utils.translation import gettext as _
 
 from .models import Answer, CATEGORY_CHOICES
 
@@ -22,11 +23,16 @@ def _category_insight(categories):
     low, high = sorted(categories, key=lambda c: c['avg'])
     if high['avg'] - low['avg'] < 0.5:
         return ''
-    return (
-        f"{low['label']} sorularında ortalaman {_number(low['avg'])}, "
-        f"{high['label'].lower()} sorularında {_number(high['avg'])}. "
-        f"Önce {low['label'].lower()} alana odaklanabilirsin."
-    )
+    return _(
+        '%(low)s sorularında ortalaman %(low_avg)s, %(high_lower)s sorularında %(high_avg)s. '
+        'Önce %(low_lower)s alana odaklanabilirsin.'
+    ) % {
+        'low': low['label'],
+        'low_lower': low['label'].lower(),
+        'low_avg': _number(low['avg']),
+        'high_lower': high['label'].lower(),
+        'high_avg': _number(high['avg']),
+    }
 
 
 def build_progress(user):
@@ -69,7 +75,7 @@ def build_progress(user):
     categories = [
         {
             'key': row['question__category'],
-            'label': labels.get(row['question__category'], row['question__category']),
+            'label': str(labels.get(row['question__category'], row['question__category'])),
             'avg': round(float(row['avg']), 1),
             'avg_text': _number(row['avg']),
             'percent': round(float(row['avg']) * 10),

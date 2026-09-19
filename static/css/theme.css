@@ -114,7 +114,31 @@ body.ds {
     cursor: pointer;
 }
 
-/* Dar ekranda logo ve bağlantılar tek satıra sığsın (375px) */
+/* Dil düğmesi (§2.2 iki dilli arayüz): diğer dilin kodunu gösterir, POST ile çerezi değiştirir */
+.ds .navbar__lang {
+    display: inline;
+    margin: 0;
+}
+
+.ds .navbar__lang-button {
+    padding: 1px 10px;
+    background: transparent;
+    border: 2px solid var(--line);
+    border-radius: var(--radius-pill);
+    color: var(--ink-soft);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+}
+
+.ds .navbar__lang-button:hover {
+    border-color: var(--violet);
+    color: var(--violet);
+}
+
+/* Dar ekranda (375px) logo ve bağlantılar sığacak şekilde küçülür; sığmazsa bağlantılar alta geçer */
 @media (max-width: 480px) {
     .ds .navbar {
         padding: var(--space-3) var(--space-4);
@@ -130,7 +154,15 @@ body.ds {
         height: 30px;
     }
 
+    /* Logo + bağlantılar + dil düğmesi sığmazsa bağlantılar logonun altına, sağa hizalı geçer */
+    .ds .navbar {
+        flex-wrap: wrap;
+        row-gap: var(--space-2);
+    }
+
     .ds .navbar__links {
+        flex: 1 1 auto;
+        justify-content: flex-end;
         gap: var(--space-3);
     }
 }

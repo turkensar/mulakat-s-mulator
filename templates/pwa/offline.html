@@ -1,4 +1,5 @@
 {% comment %}
+    İki dilli sabit sayfa (önbellekte tek kopya tutulur, dil çerezine bağlı değildir).
     Bağımsız sayfa: base.html'i KULLANMAZ. Service worker bunu önbelleğe alır; navbar ve
     csrf gibi kullanıcıya özel içerik olursa ortak cihazda başka kullanıcıya görünür.
 {% endcomment %}
@@ -8,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6B3BFF">
-    <title>Çevrimdışısın - Mülakat Simülatörü</title>
+    <title>Çevrimdışısın · You're offline</title>
     <link rel="stylesheet" href="/static/css/tokens.css">
     <link rel="stylesheet" href="/static/css/theme.css">
     <style>
@@ -25,14 +26,22 @@
         }
         .offline h1 { margin: var(--space-6) 0 var(--space-3); }
         .offline p { margin: 0 0 var(--space-6); color: var(--ink-soft); }
+        .offline__en { margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--line); }
     </style>
 </head>
 <body class="ds">
     <main class="offline">
         <img class="offline__icon" src="/static/img/icon-192.png" alt="" width="96" height="96">
-        <h1>İnternet bağlantın yok</h1>
-        <p>Mülakat simülatörü yapay zekâya bağlı çalışır; sorular ve değerlendirmeler için internet gerekir. Bağlantın geri geldiğinde kaldığın yerden devam edebilirsin.</p>
-        <button type="button" class="btn btn--primary" onclick="location.reload()">Tekrar dene</button>
+        <section lang="tr">
+            <h1>İnternet bağlantın yok</h1>
+            <p>Mülakat simülatörü yapay zekâya bağlı çalışır; sorular ve değerlendirmeler için internet gerekir. Bağlantın geri geldiğinde kaldığın yerden devam edebilirsin.</p>
+            <button type="button" class="btn btn--primary" onclick="location.reload()">Tekrar dene</button>
+        </section>
+        <section lang="en" class="offline__en">
+            <h2>You're offline</h2>
+            <p>The interview simulator relies on AI, so questions and evaluations need an internet connection. Once you're back online you can pick up where you left off.</p>
+            <button type="button" class="btn btn--ghost" onclick="location.reload()">Try again</button>
+        </section>
     </main>
 </body>
 </html>

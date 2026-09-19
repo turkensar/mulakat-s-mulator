@@ -8,7 +8,9 @@ from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import timezone, translation
+from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy
 from django.views.decorators.http import require_POST
 
 from .forms import InterviewForm
@@ -18,7 +20,7 @@ from .services.gemini import (
 )
 from .stats import build_progress
 
-QUOTA_MESSAGE = (
+QUOTA_MESSAGE = gettext_lazy(
     'Yapay zeka servisinin ücretsiz kullanım kotası şu an dolu. '
     'Birkaç dakika sonra ya da yarın tekrar dene.'
 )
@@ -75,9 +77,7 @@ def create_interview(request):
 
             try:
                 questions = generate_questions(
-                    position_label=interview.get_position_display(),
-                    level_label=interview.get_level_display(),
-                    interview_type_label=interview.get_interview_type_display(),
+                    **_prompt_labels(interview),
                     language=interview.language,
                     question_count=interview.question_count,
                     job_posting=interview.job_posting,
@@ -89,7 +89,7 @@ def create_interview(request):
             except GeminiError:
                 interview.delete()
                 form.add_error(
-                    None, 'Sorular oluşturulurken bir hata oluştu. Lütfen tekrar dene.'
+                    None, _('Sorular oluşturulurken bir hata oluştu. Lütfen tekrar dene.')
                 )
             else:
                 Question.objects.bulk_create([
@@ -105,8 +105,68 @@ def create_interview(request):
     return render(request, 'interviews/create.html', {'form': form})
 
 
+def _prompt_labels(interview):
+    """Gemini istemlerine giden pozisyon/seviye/tür etiketleri.
+
+    İstemler Türkçe yazıldığı ve modelin davranışı buna göre denendiği için, arayüz
+    İngilizce iken bile etiketler her zaman Türkçe gider (mülakat dili ayrı bir ayardır).
+    """
+    with translation.override('tr'):
+        return {
+            'position_label': interview.get_position_display(),
+            'level_label': interview.get_level_display(),
+            'interview_type_label': interview.get_interview_type_display(),
+        }
+
+
 def _current_question(interview):
     return interview.questions.filter(answer__isnull=True).order_by('order').first()
+
+
+def _detail_js_strings():
+    """Mülakat ekranındaki JavaScript'in (şablondaki betik ve voice.js) kullandığı metinler.
+
+    Tek kaynak burasıdır; şablon bunları json_script ile sayfaya gömer, böylece JS dosyalarında
+    çevrilecek düz metin kalmaz. %(ad)s yer tutucuları JS tarafında doldurulur.
+    """
+    return {
+        'answerEmpty': _('Cevap boş olamaz.'),
+        'thinking': _('Cevabın değerlendiriliyor'),
+        'thinkingFinal': _('Cevabın değerlendiriliyor ve raporun hazırlanıyor'),
+        'networkError': _('Bağlantı hatası. Lütfen tekrar dene.'),
+        'genericError': _('Bir hata oluştu. Lütfen tekrar dene.'),
+        'question': _('Soru'),
+        'listen': _('🔊 Dinle'),
+        'listenStop': _('⏹ Durdur'),
+        'listenAria': _('Soruyu sesli oku'),
+        'noVoice': _(
+            'Bu cihazda %(lang)s konuşma sesi bulunamadı; soruları sesli okuma kullanılamıyor.'
+        ),
+        'micStart': _('🎙️ Sesle yaz'),
+        'micStarting': _('⏳ Başlıyor…'),
+        'micStop': _('⏹ Bitir'),
+        'micBusy': _('Cevap gönderilirken sesle yazılamaz; değerlendirme bitince tekrar dene.'),
+        'micSlow': _(
+            'Ses tanıma henüz başlamadı. Adres çubuğunda mikrofon izni penceresi varsa "İzin ver"e bas; '
+            'yoksa sayfayı Ctrl+F5 ile yenileyip tekrar dene ya da Chrome/Edge kullan.'
+        ),
+        'micClosed': _('Ses tanıma başlamadan kapandı. Tekrar dene; sürerse Chrome/Edge kullan.'),
+        'micFailed': _('Ses tanıma başlatılamadı (%(error)s). Birkaç saniye sonra tekrar dene.'),
+        'micGeneric': _('Ses tanıma sırasında bir sorun oluştu (%(error)s).'),
+        'unknownError': _('bilinmeyen hata'),
+        'speechErrors': {
+            'not-allowed': _(
+                'Mikrofon izni verilmedi. Tarayıcının adres çubuğundaki izin ayarından mikrofona izin ver.'
+            ),
+            'service-not-allowed': _('Bu tarayıcı ses tanıma hizmetine izin vermiyor.'),
+            'no-speech': _('Ses algılanmadı. Mikrofona yakın konuşup tekrar dene.'),
+            'audio-capture': _('Mikrofon bulunamadı. Bir mikrofon bağlı olduğundan emin ol.'),
+            'network': _(
+                'Ses tanıma hizmetine ulaşılamadı. İnternet bağlantını kontrol edip tekrar dene.'
+            ),
+            'language-not-supported': _('%(lang)s için ses tanıma bu tarayıcıda desteklenmiyor.'),
+        },
+    }
 
 
 @login_required
@@ -132,6 +192,9 @@ def interview_detail(request, pk):
         'current_question': current_question,
         'answered_count': answered_questions.count(),
         'total_count': interview.question_count,
+        'js_strings': _detail_js_strings(),
+        # Sesli okuma/dikte için mülakat dilinin adı, ARAYÜZ dilinde gösterilir.
+        'speech_name': _('Türkçe') if interview.language == 'tr' else _('İngilizce'),
     }
     return render(request, 'interviews/detail.html', context)
 
@@ -142,9 +205,10 @@ def _complete_interview(interview):
     interview.overall_score = Decimal(sum(scores)) / Decimal(len(scores))
 
     try:
+        labels = _prompt_labels(interview)
         summary = summarize_interview(
-            position_label=interview.get_position_display(),
-            level_label=interview.get_level_display(),
+            position_label=labels['position_label'],
+            level_label=labels['level_label'],
             language=interview.language,
             qa_pairs=[(a.question.text, a.text, a.score) for a in answers],
         )
@@ -171,11 +235,11 @@ def submit_answer(request, pk):
         question_id = int(payload['question_id'])
         answer_text = str(payload['text']).strip()
     except (KeyError, ValueError, TypeError, json.JSONDecodeError):
-        return JsonResponse({'status': 'error', 'message': 'Geçersiz istek.'}, status=400)
+        return JsonResponse({'status': 'error', 'message': _('Geçersiz istek.')}, status=400)
 
     if not answer_text:
         return JsonResponse(
-            {'status': 'error', 'message': 'Cevap boş olamaz.'}, status=400
+            {'status': 'error', 'message': _('Cevap boş olamaz.')}, status=400
         )
 
     question = get_object_or_404(
@@ -183,23 +247,24 @@ def submit_answer(request, pk):
     )
 
     try:
+        labels = _prompt_labels(interview)
         result = evaluate_answer(
-            position_label=interview.get_position_display(),
-            level_label=interview.get_level_display(),
+            position_label=labels['position_label'],
+            level_label=labels['level_label'],
             language=interview.language,
             question_text=question.text,
             answer_text=answer_text,
         )
     except GeminiQuotaError:
         return JsonResponse(
-            {'status': 'error', 'message': f'{QUOTA_MESSAGE} Yazdığın cevap korundu.'},
+            {'status': 'error', 'message': f"{QUOTA_MESSAGE} {_('Yazdığın cevap korundu.')}"},
             status=503,
         )
     except GeminiError:
         return JsonResponse(
             {
                 'status': 'error',
-                'message': 'Değerlendirme sırasında bir hata oluştu. Lütfen tekrar dene.',
+                'message': _('Değerlendirme sırasında bir hata oluştu. Lütfen tekrar dene.'),
             },
             status=502,
         )

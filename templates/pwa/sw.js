@@ -3,7 +3,7 @@
    Uygulama AI'ya bağlı olduğu için çevrimdışı çalışmaz; sayfalar, cevaplar ve kullanıcıya
    ait hiçbir veri önbelleğe alınmaz (ortak cihazda başka kullanıcının verisi sızmasın).
    Çevrimdışı sayfa ya da stilleri değişirse CACHE adındaki sürümü artır. */
-var CACHE = 'mulakat-offline-v2';
+var CACHE = 'mulakat-offline-v3';
 var OFFLINE_URL = '/cevrimdisi/';
 var OFFLINE_ASSETS = [OFFLINE_URL, '/static/css/tokens.css', '/static/css/theme.css', '/static/img/icon-192.png'];
 

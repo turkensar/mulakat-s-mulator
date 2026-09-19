@@ -1,53 +1,54 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load interview_extras %}
 
-{% block title %}Gelişim - Mülakat Simülatörü{% endblock %}
+{% block title %}{% trans "Gelişim - Mülakat Simülatörü" %}{% endblock %}
 
 {% block extra_css %}<link rel="stylesheet" href="/static/css/growth.css">{% endblock %}
 
 {% block content %}
 <section class="growth">
     <header class="growth__head">
-        <h1>Gelişimin</h1>
-        <p class="growth__lead">Skorlarının zaman içindeki değişimi ve üzerinde çalışman gereken yerler.</p>
+        <h1>{% trans "Gelişimin" %}</h1>
+        <p class="growth__lead">{% trans "Skorlarının zaman içindeki değişimi ve üzerinde çalışman gereken yerler." %}</p>
     </header>
 
     {% if not points %}
         <div class="growth__empty">
             <span class="growth__empty-icon" aria-hidden="true">📈</span>
-            <h2>Henüz gösterecek bir gelişim yok</h2>
-            <p>Bir mülakatı sonuna kadar tamamladığında skorların ve güçlü/zayıf yönlerin burada görünür.</p>
-            <a href="{% url 'interview_create' %}" class="btn btn--primary">Mülakat başlat</a>
+            <h2>{% trans "Henüz gösterecek bir gelişim yok" %}</h2>
+            <p>{% trans "Bir mülakatı sonuna kadar tamamladığında skorların ve güçlü/zayıf yönlerin burada görünür." %}</p>
+            <a href="{% url 'interview_create' %}" class="btn btn--primary">{% trans "Mülakat başlat" %}</a>
         </div>
     {% else %}
         <dl class="stats">
             <div class="stat">
-                <dt>Tamamlanan mülakat</dt>
+                <dt>{% trans "Tamamlanan mülakat" %}</dt>
                 <dd><span class="stat__num">{{ stats.count }}</span></dd>
             </div>
             <div class="stat band-{{ stats.average|score_band }}">
-                <dt>Ortalama skor</dt>
+                <dt>{% trans "Ortalama skor" %}</dt>
                 <dd><span class="stat__num stat__num--band">{{ stats.average_text }}</span><span class="stat__of"> / 10</span></dd>
             </div>
             <div class="stat band-{{ stats.last|score_band }}">
-                <dt>Son mülakat</dt>
+                <dt>{% trans "Son mülakat" %}</dt>
                 <dd>
                     <span class="stat__num stat__num--band">{{ stats.last_text }}</span><span class="stat__of"> / 10</span>
                     {% if stats.trend %}
-                        <span class="trend trend--{{ stats.trend }}"><span class="visually-hidden">Öncekine göre </span>{% if stats.trend == 'up' %}▲{% elif stats.trend == 'down' %}▼{% else %}●{% endif %} {{ stats.delta_text }}</span>
+                        <span class="trend trend--{{ stats.trend }}"><span class="visually-hidden">{% trans "Öncekine göre" %} </span>{% if stats.trend == 'up' %}▲{% elif stats.trend == 'down' %}▼{% else %}●{% endif %} {{ stats.delta_text }}</span>
                     {% endif %}
                 </dd>
             </div>
         </dl>
 
         <section class="growth__section" aria-labelledby="chart-title">
-            <h2 id="chart-title">Skor gelişimin</h2>
+            <h2 id="chart-title">{% trans "Skor gelişimin" %}</h2>
             {% if points|length >= 2 %}
                 <div class="chart">
-                    <canvas id="score-chart" role="img" aria-label="Mülakat skorlarının zaman içindeki değişimini gösteren çizgi grafik. Ayrıntılar grafiğin altındaki listede."></canvas>
+                    <canvas id="score-chart" role="img" aria-label="{% trans "Mülakat skorlarının zaman içindeki değişimini gösteren çizgi grafik. Ayrıntılar grafiğin altındaki listede." %}"></canvas>
                 </div>
                 <details class="chart-data">
-                    <summary>Grafiğin verilerini liste olarak göster</summary>
+                    <summary>{% trans "Grafiğin verilerini liste olarak göster" %}</summary>
                     <ol>
                         {% for p in points %}
                         <li>{{ p.date }} · {{ p.position }} ({{ p.type }}): {{ p.score_text }} / 10</li>
@@ -55,21 +56,21 @@
                     </ol>
                 </details>
             {% else %}
-                <p class="growth__note">İlk skorun {{ stats.last_text }} / 10. Gelişim çizgisini görmek için bir mülakat daha tamamla.</p>
-                <a href="{% url 'interview_create' %}" class="btn btn--primary">Yeni mülakat başlat</a>
+                <p class="growth__note">{% blocktrans trimmed with score=stats.last_text %}İlk skorun {{ score }} / 10. Gelişim çizgisini görmek için bir mülakat daha tamamla.{% endblocktrans %}</p>
+                <a href="{% url 'interview_create' %}" class="btn btn--primary">{% trans "Yeni mülakat başlat" %}</a>
             {% endif %}
         </section>
 
         <section class="growth__section" aria-labelledby="cat-title">
-            <h2 id="cat-title">Alanlara göre ortalama</h2>
+            <h2 id="cat-title">{% trans "Alanlara göre ortalama" %}</h2>
             <ul class="bars">
                 {% for c in categories %}
                 <li class="bar type--{% if c.key == 'teknik' %}technical{% else %}behavioral{% endif %}">
                     <div class="bar__head">
                         <span class="bar__label">{{ c.label }}</span>
-                        <span><strong>{{ c.avg_text }}</strong> / 10 · {{ c.count }} soru</span>
+                        <span><strong>{{ c.avg_text }}</strong> / 10 · {% blocktrans trimmed count counter=c.count %}{{ counter }} soru{% plural %}{{ counter }} soru{% endblocktrans %}</span>
                     </div>
-                    <div class="bar__track" role="img" aria-label="{{ c.label }} ortalaması {{ c.avg_text }} / 10">
+                    <div class="bar__track" role="img" aria-label="{% blocktrans with label=c.label avg=c.avg_text %}{{ label }} ortalaması {{ avg }} / 10{% endblocktrans %}">
                         <span style="width: {{ c.percent }}%"></span>
                     </div>
                 </li>
@@ -79,24 +80,24 @@
         </section>
 
         <section class="growth__section" aria-labelledby="weak-title">
-            <h2 id="weak-title">Üzerinde çalışman gereken sorular</h2>
+            <h2 id="weak-title">{% trans "Üzerinde çalışman gereken sorular" %}</h2>
             {% if weakest %}
                 <ul class="weak">
                     {% for answer in weakest %}
                     <li>
                         <a class="weak__item band-{{ answer.score|score_band }}" href="{% url 'interview_report' pk=answer.question.interview_id %}">
-                            <span class="score-badge"><span class="visually-hidden">Puan: </span>{{ answer.score }} / 10</span>
+                            <span class="score-badge"><span class="visually-hidden">{% trans "Puan:" %} </span>{{ answer.score }} / 10</span>
                             <span class="weak__body">
                                 <span class="weak__question">{{ answer.question.text|inline_markup }}</span>
-                                <span class="weak__meta">{{ answer.question.interview.get_position_display }} · Soru {{ answer.question.order }}</span>
+                                <span class="weak__meta">{% blocktrans trimmed with position=answer.question.interview.get_position_display order=answer.question.order %}{{ position }} · Soru {{ order }}{% endblocktrans %}</span>
                             </span>
-                            <span class="weak__cta">Raporda gör</span>
+                            <span class="weak__cta">{% trans "Raporda gör" %}</span>
                         </a>
                     </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p class="growth__note">Harika! Tüm cevapların 8 ve üzerinde puan almış; şu an üzerinde çalışman gereken bir soru görünmüyor.</p>
+                <p class="growth__note">{% trans "Harika! Tüm cevapların 8 ve üzerinde puan almış; şu an üzerinde çalışman gereken bir soru görünmüyor." %}</p>
             {% endif %}
         </section>
     {% endif %}

@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load interview_extras %}
 
-{% block title %}Panel - Mülakat Simülatörü{% endblock %}
+{% block title %}{% trans "Panel - Mülakat Simülatörü" %}{% endblock %}
 
 {% block extra_css %}<link rel="stylesheet" href="/static/css/panel.css">{% endblock %}
 
@@ -9,13 +10,13 @@
 <section class="panel">
     <header class="panel__head">
         <div>
-            <h1>Merhaba, {{ user.username }}</h1>
-            <p class="panel__lead">Provalarına buradan devam edebilir ya da yeni bir tane başlatabilirsin.</p>
+            <h1>{% blocktrans with name=user.username %}Merhaba, {{ name }}{% endblocktrans %}</h1>
+            <p class="panel__lead">{% trans "Provalarına buradan devam edebilir ya da yeni bir tane başlatabilirsin." %}</p>
         </div>
         {% if in_progress or completed %}
             <div class="panel__actions">
-                {% if completed %}<a href="{% url 'progress' %}" class="btn btn--ghost">Gelişimim</a>{% endif %}
-                <a href="{% url 'interview_create' %}" class="btn btn--primary">Yeni mülakat</a>
+                {% if completed %}<a href="{% url 'progress' %}" class="btn btn--ghost">{% trans "Gelişimim" %}</a>{% endif %}
+                <a href="{% url 'interview_create' %}" class="btn btn--primary">{% trans "Yeni mülakat" %}</a>
             </div>
         {% endif %}
     </header>
@@ -23,7 +24,7 @@
     {% if in_progress or completed %}
         {% if in_progress %}
         <section class="panel__group" aria-labelledby="group-open">
-            <h2 id="group-open">Yarım kalanlar</h2>
+            <h2 id="group-open">{% trans "Yarım kalanlar" %}</h2>
             <ul class="rows">
                 {% for interview in in_progress %}
                 <li>
@@ -33,15 +34,15 @@
                             <span class="row__meta">
                                 <span class="badge badge--type">{{ interview.get_interview_type_display }}</span>
                                 <span class="row__lang">{% include 'interviews/_flag.html' with code=interview.language %}{{ interview.get_language_display }}</span>
-                                {% if interview.job_posting %}<span class="badge">İlana özel</span>{% endif %}
-                                {% if interview.cv_based %}<span class="badge">CV'ye özel</span>{% endif %}
+                                {% if interview.job_posting %}<span class="badge">{% trans "İlana özel" %}</span>{% endif %}
+                                {% if interview.cv_based %}<span class="badge">{% trans "CV'ye özel" %}</span>{% endif %}
                                 <span>{{ interview.created_at|date:"j E Y" }}</span>
                             </span>
                         </span>
                         <span class="row__side">
-                            <span class="row__count">{{ interview.answered_count }} / {{ interview.question_count }} soru</span>
+                            <span class="row__count">{% blocktrans trimmed with answered=interview.answered_count total=interview.question_count %}{{ answered }} / {{ total }} soru{% endblocktrans %}</span>
                             <span class="row__bar" aria-hidden="true"><span style="width: {% widthratio interview.answered_count interview.question_count 100 %}%"></span></span>
-                            <span class="row__cta">Devam et</span>
+                            <span class="row__cta">{% trans "Devam et" %}</span>
                         </span>
                     </a>
                 </li>
@@ -52,7 +53,7 @@
 
         {% if completed %}
         <section class="panel__group" aria-labelledby="group-done">
-            <h2 id="group-done">Geçmiş mülakatlar</h2>
+            <h2 id="group-done">{% trans "Geçmiş mülakatlar" %}</h2>
             <ul class="rows">
                 {% for interview in completed %}
                 <li>
@@ -62,14 +63,14 @@
                             <span class="row__meta">
                                 <span class="badge badge--type">{{ interview.get_interview_type_display }}</span>
                                 <span class="row__lang">{% include 'interviews/_flag.html' with code=interview.language %}{{ interview.get_language_display }}</span>
-                                {% if interview.job_posting %}<span class="badge">İlana özel</span>{% endif %}
-                                {% if interview.cv_based %}<span class="badge">CV'ye özel</span>{% endif %}
+                                {% if interview.job_posting %}<span class="badge">{% trans "İlana özel" %}</span>{% endif %}
+                                {% if interview.cv_based %}<span class="badge">{% trans "CV'ye özel" %}</span>{% endif %}
                                 <span>{{ interview.created_at|date:"j E Y" }}</span>
                             </span>
                         </span>
                         <span class="row__side band-{{ interview.overall_score|score_band }}">
-                            <span class="score-badge"><span class="visually-hidden">Genel puan: </span>{{ interview.overall_score|floatformat:1 }} / 10</span>
-                            <span class="row__cta">Raporu gör</span>
+                            <span class="score-badge"><span class="visually-hidden">{% trans "Genel puan:" %} </span>{{ interview.overall_score|floatformat:1 }} / 10</span>
+                            <span class="row__cta">{% trans "Raporu gör" %}</span>
                         </span>
                     </a>
                 </li>
@@ -80,9 +81,9 @@
     {% else %}
         <div class="empty">
             <span class="empty__icon" aria-hidden="true">🎤</span>
-            <h2>Henüz bir mülakatın yok</h2>
-            <p>İlk provanı yapmak birkaç saniyeni alır: pozisyonunu seç, sorular senin için hazırlansın.</p>
-            <a href="{% url 'interview_create' %}" class="btn btn--primary">İlk mülakatını başlat</a>
+            <h2>{% trans "Henüz bir mülakatın yok" %}</h2>
+            <p>{% trans "İlk provanı yapmak birkaç saniyeni alır: pozisyonunu seç, sorular senin için hazırlansın." %}</p>
+            <a href="{% url 'interview_create' %}" class="btn btn--primary">{% trans "İlk mülakatını başlat" %}</a>
         </div>
     {% endif %}
 </section>

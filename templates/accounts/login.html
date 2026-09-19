@@ -1,23 +1,24 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Giriş Yap - Mülakat Simülatörü{% endblock %}
+{% block title %}{% trans "Giriş Yap - Mülakat Simülatörü" %}{% endblock %}
 
 {% block extra_css %}<link rel="stylesheet" href="/static/css/auth.css">{% endblock %}
 
 {% block content %}
 <section class="auth">
     <header class="auth__head">
-        <h1>Tekrar hoş geldin</h1>
-        <p>Kaldığın yerden provaya devam et.</p>
+        <h1>{% trans "Tekrar hoş geldin" %}</h1>
+        <p>{% trans "Kaldığın yerden provaya devam et." %}</p>
     </header>
 
     <form method="post" class="auth__card" id="auth-form">
         {% csrf_token %}
         {% include 'accounts/_fields.html' %}
-        <button type="submit" class="btn btn--primary" id="auth-submit" data-busy="Giriş yapılıyor...">Giriş yap</button>
+        <button type="submit" class="btn btn--primary" id="auth-submit" data-busy="{% trans "Giriş yapılıyor..." %}">{% trans "Giriş yap" %}</button>
     </form>
 
-    <p class="auth__alt">Hesabın yok mu? <a href="{% url 'register' %}">Kayıt ol</a></p>
+    <p class="auth__alt">{% trans "Hesabın yok mu?" %} <a href="{% url 'register' %}">{% trans "Kayıt ol" %}</a></p>
 </section>
 
 {% include 'accounts/_submit_lock.html' %}

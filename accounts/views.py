@@ -2,6 +2,7 @@ from django.contrib.auth import login
 from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django_ratelimit.decorators import ratelimit
 
 from .forms import RegisterForm
@@ -16,7 +17,7 @@ def register(request):
         if getattr(request, 'limited', False):
             form = RegisterForm(request.POST)
             form.add_error(
-                None, 'Çok fazla kayıt denemesi yapıldı. Lütfen bir süre sonra tekrar dene.'
+                None, _('Çok fazla kayıt denemesi yapıldı. Lütfen bir süre sonra tekrar dene.')
             )
         else:
             form = RegisterForm(request.POST)
@@ -38,7 +39,7 @@ class RateLimitedLoginView(auth_views.LoginView):
         if getattr(request, 'limited', False):
             form = self.get_form()
             form.add_error(
-                None, 'Çok fazla giriş denemesi yapıldı. Lütfen bir süre sonra tekrar dene.'
+                None, _('Çok fazla giriş denemesi yapıldı. Lütfen bir süre sonra tekrar dene.')
             )
             return self.form_invalid(form)
         return super().post(request, *args, **kwargs)

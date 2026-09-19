@@ -6,17 +6,18 @@ MIME türünü vermez ve service worker'ın kapsamı için `/sw.js` kökten sunu
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.templatetags.static import static
+from django.utils.translation import get_language, gettext as _
 from django.views.decorators.cache import cache_control
 
 
-@cache_control(max_age=3600)
+@cache_control(max_age=3600)  # dile göre değişir; yanıta Vary: Cookie eklenir (config/middleware.py)
 def manifest(request):
     data = {
         'id': '/',
-        'name': 'AI Mülakat Simülatörü',
-        'short_name': 'Mülakat',
-        'description': 'Yapay zekâ ile mülakat pratiği yap, anında geri bildirim al.',
-        'lang': 'tr',
+        'name': _('AI Mülakat Simülatörü'),
+        'short_name': _('Mülakat'),
+        'description': _('Yapay zekâ ile mülakat pratiği yap, anında geri bildirim al.'),
+        'lang': get_language(),
         'dir': 'ltr',
         'start_url': '/panel/',
         'scope': '/',
@@ -32,8 +33,8 @@ def manifest(request):
              'purpose': 'maskable'},
         ],
         'shortcuts': [
-            {'name': 'Yeni mülakat', 'url': '/mulakat/yeni/'},
-            {'name': 'Gelişimim', 'url': '/gelisim/'},
+            {'name': _('Yeni mülakat'), 'url': '/mulakat/yeni/'},
+            {'name': _('Gelişimim'), 'url': '/gelisim/'},
         ],
     }
     return JsonResponse(data, content_type='application/manifest+json')

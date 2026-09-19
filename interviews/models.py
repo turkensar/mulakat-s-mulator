@@ -1,31 +1,32 @@
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 DAILY_INTERVIEW_LIMIT = 3
 
 POSITION_CHOICES = [
-    ('junior_developer', 'Junior Yazılım Geliştirici'),
-    ('frontend_developer', 'Frontend Geliştirici'),
-    ('backend_developer', 'Backend Geliştirici'),
-    ('data_analyst', 'Veri Analisti'),
-    ('business_analyst', 'İş Analisti'),
-    ('intern_general', 'Stajyer (Genel)'),
+    ('junior_developer', _('Junior Yazılım Geliştirici')),
+    ('frontend_developer', _('Frontend Geliştirici')),
+    ('backend_developer', _('Backend Geliştirici')),
+    ('data_analyst', _('Veri Analisti')),
+    ('business_analyst', _('İş Analisti')),
+    ('intern_general', _('Stajyer (Genel)')),
 ]
 
 LEVEL_CHOICES = [
-    ('intern', 'Stajyer'),
-    ('junior', 'Junior'),
+    ('intern', _('Stajyer')),
+    ('junior', _('Junior')),
 ]
 
 INTERVIEW_TYPE_CHOICES = [
-    ('technical', 'Teknik'),
-    ('behavioral', 'İK (Davranışsal)'),
-    ('mixed', 'Karışık'),
+    ('technical', _('Teknik')),
+    ('behavioral', _('İK (Davranışsal)')),
+    ('mixed', _('Karışık')),
 ]
 
 LANGUAGE_CHOICES = [
-    ('tr', 'Türkçe'),
-    ('en', 'English'),
+    ('tr', _('Türkçe')),
+    ('en', _('İngilizce')),
 ]
 
 QUESTION_COUNT_CHOICES = [
@@ -35,13 +36,13 @@ QUESTION_COUNT_CHOICES = [
 ]
 
 STATUS_CHOICES = [
-    ('in_progress', 'Devam Ediyor'),
-    ('completed', 'Tamamlandı'),
+    ('in_progress', _('Devam Ediyor')),
+    ('completed', _('Tamamlandı')),
 ]
 
 CATEGORY_CHOICES = [
-    ('teknik', 'Teknik'),
-    ('davranissal', 'Davranışsal'),
+    ('teknik', _('Teknik')),
+    ('davranissal', _('Davranışsal')),
 ]
 
 

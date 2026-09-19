@@ -23,6 +23,7 @@ from . import pwa
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')),
     path('manifest.webmanifest', pwa.manifest, name='manifest'),
     path('sw.js', pwa.service_worker, name='service_worker'),
     path('cevrimdisi/', pwa.offline, name='offline'),

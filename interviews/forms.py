@@ -1,24 +1,26 @@
 from django import forms
+from django.utils.translation import gettext as gettext_now
+from django.utils.translation import gettext_lazy as _
 
 from .models import Interview
 
 FIELD_NAMES = ['position', 'level', 'interview_type', 'language', 'question_count']
 
 STEP_TITLES = {
-    'position': 'Hangi pozisyon için hazırlanıyorsun?',
-    'level': 'Hangi seviyedesin?',
-    'interview_type': 'Nasıl bir mülakat olsun?',
-    'language': 'Hangi dilde konuşalım?',
-    'question_count': 'Kaç soru olsun?',
+    'position': _('Hangi pozisyon için hazırlanıyorsun?'),
+    'level': _('Hangi seviyedesin?'),
+    'interview_type': _('Nasıl bir mülakat olsun?'),
+    'language': _('Hangi dilde konuşalım?'),
+    'question_count': _('Kaç soru olsun?'),
 }
 
 # Özet çubuğundaki, henüz seçilmemiş alanın yer tutucu adı.
 STEP_SHORT_NAMES = {
-    'position': 'Pozisyon',
-    'level': 'Seviye',
-    'interview_type': 'Tür',
-    'language': 'Dil',
-    'question_count': 'Soru sayısı',
+    'position': _('Pozisyon'),
+    'level': _('Seviye'),
+    'interview_type': _('Tür'),
+    'language': _('Dil'),
+    'question_count': _('Soru sayısı'),
 }
 
 # Seçeneklerin görsel bilgisi (docs/mulakat2.md §12.3). Anahtarlar seçenek değerinin str hâlidir.
@@ -32,18 +34,18 @@ OPTION_META = {
         'intern_general': {'icon': '🌱'},
     },
     'interview_type': {
-        'technical': {'color': 'violet', 'hint': 'Kod, kavram ve problem çözme'},
-        'behavioral': {'color': 'coral', 'hint': 'Deneyim, iletişim ve motivasyon'},
-        'mixed': {'color': 'sun', 'hint': 'İkisinden de biraz'},
+        'technical': {'color': 'violet', 'hint': _('Kod, kavram ve problem çözme')},
+        'behavioral': {'color': 'coral', 'hint': _('Deneyim, iletişim ve motivasyon')},
+        'mixed': {'color': 'sun', 'hint': _('İkisinden de biraz')},
     },
     'language': {
         'tr': {'flag': 'tr'},
         'en': {'flag': 'en'},
     },
     'question_count': {
-        '5': {'duration': '~10 dk', 'summary': '5 soru'},
-        '8': {'duration': '~16 dk', 'summary': '8 soru'},
-        '10': {'duration': '~20 dk', 'summary': '10 soru'},
+        '5': {'duration': _('~10 dk'), 'summary': _('5 soru')},
+        '8': {'duration': _('~16 dk'), 'summary': _('8 soru')},
+        '10': {'duration': _('~20 dk'), 'summary': _('10 soru')},
     },
 }
 
@@ -63,7 +65,7 @@ class InterviewForm(forms.ModelForm):
         required=False,
         widget=forms.Textarea(attrs={
             'rows': 10,
-            'placeholder': 'Eğitim, deneyim, proje ve becerilerini buraya yapıştır (ad ve adresini çıkarabilirsin)',
+            'placeholder': _('Eğitim, deneyim, proje ve becerilerini buraya yapıştır (ad ve adresini çıkarabilirsin)'),
             'aria-describedby': 'cv-hint cv-privacy cv-count',
         }),
     )
@@ -76,7 +78,7 @@ class InterviewForm(forms.ModelForm):
             **{name: forms.RadioSelect for name in FIELD_NAMES},
             'job_posting': forms.Textarea(attrs={
                 'rows': 8,
-                'placeholder': 'İlan metnini buraya yapıştır (görev tanımı, aranan nitelikler, kullanılan teknolojiler...)',
+                'placeholder': _('İlan metnini buraya yapıştır (görev tanımı, aranan nitelikler, kullanılan teknolojiler...)'),
                 'aria-describedby': 'posting-hint posting-count',
             }),
         }
@@ -87,12 +89,15 @@ class InterviewForm(forms.ModelForm):
             return ''
         if len(text) < self.JOB_POSTING_MIN:
             raise forms.ValidationError(
-                f'İlan metni çok kısa. En az {self.JOB_POSTING_MIN} karakter yapıştır ya da bu alanı boş bırak.'
+                gettext_now('İlan metni çok kısa. En az %(min)d karakter yapıştır ya da bu alanı boş bırak.')
+                % {'min': self.JOB_POSTING_MIN}
             )
         if len(text) > self.JOB_POSTING_MAX:
             raise forms.ValidationError(
-                f'İlan metni çok uzun ({len(text)} karakter). En fazla {self.JOB_POSTING_MAX} karakter '
-                'olabilir; görevler ve aranan nitelikler bölümünü bırakman yeterli.'
+                gettext_now(
+                    'İlan metni çok uzun (%(length)d karakter). En fazla %(max)d karakter '
+                    'olabilir; görevler ve aranan nitelikler bölümünü bırakman yeterli.'
+                ) % {'length': len(text), 'max': self.JOB_POSTING_MAX}
             )
         return text
 
@@ -102,12 +107,15 @@ class InterviewForm(forms.ModelForm):
             return ''
         if len(text) < self.CV_MIN:
             raise forms.ValidationError(
-                f'CV metni çok kısa. En az {self.CV_MIN} karakter yapıştır ya da bu alanı boş bırak.'
+                gettext_now('CV metni çok kısa. En az %(min)d karakter yapıştır ya da bu alanı boş bırak.')
+                % {'min': self.CV_MIN}
             )
         if len(text) > self.CV_MAX:
             raise forms.ValidationError(
-                f'CV metni çok uzun ({len(text)} karakter). En fazla {self.CV_MAX} karakter '
-                'olabilir; eğitim, deneyim, proje ve beceri bölümlerini bırakman yeterli.'
+                gettext_now(
+                    'CV metni çok uzun (%(length)d karakter). En fazla %(max)d karakter '
+                    'olabilir; eğitim, deneyim, proje ve beceri bölümlerini bırakman yeterli.'
+                ) % {'length': len(text), 'max': self.CV_MAX}
             )
         return text
 
@@ -115,7 +123,7 @@ class InterviewForm(forms.ModelForm):
         cleaned = super().clean()
         if cleaned.get('cv_text') and not cleaned.get('cv_consent'):
             self.add_error(
-                'cv_consent', 'CV metnini göndermek için gizlilik onayını işaretlemelisin.'
+                'cv_consent', gettext_now('CV metnini göndermek için gizlilik onayını işaretlemelisin.')
             )
         return cleaned
 

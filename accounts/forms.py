@@ -1,10 +1,12 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.utils.translation import gettext as gettext_now
+from django.utils.translation import gettext_lazy as _
 
 
 class RegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True, label='E-posta')
+    email = forms.EmailField(required=True, label=_('E-posta'))
 
     class Meta:
         model = User
@@ -13,7 +15,7 @@ class RegisterForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data['email']
         if User.objects.filter(email__iexact=email).exists():
-            raise forms.ValidationError('Bu e-posta adresi zaten kullanılıyor.')
+            raise forms.ValidationError(gettext_now('Bu e-posta adresi zaten kullanılıyor.'))
         return email
 
     def save(self, commit=True):

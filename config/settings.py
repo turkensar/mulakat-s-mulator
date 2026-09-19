@@ -78,6 +78,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'config.middleware.CookieLocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -156,6 +157,15 @@ LANGUAGE_CODE = 'tr'
 TIME_ZONE = 'Europe/Istanbul'
 
 USE_I18N = True
+
+# Arayüz dili (docs §2.2 iki dilli arayüz): kaynak metinler Türkçe yazılır, İngilizce
+# çeviri locale/en/LC_MESSAGES/django.po'dadır. Dili yalnızca çerez belirler
+# (config/middleware.py); mülakat dili (Interview.language) bundan bağımsızdır.
+LANGUAGES = [
+    ('tr', 'Türkçe'),
+    ('en', 'English'),
+]
+LOCALE_PATHS = [BASE_DIR / 'locale']
 
 USE_TZ = True
 

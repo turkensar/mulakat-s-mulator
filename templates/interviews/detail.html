@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Mülakat - Mülakat Simülatörü{% endblock %}
+{% block title %}{% trans "Mülakat - Mülakat Simülatörü" %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="/static/css/chat.css">
@@ -10,15 +11,15 @@
 {% block content %}
 <section class="session type--{{ interview.interview_type }}"
          data-speech-lang="{% if interview.language == 'tr' %}tr-TR{% else %}en-US{% endif %}"
-         data-speech-name="{% if interview.language == 'tr' %}Türkçe{% else %}İngilizce{% endif %}">
+         data-speech-name="{{ speech_name }}">
     <header class="session__head">
         <h1>{{ interview.get_position_display }}</h1>
         <ul class="badges">
             <li class="badge">{{ interview.get_level_display }}</li>
             <li class="badge badge--type">{{ interview.get_interview_type_display }}</li>
             <li class="badge">{% include 'interviews/_flag.html' with code=interview.language %}{{ interview.get_language_display }}</li>
-            {% if interview.job_posting %}<li class="badge">İlana özel</li>{% endif %}
-            {% if interview.cv_based %}<li class="badge">CV'ye özel</li>{% endif %}
+            {% if interview.job_posting %}<li class="badge">{% trans "İlana özel" %}</li>{% endif %}
+            {% if interview.cv_based %}<li class="badge">{% trans "CV'ye özel" %}</li>{% endif %}
         </ul>
     </header>
 
@@ -26,25 +27,25 @@
         <div class="progress-strip__row">
             <p class="progress-strip__text">
                 <strong id="progress-count">{{ answered_count }}</strong> / {{ total_count }}
-                <span>soru cevaplandı</span>
+                <span>{% trans "soru cevaplandı" %}</span>
             </p>
-            <button type="button" class="voice-toggle" id="autoread" aria-pressed="false">🔊 Soruları sesli oku</button>
+            <button type="button" class="voice-toggle" id="autoread" aria-pressed="false">{% trans "🔊 Soruları sesli oku" %}</button>
         </div>
-        <div class="progress" id="progress-bar" role="progressbar" aria-label="Mülakat ilerlemesi"
+        <div class="progress" id="progress-bar" role="progressbar" aria-label="{% trans "Mülakat ilerlemesi" %}"
              aria-valuemin="0" aria-valuemax="{{ total_count }}" aria-valuenow="{{ answered_count }}">
             <div class="progress__fill" id="progress-fill"
                  style="width: {% widthratio answered_count total_count 100 %}%"></div>
         </div>
     </div>
 
-    <div class="thread" id="thread" role="log" aria-label="Mülakat sohbeti">
+    <div class="thread" id="thread" role="log" aria-label="{% trans "Mülakat sohbeti" %}">
         {% for question in answered_questions %}
         <div class="msg msg--ai">
             <span class="msg__avatar" aria-hidden="true">🎙️</span>
             <div class="msg__body">
                 <div class="msg__head">
-                    <p class="msg__label">Soru {{ question.order }} · {{ question.get_category_display }}</p>
-                    <button type="button" class="listen" aria-label="Soruyu sesli oku">🔊 Dinle</button>
+                    <p class="msg__label">{% blocktrans with order=question.order category=question.get_category_display %}Soru {{ order }} · {{ category }}{% endblocktrans %}</p>
+                    <button type="button" class="listen" aria-label="{% trans "Soruyu sesli oku" %}">{% trans "🔊 Dinle" %}</button>
                 </div>
                 <div class="bubble">{{ question.text }}</div>
             </div>
@@ -57,8 +58,8 @@
             <span class="msg__avatar" aria-hidden="true">🎙️</span>
             <div class="msg__body">
                 <div class="msg__head">
-                    <p class="msg__label">Soru {{ current_question.order }} · {{ current_question.get_category_display }}</p>
-                    <button type="button" class="listen" aria-label="Soruyu sesli oku">🔊 Dinle</button>
+                    <p class="msg__label">{% blocktrans with order=current_question.order category=current_question.get_category_display %}Soru {{ order }} · {{ category }}{% endblocktrans %}</p>
+                    <button type="button" class="listen" aria-label="{% trans "Soruyu sesli oku" %}">{% trans "🔊 Dinle" %}</button>
                 </div>
                 <div class="bubble">{{ current_question.text }}</div>
             </div>
@@ -69,7 +70,7 @@
             <span class="msg__avatar" aria-hidden="true">🎙️</span>
             <div class="bubble">
                 <span class="thinking__dots" aria-hidden="true"><i></i><i></i><i></i></span>
-                <span class="thinking__text" id="thinking-text">Cevabın değerlendiriliyor</span>
+                <span class="thinking__text" id="thinking-text">{% trans "Cevabın değerlendiriliyor" %}</span>
             </div>
         </div>
     </div>
@@ -77,26 +78,29 @@
     {% if current_question %}
     <form id="answer-form" class="composer" data-question-id="{{ current_question.id }}">
         {% csrf_token %}
-        <label for="answer-text" class="visually-hidden">Cevabın</label>
-        <textarea id="answer-text" rows="3" placeholder="Cevabını buraya yaz..."></textarea>
+        <label for="answer-text" class="visually-hidden">{% trans "Cevabın" %}</label>
+        <textarea id="answer-text" rows="3" placeholder="{% trans "Cevabını buraya yaz..." %}"></textarea>
         <p class="notice composer__voice" id="voice-note" role="status" hidden></p>
         <p class="notice composer__error" id="answer-error" role="alert" hidden></p>
-        <p class="composer__privacy">🎙️ Sesle yazarken tarayıcın, sesini yazıya çevirmek için kendi ses tanıma hizmetini (örneğin Google) kullanabilir.</p>
+        <p class="composer__privacy">{% trans "🎙️ Sesle yazarken tarayıcın, sesini yazıya çevirmek için kendi ses tanıma hizmetini (örneğin Google) kullanabilir." %}</p>
         <div class="composer__actions">
-            <span class="composer__hint">Ctrl + Enter ile gönder</span>
+            <span class="composer__hint">{% trans "Ctrl + Enter ile gönder" %}</span>
             <div class="composer__buttons">
-                <button type="button" class="btn btn--ghost mic" id="mic" aria-pressed="false">🎙️ Sesle yaz</button>
-                <button type="submit" class="btn btn--primary" id="answer-submit">Cevabı gönder</button>
+                <button type="button" class="btn btn--ghost mic" id="mic" aria-pressed="false">{% trans "🎙️ Sesle yaz" %}</button>
+                <button type="submit" class="btn btn--primary" id="answer-submit">{% trans "Cevabı gönder" %}</button>
             </div>
         </div>
     </form>
     {% endif %}
 </section>
 
+{{ js_strings|json_script:"js-strings" }}
 <script>
 (function () {
     var form = document.getElementById('answer-form');
     if (!form) return;
+
+    var T = JSON.parse(document.getElementById('js-strings').textContent);
 
     var thread = document.getElementById('thread');
     var thinking = document.getElementById('thinking');
@@ -125,10 +129,10 @@
         var avatar = element('span', 'msg__avatar', '🎙️');
         avatar.setAttribute('aria-hidden', 'true');
         var head = element('div', 'msg__head');
-        head.appendChild(element('p', 'msg__label', 'Soru ' + order + ' · ' + category));
-        var listen = element('button', 'listen', '🔊 Dinle');
+        head.appendChild(element('p', 'msg__label', T.question + ' ' + order + ' · ' + category));
+        var listen = element('button', 'listen', T.listen);
         listen.type = 'button';
-        listen.setAttribute('aria-label', 'Soruyu sesli oku');
+        listen.setAttribute('aria-label', T.listenAria);
         head.appendChild(listen);
         body.appendChild(head);
         body.appendChild(element('div', 'bubble', text));
@@ -174,7 +178,7 @@
 
         var text = textarea.value.trim();
         if (!text) {
-            showError('Cevap boş olamaz.');
+            showError(T.answerEmpty);
             return;
         }
 
@@ -183,9 +187,7 @@
         var mine = answerMessage(text);
         thread.insertBefore(mine, thinking);
         // Son cevapta sunucu özet de ürettiği için bekleme daha uzun sürer.
-        showThinking(answered + 1 === total
-            ? 'Cevabın değerlendiriliyor ve raporun hazırlanıyor'
-            : 'Cevabın değerlendiriliyor');
+        showThinking(answered + 1 === total ? T.thinkingFinal : T.thinking);
 
         fetch(answerUrl, {
             method: 'POST',
@@ -202,7 +204,7 @@
             })
             .then(function (result) {
                 if (!result.ok || result.data.status !== 'ok') {
-                    throw new Error(result.data.message || 'Bir hata oluştu. Lütfen tekrar dene.');
+                    throw new Error(result.data.message || T.genericError);
                 }
 
                 textarea.value = '';
@@ -232,7 +234,7 @@
                 setBusy(false);
                 mine.remove();
                 showError(error instanceof TypeError || error instanceof SyntaxError
-                    ? 'Bağlantı hatası. Lütfen tekrar dene.'
+                    ? T.networkError
                     : error.message);
             });
     });

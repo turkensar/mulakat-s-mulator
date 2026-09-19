@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Yeni Mülakat - Mülakat Simülatörü{% endblock %}
+{% block title %}{% trans "Yeni Mülakat - Mülakat Simülatörü" %}{% endblock %}
 
 {% block extra_css %}<link rel="stylesheet" href="/static/css/create.css">{% endblock %}
 
 {% block content %}
 {% if limit_reached %}
 <section class="create create--limit">
-    <h1>Bugünlük bu kadar</h1>
-    <p>Bugünkü mülakat hakkını kullandın (günde en fazla 3 mülakat). Yarın tekrar deneyebilirsin; geçmiş mülakatlarına panelden bakabilirsin.</p>
-    <a href="{% url 'panel' %}" class="btn btn--primary">Panele dön</a>
+    <h1>{% trans "Bugünlük bu kadar" %}</h1>
+    <p>{% trans "Bugünkü mülakat hakkını kullandın (günde en fazla 3 mülakat). Yarın tekrar deneyebilirsin; geçmiş mülakatlarına panelden bakabilirsin." %}</p>
+    <a href="{% url 'panel' %}" class="btn btn--primary">{% trans "Panele dön" %}</a>
 </section>
 {% else %}
 {% with steps=form.steps %}
@@ -17,8 +18,8 @@
     {% csrf_token %}
 
     <header class="create__intro">
-        <h1>Provanı kuralım</h1>
-        <p>Beş küçük seçim yap, sana özel sorular hazırlansın.</p>
+        <h1>{% trans "Provanı kuralım" %}</h1>
+        <p>{% trans "Beş küçük seçim yap, sana özel sorular hazırlansın." %}</p>
     </header>
 
     {% if form.non_field_errors %}
@@ -64,10 +65,10 @@
 
     <section class="step posting" id="posting" aria-labelledby="step-posting" data-max="{{ form.JOB_POSTING_MAX }}">
         <h2 class="step__title" id="step-posting">
-            <span class="step__num" aria-hidden="true">6</span>Varsa iş ilanını yapıştır
-            <span class="step__optional">isteğe bağlı</span>
+            <span class="step__num" aria-hidden="true">6</span>{% trans "Varsa iş ilanını yapıştır" %}
+            <span class="step__optional">{% trans "isteğe bağlı" %}</span>
         </h2>
-        <p class="posting__hint" id="posting-hint">Sorular ilandaki görevlere, aranan niteliklere ve teknolojilere göre hazırlanır. Boş bırakırsan pozisyonuna göre genel sorular gelir.</p>
+        <p class="posting__hint" id="posting-hint">{% trans "Sorular ilandaki görevlere, aranan niteliklere ve teknolojilere göre hazırlanır. Boş bırakırsan pozisyonuna göre genel sorular gelir." %}</p>
         {{ form.job_posting }}
         <p class="posting__count" id="posting-count" aria-live="polite"></p>
         {% for error in form.job_posting.errors %}<p class="step__error" role="alert">{{ error }}</p>{% endfor %}
@@ -75,26 +76,26 @@
 
     <section class="step posting cv" id="cv" aria-labelledby="step-cv" data-max="{{ form.CV_MAX }}">
         <h2 class="step__title" id="step-cv">
-            <span class="step__num" aria-hidden="true">7</span>Varsa CV'ni yapıştır
-            <span class="step__optional">isteğe bağlı</span>
+            <span class="step__num" aria-hidden="true">7</span>{% trans "Varsa CV'ni yapıştır" %}
+            <span class="step__optional">{% trans "isteğe bağlı" %}</span>
         </h2>
-        <p class="posting__hint" id="cv-hint">Sorular CV'ndeki eğitim, deneyim, proje ve becerilere göre hazırlanır. Dosya yüklemek yerine metni yapıştırırsın; böylece neyin gideceğini görüp düzenleyebilirsin.</p>
+        <p class="posting__hint" id="cv-hint">{% trans "Sorular CV'ndeki eğitim, deneyim, proje ve becerilere göre hazırlanır. Dosya yüklemek yerine metni yapıştırırsın; böylece neyin gideceğini görüp düzenleyebilirsin." %}</p>
         {{ form.cv_text }}
         <p class="posting__count" id="cv-count" aria-live="polite"></p>
         {% for error in form.cv_text.errors %}<p class="step__error" role="alert">{{ error }}</p>{% endfor %}
 
         <div class="cv__privacy" id="cv-privacy">
-            <p><strong>Gizlilik.</strong> Metindeki e-posta, telefon, IBAN/kimlik numarası ve bağlantılar göndermeden önce otomatik silinir; adını ve adresini ise sen çıkar. CV metni bizde saklanmaz, yalnızca soruları hazırlamak için kullanılır.</p>
-            <p>Yapay zeka hizmeti olarak Google Gemini'nin ücretsiz katmanını kullanıyoruz. Bu katmanda gönderilen içerik Google tarafından ürünlerini geliştirmek için kullanılabilir ve insanlar tarafından okunabilir.</p>
+            <p>{% blocktrans trimmed %}<strong>Gizlilik.</strong> Metindeki e-posta, telefon, IBAN/kimlik numarası ve bağlantılar göndermeden önce otomatik silinir; adını ve adresini ise sen çıkar. CV metni bizde saklanmaz, yalnızca soruları hazırlamak için kullanılır.{% endblocktrans %}</p>
+            <p>{% trans "Yapay zeka hizmeti olarak Google Gemini'nin ücretsiz katmanını kullanıyoruz. Bu katmanda gönderilen içerik Google tarafından ürünlerini geliştirmek için kullanılabilir ve insanlar tarafından okunabilir." %}</p>
             <label class="cv__consent" for="id_cv_consent">
                 {{ form.cv_consent }}
-                <span>Bunu anladım, CV metnimin bu şekilde işlenmesini kabul ediyorum.</span>
+                <span>{% trans "Bunu anladım, CV metnimin bu şekilde işlenmesini kabul ediyorum." %}</span>
             </label>
             {% for error in form.cv_consent.errors %}<p class="step__error" role="alert">{{ error }}</p>{% endfor %}
         </div>
     </section>
 
-    <div class="summary" role="region" aria-label="Seçimlerin özeti">
+    <div class="summary" role="region" aria-label="{% trans "Seçimlerin özeti" %}">
         <div class="summary__inner">
             <ul class="summary__picks" id="summary-picks" hidden>
                 {% for step in steps %}
@@ -102,7 +103,7 @@
                 {% endfor %}
             </ul>
             <p class="summary__count" id="summary-count" aria-live="polite"></p>
-            <button type="submit" class="btn btn--primary" id="create-submit">Mülakatı başlat</button>
+            <button type="submit" class="btn btn--primary" id="create-submit">{% trans "Mülakatı başlat" %}</button>
         </div>
     </div>
 </form>
@@ -116,6 +117,11 @@
         var count = document.getElementById('summary-count');
         var total = picks.children.length;
         var submitLabel = button.textContent;
+        var text = {
+            ready: '{% trans "Hazırsın!" as t_ready %}{{ t_ready|escapejs }}',
+            selected: '{% trans "seçildi" as t_selected %}{{ t_selected|escapejs }}',
+            preparing: '{% trans "Sorular hazırlanıyor..." as t_preparing %}{{ t_preparing|escapejs }}'
+        };
         var postingBox = document.getElementById('posting');
         var posting = document.getElementById('id_job_posting');
         var postingCount = document.getElementById('posting-count');
@@ -157,7 +163,7 @@
                     pick.textContent = pick.dataset.placeholder;
                 }
             });
-            count.textContent = done === total ? 'Hazırsın!' : done + ' / ' + total + ' seçildi';
+            count.textContent = done === total ? text.ready : done + ' / ' + total + ' ' + text.selected;
             button.disabled = done !== total;
         }
 
@@ -169,7 +175,7 @@
         form.addEventListener('change', update);
         form.addEventListener('submit', function () {
             button.disabled = true;
-            button.textContent = 'Sorular hazırlanıyor...';
+            button.textContent = text.preparing;
         });
         // Geri tuşuyla dönüldüğünde sayfa önbellekten gelir; buton kilitli kalmasın.
         window.addEventListener('pageshow', function (event) {
