@@ -1,0 +1,38 @@
+{% comment %}
+    Bağımsız sayfa: base.html'i KULLANMAZ. Service worker bunu önbelleğe alır; navbar ve
+    csrf gibi kullanıcıya özel içerik olursa ortak cihazda başka kullanıcıya görünür.
+{% endcomment %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6B3BFF">
+    <title>Çevrimdışısın - Mülakat Simülatörü</title>
+    <link rel="stylesheet" href="/static/css/tokens.css">
+    <link rel="stylesheet" href="/static/css/theme.css">
+    <style>
+        .offline {
+            max-width: 32rem;
+            margin: 0 auto;
+            padding: var(--space-12) var(--space-4);
+            text-align: center;
+        }
+        .offline__icon {
+            width: 96px;
+            height: 96px;
+            border-radius: var(--radius-block);
+        }
+        .offline h1 { margin: var(--space-6) 0 var(--space-3); }
+        .offline p { margin: 0 0 var(--space-6); color: var(--ink-soft); }
+    </style>
+</head>
+<body class="ds">
+    <main class="offline">
+        <img class="offline__icon" src="/static/img/icon-192.png" alt="" width="96" height="96">
+        <h1>İnternet bağlantın yok</h1>
+        <p>Mülakat simülatörü yapay zekâya bağlı çalışır; sorular ve değerlendirmeler için internet gerekir. Bağlantın geri geldiğinde kaldığın yerden devam edebilirsin.</p>
+        <button type="button" class="btn btn--primary" onclick="location.reload()">Tekrar dene</button>
+    </main>
+</body>
+</html>

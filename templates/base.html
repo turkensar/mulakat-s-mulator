@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mülakat Simülatörü{% endblock %}</title>
+    <meta name="theme-color" content="#6B3BFF">
+    <link rel="manifest" href="{% url 'manifest' %}">
+    <link rel="icon" href="/static/img/icon.svg" type="image/svg+xml">
+    <link rel="icon" href="/static/img/favicon-48.png" type="image/png" sizes="48x48">
+    <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="Mülakat">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700..800&amp;family=DM+Sans:wght@400;500;700&amp;display=swap">
@@ -40,5 +46,12 @@
     <main>
         {% block content %}{% endblock %}
     </main>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('{% url 'service_worker' %}').catch(function () { /* PWA olmadan da çalışır */ });
+            });
+        }
+    </script>
 </body>
 </html>

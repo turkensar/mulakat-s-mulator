@@ -19,8 +19,13 @@ from django.urls import include, path
 
 from interviews.views import home, panel
 
+from . import pwa
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('manifest.webmanifest', pwa.manifest, name='manifest'),
+    path('sw.js', pwa.service_worker, name='service_worker'),
+    path('cevrimdisi/', pwa.offline, name='offline'),
     path('', home, name='home'),
     path('panel/', panel, name='panel'),
     path('', include('accounts.urls')),

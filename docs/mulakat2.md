@@ -59,7 +59,8 @@ Kullanıcı hedeflediği pozisyonu, seviyesini, mülakat türünü ve dilini se�
 - **Gelişim grafiği (yapıldı, `/gelisim/`):** Zaman içindeki skor değişimi ve en zayıf konular (Chart.js). Soruların "konusu" saklanmadığı için (yalnızca `teknik`/`davranissal` kategorisi ve pozisyon var; konu çıkarmak ek Gemini çağrısı ve kota demek) "en zayıf konular" şu iki veriyle gösterilir: kategori ortalamaları ve en düşük puanlı (8'in altındaki) 3 soru. Yalnızca tamamlanmış mülakatlar sayılır; grafik için en az 2 mülakat gerekir.
 - **AI takip soruları:** Cevaba göre AI'ın ek soru sorması.
 - **İki dilli arayüz:** Menü ve butonların da İngilizce seçeneği.
-- **Mobil uyum ve PWA.**
+- **PWA (yapıldı, `config/pwa.py`):** Uygulama telefona/bilgisayara "yüklenebilir" (Chrome/Edge adres çubuğundaki yükle simgesi, Android "Ana ekrana ekle", iOS Safari Paylaş → "Ana Ekrana Ekle"): `/manifest.webmanifest` (ad, `standalone` görünüm, `/panel/` başlangıç adresi, tema renkleri `tokens.css`'ten, "Yeni mülakat" ve "Gelişimim" kısayolları), `static/img/` altında simgeler (SVG kaynak + 192/512 PNG + maskable + Apple) ve `/sw.js` service worker'ı. **Çevrimdışı çalışmaz** (soru üretme ve değerlendirme AI'ya bağlıdır); service worker yalnızca bağlantı yokken tarayıcı hata sayfası yerine `/cevrimdisi/` sayfasını gösterir. Sayfalar, cevaplar ya da kullanıcıya ait hiçbir veri önbelleğe alınmaz (yalnızca çevrimdışı sayfa, iki stil dosyası ve bir simge); çevrimdışı sayfa `base.html`'den bağımsızdır, böylece navbar/CSRF gibi kullanıcıya özel içerik ortak cihazda sızmaz. Sunucu 4xx/5xx döndürürse yedek sayfa devreye girmez, yalnızca bağlantı hatasında girer. Çevrimdışı sayfa ya da stilleri değişirse `templates/pwa/sw.js` içindeki `CACHE` sürümü artırılır.
+- **Mobil uyum:** §12.5'teki 375px kuralı arayüz için geçerlidir; ayrı bir mobil sürüm yoktur (PWA olarak yüklenince aynı sayfalar tam ekran açılır).
 
 ---
 
@@ -225,6 +226,9 @@ Beklenen JSON:
 | `/mulakat/<id>/cevap/` | Cevap gönderme (POST, JSON) |
 | `/mulakat/<id>/rapor/` | Değerlendirme raporu |
 | `/gelisim/` | Gelişim: skor grafiği, alan ortalamaları, zayıf sorular |
+| `/manifest.webmanifest` | PWA manifesti (JSON) |
+| `/sw.js` | Service worker (kökten sunulur, kapsamı `/`) |
+| `/cevrimdisi/` | Bağlantı yokken gösterilen çevrimdışı sayfa |
 
 Kullanıcı sadece kendi mülakatlarına erişebilir; başkasının mülakat id'sine erişim denemesi 404 döner.
 
