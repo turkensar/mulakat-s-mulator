@@ -42,13 +42,41 @@ body.ds {
     border-bottom: 1px solid var(--line);
 }
 
+/* Logo (§12.6): işaret + iki satırlı yazı; "Simülatörü" marka renginde */
 .ds .navbar__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     color: var(--ink);
     font-family: var(--font-display);
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 800;
     letter-spacing: -0.01em;
+    line-height: 1.05;
     text-decoration: none;
+}
+
+.ds .navbar__logo {
+    flex: none;
+    width: 36px;
+    height: 36px;
+}
+
+.ds .navbar__name b {
+    display: block;
+    color: var(--violet);
+    font-weight: 800;
+}
+
+.ds .navbar__ai {
+    margin-left: 4px;
+    padding: 2px 5px;
+    background: var(--sun);
+    border-radius: var(--radius-badge);
+    color: var(--on-sun);
+    font-size: 0.7rem;
+    letter-spacing: 0;
+    vertical-align: 2px;
 }
 
 .ds .navbar__links {
@@ -84,6 +112,27 @@ body.ds {
     background: none;
     border: none;
     cursor: pointer;
+}
+
+/* Dar ekranda logo ve bağlantılar tek satıra sığsın (375px) */
+@media (max-width: 480px) {
+    .ds .navbar {
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .ds .navbar__brand {
+        gap: var(--space-2);
+        font-size: 0.95rem;
+    }
+
+    .ds .navbar__logo {
+        width: 30px;
+        height: 30px;
+    }
+
+    .ds .navbar__links {
+        gap: var(--space-3);
+    }
 }
 
 /* Bildirim mesajları */

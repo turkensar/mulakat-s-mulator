@@ -6,7 +6,7 @@
     <title>{% block title %}Mülakat Simülatörü{% endblock %}</title>
     <meta name="theme-color" content="#6B3BFF">
     <link rel="manifest" href="{% url 'manifest' %}">
-    <link rel="icon" href="/static/img/icon.svg" type="image/svg+xml">
+    <link rel="icon" href="/static/img/logo-mark.svg" type="image/svg+xml">
     <link rel="icon" href="/static/img/favicon-48.png" type="image/png" sizes="48x48">
     <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-title" content="Mülakat">
@@ -19,7 +19,10 @@
 </head>
 <body class="ds">
     <nav class="navbar">
-        <a href="{% url 'home' %}" class="navbar__brand">AI Mülakat Simülatörü</a>
+        <a href="{% url 'home' %}" class="navbar__brand" aria-label="AI Mülakat Simülatörü, ana sayfa">
+            <img class="navbar__logo" src="/static/img/logo-mark.svg" alt="" width="36" height="36">
+            <span class="navbar__name" aria-hidden="true">Mülakat<span class="navbar__ai">AI</span><b>Simülatörü</b></span>
+        </a>
         <div class="navbar__links">
             {% if user.is_authenticated %}
                 <a href="{% url 'panel' %}">Panel</a>

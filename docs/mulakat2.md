@@ -348,3 +348,13 @@ Google Fonts üzerinden (Türkçe karakter desteği var):
 - `prefers-reduced-motion` açıksa animasyonlar kapatılır.
 - Metin ve zemin arasında yeterli kontrast (özellikle sun sarısı üzerinde koyu metin kullanılır, beyaz değil).
 - Koyu tema şimdilik yok; ileride aynı değişkenlerin koyu versiyonlarıyla eklenebilir.
+
+### 12.6 Logo
+
+**İşaret:** Bir konuşma balonu (mülakat = konuşma) içinde beş yuvarlak uçlu ses çubuğu (soruları sesli okuma ve mikrofonla cevap). Balon `--violet`, çubuklar beyaz, ortadaki en uzun çubuk `--sun`. Kaynak: `static/img/logo-mark.svg` (zemin yok, koyu ya da renkli zemin üzerinde kullanılmaz; açık zeminde kullanılır).
+
+**Yazı:** İki satır, Bricolage Grotesque 800: üstte "Mülakat" (`--ink`) ve yanında küçük `--sun` "AI" rozeti, altta "Simülatörü" (`--violet`). Yazı görsel değil HTML'dir (navbar'da `.navbar__name`), böylece yazı tipi ve renkler `tokens.css`'ten gelir.
+
+**Uygulama simgesi:** Aynı işaretin tersi: `--violet` zemin, beyaz balon, mor çubuklar, ortadaki çubuk `--coral` (sarı, beyaz balon üzerinde okunmaz). Kaynak `static/img/icon.svg`; PNG'ler (192, 512, maskable, Apple, favicon) bu işaretten üretilir. İşaret, maskable güvenli bölgesinin (merkez %80 daire) içinde kalacak şekilde ölçeklenmiştir. Favicon zeminsiz işaretin kendisidir.
+
+**Kurallar:** İşaretin çevresinde en az balon yüksekliğinin dörtte biri boşluk bırak; çubukların sayısını, oranını ya da renklerini değiştirme; navbar'da işaret 36px (mobilde 30px). Dar ekranda (≤480px) yazı küçülür ama iki satırlı düzen korunur; 320px'te bile bağlantılarla birlikte tek satıra sığar.
