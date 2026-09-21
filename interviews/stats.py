@@ -50,7 +50,7 @@ def build_progress(user):
             'date': formats.date_format(local, 'j E Y'),
             'score': round(float(interview.overall_score), 1),
             'score_text': _number(interview.overall_score),
-            'position': interview.get_position_display(),
+            'position': interview.display_position,
             'type': interview.get_interview_type_display(),
         })
 

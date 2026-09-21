@@ -73,10 +73,58 @@
     gap: var(--space-3);
 }
 
-/* 6 pozisyon: 3x2 (masaüstü) / 2x3 (mobil); başıboş tek kart kalmaz */
+/* 6 yazılım/genel pozisyon: 3x2 (masaüstü) / 2x3 (mobil). Yedinci "Diğer" çipi son satırı
+   tek başına, tam genişlikte doldurur; başıboş yarım kart kalmaz. */
 .chips--position {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+}
+
+.chips--position .chip:last-child {
+    grid-column: 1 / -1;
+}
+
+/* Tam genişlikteki "Diğer" çipi yatay dizilir: simge, ad, ipucu tek satırda */
+.chips--position .chip:last-child label {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    min-height: 64px;
+    padding: var(--space-3) var(--space-4);
+}
+
+/* "Diğer" seçilince açılan mülakat tarifi (yazılım dışı alanlar için) */
+.other {
+    margin-top: var(--space-4);
+}
+
+.other[hidden] {
+    display: none;
+}
+
+.other__label {
+    display: block;
+    font-weight: 700;
+}
+
+.other__hint {
+    margin: var(--space-1) 0 var(--space-3);
+    color: var(--ink-soft);
+}
+
+.other input[type="text"] {
+    display: block;
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+    color: var(--ink);
+    font: inherit;
+}
+
+.other input[type="text"]:focus-visible {
+    border-color: var(--violet);
 }
 
 .chip {

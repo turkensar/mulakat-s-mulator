@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.utils.translation import gettext as gettext_now
 from django.utils.translation import gettext_lazy as _
@@ -32,9 +34,10 @@ OPTION_META = {
         'data_analyst': {'icon': '📊'},
         'business_analyst': {'icon': '💼'},
         'intern_general': {'icon': '🌱'},
+        'other': {'icon': '✨'},
     },
     'interview_type': {
-        'technical': {'color': 'violet', 'hint': _('Kod, kavram ve problem çözme')},
+        'technical': {'color': 'violet', 'hint': _('Alanına özgü bilgi ve problem çözme')},
         'behavioral': {'color': 'coral', 'hint': _('Deneyim, iletişim ve motivasyon')},
         'mixed': {'color': 'sun', 'hint': _('İkisinden de biraz')},
     },
@@ -61,6 +64,10 @@ class InterviewForm(forms.ModelForm):
     # ister (docs §2.2).
     CV_MIN = 100
     CV_MAX = 8000
+
+    # "Diğer" pozisyon: yazılım dışı alanlar için kullanıcı mülakatı kısaca kendisi tarif eder.
+    CUSTOM_POSITION_MIN = 3
+    CUSTOM_POSITION_MAX = 160
     cv_text = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={
@@ -73,15 +80,25 @@ class InterviewForm(forms.ModelForm):
 
     class Meta:
         model = Interview
-        fields = FIELD_NAMES + ['job_posting']
+        fields = FIELD_NAMES + ['custom_position', 'job_posting']
         widgets = {
             **{name: forms.RadioSelect for name in FIELD_NAMES},
+            'custom_position': forms.TextInput(attrs={
+                'placeholder': _('Örn: Pazarlama uzmanı, e-ticaret şirketi'),
+                'aria-describedby': 'other-hint',
+                'autocomplete': 'off',
+            }),
             'job_posting': forms.Textarea(attrs={
                 'rows': 8,
                 'placeholder': _('İlan metnini buraya yapıştır (görev tanımı, aranan nitelikler, kullanılan teknolojiler...)'),
                 'aria-describedby': 'posting-hint posting-count',
             }),
         }
+
+    def clean_custom_position(self):
+        # Tek satır, boşluklar toplanır; < > istemdeki sınırlayıcıları taklit edemesin diye atılır.
+        text = re.sub(r'\s+', ' ', self.cleaned_data.get('custom_position') or '').strip()
+        return text.replace('<', '').replace('>', '')
 
     def clean_job_posting(self):
         text = (self.cleaned_data.get('job_posting') or '').replace('\r\n', '\n').strip()
@@ -121,6 +138,14 @@ class InterviewForm(forms.ModelForm):
 
     def clean(self):
         cleaned = super().clean()
+        if cleaned.get('position') == 'other':
+            custom = cleaned.get('custom_position', '')
+            if len(custom) < self.CUSTOM_POSITION_MIN:
+                self.add_error('custom_position', gettext_now(
+                    'Diğer\'i seçtin; hazırlandığın mülakatı kısaca yaz (en az %(min)d karakter).'
+                ) % {'min': self.CUSTOM_POSITION_MIN})
+        elif 'position' in cleaned:
+            cleaned['custom_position'] = ''  # başka pozisyon seçildiyse eski tarif saklanmaz
         if cleaned.get('cv_text') and not cleaned.get('cv_consent'):
             self.add_error(
                 'cv_consent', gettext_now('CV metnini göndermek için gizlilik onayını işaretlemelisin.')

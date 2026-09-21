@@ -13,7 +13,7 @@
          data-speech-lang="{% if interview.language == 'tr' %}tr-TR{% else %}en-US{% endif %}"
          data-speech-name="{{ speech_name }}">
     <header class="session__head">
-        <h1>{{ interview.get_position_display }}</h1>
+        <h1>{{ interview.display_position }}</h1>
         <ul class="badges">
             <li class="badge">{{ interview.get_level_display }}</li>
             <li class="badge badge--type">{{ interview.get_interview_type_display }}</li>

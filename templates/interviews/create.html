@@ -43,6 +43,7 @@
                     {% if step.name == 'position' %}
                         <span class="chip__icon" aria-hidden="true">{{ opt.icon }}</span>
                         <span class="chip__label">{{ opt.label }}</span>
+                        {% if opt.value == 'other' %}<span class="chip__hint">{% trans "Yazılım dışı bir alan mı? Kendin tarif et." %}</span>{% endif %}
                     {% elif step.name == 'interview_type' %}
                         <span class="chip__label">{{ opt.label }}</span>
                         <span class="chip__hint">{{ opt.hint }}</span>
@@ -60,6 +61,14 @@
             {% endfor %}
         </div>
         {% if step.errors %}<p class="step__error" role="alert">{{ step.errors.0 }}</p>{% endif %}
+        {% if step.name == 'position' %}
+        <div class="other" id="other-box"{% if form.position.value != 'other' %} hidden{% endif %}>
+            <label class="other__label" for="id_custom_position">{% trans "Nasıl bir mülakat olacak?" %}</label>
+            <p class="other__hint" id="other-hint">{% trans "Hangi meslek ya da alan için hazırlanıyorsun? Kısaca yaz; sorular buna göre hazırlanır." %}</p>
+            {{ form.custom_position }}
+            {% for error in form.custom_position.errors %}<p class="step__error" role="alert">{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
     </section>
     {% endfor %}
 
@@ -147,8 +156,20 @@
             cvConsent.required = length > 0;
         }
 
+        var otherBox = document.getElementById('other-box');
+        var custom = document.getElementById('id_custom_position');
+
+        // "Diğer" seçilince mülakat tarifi kutusu açılır ve zorunlu olur.
+        function updateOther() {
+            var position = form.querySelector('input[name="position"]:checked');
+            var isOther = !!position && position.value === 'other';
+            otherBox.hidden = !isOther;
+            custom.required = isOther;
+        }
+
         function update() {
             var done = 0;
+            updateOther();
             Array.prototype.forEach.call(picks.children, function (pick) {
                 var checked = form.querySelector('input[name="' + pick.dataset.field + '"]:checked');
                 pick.className = 'pick';
@@ -159,6 +180,11 @@
                         pick.classList.add('pick--' + checked.dataset.color);
                     }
                     pick.textContent = checked.dataset.summary;
+                    // Özet çubuğunda yazılan tarif görünsün (uzunsa kısaltılır).
+                    if (checked.name === 'position' && checked.value === 'other' && custom.value.trim()) {
+                        var typed = custom.value.trim();
+                        pick.textContent = typed.length > 24 ? typed.slice(0, 23) + '…' : typed;
+                    }
                 } else {
                     pick.textContent = pick.dataset.placeholder;
                 }
@@ -171,6 +197,7 @@
         posting.addEventListener('input', updatePostingCount);
         updatePostingCount();
         cv.addEventListener('input', updateCv);
+        custom.addEventListener('input', update);
         updateCv();
         form.addEventListener('change', update);
         form.addEventListener('submit', function () {

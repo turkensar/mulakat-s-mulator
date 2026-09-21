@@ -78,6 +78,7 @@ def create_interview(request):
             try:
                 questions = generate_questions(
                     **_prompt_labels(interview),
+                    position_is_custom=interview.position == 'other',
                     language=interview.language,
                     question_count=interview.question_count,
                     job_posting=interview.job_posting,
@@ -113,7 +114,7 @@ def _prompt_labels(interview):
     """
     with translation.override('tr'):
         return {
-            'position_label': interview.get_position_display(),
+            'position_label': interview.display_position,
             'level_label': interview.get_level_display(),
             'interview_type_label': interview.get_interview_type_display(),
         }

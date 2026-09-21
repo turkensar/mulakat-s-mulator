@@ -89,7 +89,7 @@
                             <span class="score-badge"><span class="visually-hidden">{% trans "Puan:" %} </span>{{ answer.score }} / 10</span>
                             <span class="weak__body">
                                 <span class="weak__question">{{ answer.question.text|inline_markup }}</span>
-                                <span class="weak__meta">{% blocktrans trimmed with position=answer.question.interview.get_position_display order=answer.question.order %}{{ position }} · Soru {{ order }}{% endblocktrans %}</span>
+                                <span class="weak__meta">{% blocktrans trimmed with position=answer.question.interview.display_position order=answer.question.order %}{{ position }} · Soru {{ order }}{% endblocktrans %}</span>
                             </span>
                             <span class="weak__cta">{% trans "Raporda gör" %}</span>
                         </a>

@@ -11,6 +11,8 @@ POSITION_CHOICES = [
     ('data_analyst', _('Veri Analisti')),
     ('business_analyst', _('İş Analisti')),
     ('intern_general', _('Stajyer (Genel)')),
+    # Yazılım dışı alanlar için: kullanıcı mülakatı kendisi tarif eder (Interview.custom_position).
+    ('other', _('Diğer')),
 ]
 
 LEVEL_CHOICES = [
@@ -49,6 +51,9 @@ CATEGORY_CHOICES = [
 class Interview(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='interviews')
     position = models.CharField('Pozisyon', max_length=30, choices=POSITION_CHOICES)
+    # position == 'other' iken kullanıcının kendi yazdığı kısa mülakat tarifi (ör. "Hemşire, özel hastane").
+    # db_default, şema değişikliği sırasında eski kodun (sütunu bilmeyen INSERT'ler) çalışmasını sağlar.
+    custom_position = models.CharField('Özel pozisyon', max_length=160, blank=True, default='', db_default='')
     level = models.CharField('Seviye', max_length=10, choices=LEVEL_CHOICES)
     interview_type = models.CharField('Mülakat Türü', max_length=15, choices=INTERVIEW_TYPE_CHOICES)
     language = models.CharField('Mülakat Dili', max_length=2, choices=LANGUAGE_CHOICES)
@@ -70,8 +75,15 @@ class Interview(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+    @property
+    def display_position(self):
+        """Başlıklarda gösterilen pozisyon: 'Diğer' seçildiyse kullanıcının kendi tarifi."""
+        if self.position == 'other' and self.custom_position:
+            return self.custom_position
+        return self.get_position_display()
+
     def __str__(self):
-        return f'{self.get_position_display()} ({self.user.username})'
+        return f'{self.display_position} ({self.user.username})'
 
 
 class Question(models.Model):
