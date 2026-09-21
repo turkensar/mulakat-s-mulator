@@ -16,9 +16,14 @@ from django.views.decorators.http import require_POST
 from .forms import InterviewForm
 from .models import Answer, DAILY_INTERVIEW_LIMIT, Question
 from .services.gemini import (
-    GeminiError, GeminiQuotaError, evaluate_answer, generate_questions, summarize_interview,
+    GeminiError, GeminiQuotaError, GeminiTimeoutError, evaluate_answer, generate_questions,
+    summarize_interview,
 )
 from .stats import build_progress
+
+SLOW_MESSAGE = gettext_lazy(
+    'Yapay zeka servisi şu an yavaş ya da yoğun. Birkaç dakika sonra tekrar dene.'
+)
 
 QUOTA_MESSAGE = gettext_lazy(
     'Yapay zeka servisinin ücretsiz kullanım kotası şu an dolu. '
@@ -87,6 +92,9 @@ def create_interview(request):
             except GeminiQuotaError:
                 interview.delete()
                 form.add_error(None, QUOTA_MESSAGE)
+            except GeminiTimeoutError:
+                interview.delete()
+                form.add_error(None, SLOW_MESSAGE)
             except GeminiError:
                 interview.delete()
                 form.add_error(
@@ -259,6 +267,11 @@ def submit_answer(request, pk):
     except GeminiQuotaError:
         return JsonResponse(
             {'status': 'error', 'message': f"{QUOTA_MESSAGE} {_('Yazdığın cevap korundu.')}"},
+            status=503,
+        )
+    except GeminiTimeoutError:
+        return JsonResponse(
+            {'status': 'error', 'message': f"{SLOW_MESSAGE} {_('Yazdığın cevap korundu.')}"},
             status=503,
         )
     except GeminiError:

@@ -298,6 +298,10 @@ msgstr "Couldn't reach the speech recognition service. Check your internet conne
 msgid "%(lang)s için ses tanıma bu tarayıcıda desteklenmiyor."
 msgstr "Speech recognition for %(lang)s isn't supported in this browser."
 
+#: interviews/views.py:24
+msgid "Yapay zeka servisi şu an yavaş ya da yoğun. Birkaç dakika sonra tekrar dene."
+msgstr "The AI service is slow or busy right now. Try again in a few minutes."
+
 #: interviews/views.py:247
 msgid "Geçersiz istek."
 msgstr "Invalid request."

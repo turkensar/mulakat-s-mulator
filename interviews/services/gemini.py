@@ -14,16 +14,31 @@ from .cv import clean_cv_text
 
 logger = logging.getLogger(__name__)
 
-# Yanıt gelmeden beklenebilecek en uzun süre; toplam süre sınırı DEĞİLDİR (yanıt
-# parça parça geliyorsa çağrı bundan uzun sürebilir, canlıda 3.7 ile 45 sn görüldü).
-# Gerçek üst sınır vercel.json'daki maxDuration: son cevapta iki çağrı (değerlendirme
-# + özet) arka arkaya çalışır, bu yüzden 2 x bu değer + veritabanı süresi maxDuration'ın
-# altında kalmalıdır (45 x 2 = 90 sn < 120 sn).
-_CALL_TIMEOUT_SECONDS = 45
+# Tek bir model denemesinin en uzun süresi. Sağlıklı modeller 5 soruyu 5-20 sn'de üretir;
+# 30 sn'yi aşan model yavaş sayılıp yedek zincirdeki sıradaki model denenir (2026-09-21'de Google
+# tarafı yavaşken 3.6 ve 3.7 45 sn'de bile yanıt vermedi, 3.5 15 sn ve 3.1-lite 4 sn'de verdi;
+# 45 sn'lik denemeler bütçeyi bitirip hızlı yedeklere sıra bırakmıyordu).
+# Gerçek üst sınır vercel.json'daki maxDuration (120 sn); bir çağrının yedek modeller dahil
+# toplam süresi aşağıdaki *_BUDGET_SECONDS ile sınırlanır (son cevapta değerlendirme + özet
+# arka arkaya çalıştığı için bütçelerin toplamı 120 sn'nin altındadır).
+_CALL_TIMEOUT_SECONDS = 30
 
 # Kotası dolu görülen model bu süre boyunca atlanır; her çağrıda boşuna 429 almamak için.
 # Önbellek veritabanında olduğu için Vercel'in ayrı fonksiyon örnekleri arasında paylaşılır.
 _QUOTA_SKIP_SECONDS = 600
+
+# Zaman aşımına uğrayan (yavaş yanıt veren) model bu süre boyunca yedek listenin SONUNA alınır;
+# her istekte önce yavaş modeli 45 sn beklemeyelim. Atlanmaz, çünkü yavaşlık geçici olabilir.
+_SLOW_DEMOTE_SECONDS = 300
+
+# Bir çağrının (yedek modeller dahil) en fazla harcayabileceği süre. Vercel'in 120 sn'lik
+# fonksiyon sınırı içinde kalmak için: soru üretme 90 sn; son cevapta değerlendirme (60) ve
+# özet (40) arka arkaya çalıştığından toplamları 120 sn'nin altında kalır.
+_GENERATE_BUDGET_SECONDS = 90
+_EVALUATE_BUDGET_SECONDS = 60
+_SUMMARIZE_BUDGET_SECONDS = 40
+# Kalan süre bundan azsa yeni bir model denenmez (denemek boşuna beklemek olur).
+_MIN_ATTEMPT_SECONDS = 12
 
 _client = None
 
@@ -34,6 +49,10 @@ class GeminiError(Exception):
 
 class GeminiQuotaError(GeminiError):
     """Denenen tüm modellerin (ücretsiz) kullanım kotası dolu olduğunda fırlatılır."""
+
+
+class GeminiTimeoutError(GeminiError):
+    """Denenen modellerin hiçbiri süre sınırı içinde yanıt vermediğinde fırlatılır."""
 
 
 class _QuestionItem(BaseModel):
@@ -66,23 +85,16 @@ class _InterviewSummary(BaseModel):
 def _get_client():
     global _client
     if _client is None:
-        # SDK varsayılanı 5 denemeye kadar, deneme arası 60 saniyeye kadar
-        # bekleyebiliyor (toplamda dakikalarca sürebilir - bunu bu projede
-        # bizzat yaşadık). Vercel'in fonksiyon zaman aşımı içinde kalabilmek
-        # için deneme sayısını ve bekleme süresini sıkı tutuyoruz. 429 (kota
-        # aşımı) tekrar denenmeye değmez, o yüzden retry listesinden çıkarıldı.
-        # SDK'da attempts "tekrar sayısı" gibi çalışır: attempts=2, 1 ilk istek + 2
-        # tekrar = 3 istek eder (yerel sahte sunucuyla doğrulandı). Tekrarlar yalnızca
-        # hızlı dönen 5xx içindir; zaman aşımı yeniden denenmez.
+        # SDK'nın kendi yeniden denemesi KAPALI (attempts=0 → 0 tekrar; _gaos/google_genai.py
+        # _translate_retry_config). Sebep: bu SDK zaman aşımını da "bağlantı hatası" sayıp
+        # yeniden deniyor (retry_connection_errors sabit True): timeout=20 ile tek çağrı 61 sn
+        # sürdü (2026-09-21), yani süre 3 katına çıkıp Vercel'in 120 sn sınırını ve bizim zaman
+        # bütçemizi bozuyor. Yeniden deneme işini kendimiz yapıyoruz: yavaş (zaman aşımı) ya da
+        # 5xx veren model yerine yedek zincirdeki sıradaki model denenir (_create_interaction).
         _client = genai.Client(
             api_key=settings.GEMINI_API_KEY,
             http_options=types.HttpOptions(
-                retry_options=types.HttpRetryOptions(
-                    attempts=2,
-                    initial_delay=1.0,
-                    max_delay=2.0,
-                    http_status_codes=[500, 502, 503, 504],
-                ),
+                retry_options=types.HttpRetryOptions(attempts=0),
             ),
         )
     return _client
@@ -99,8 +111,30 @@ def _is_quota_error(exc):
     return getattr(exc, 'status_code', None) == 429
 
 
+def _is_timeout_error(exc):
+    # SDK'nın APITimeoutError'ı özel modül yolunda; 429'da olduğu gibi içe aktarmadan, hata
+    # zincirindeki (__cause__) sınıf adlarından ayırt ederiz (APITimeoutError, httpx.ReadTimeout...).
+    seen = 0
+    while exc is not None and seen < 6:
+        if isinstance(exc, TimeoutError) or 'Timeout' in type(exc).__name__:
+            return True
+        exc = exc.__cause__ or exc.__context__
+        seen += 1
+    return False
+
+
+def _is_server_error(exc):
+    # Google tarafındaki geçici hatalar (503 aşırı yüklü vb.): model yerine sıradaki model denenir.
+    status = getattr(exc, 'status_code', None)
+    return status == 408 or (isinstance(status, int) and 500 <= status < 600)
+
+
 def _quota_cache_key(model):
     return f'gemini:quota-exhausted:{model}'
+
+
+def _slow_cache_key(model):
+    return f'gemini:slow:{model}'
 
 
 def _candidate_models():
@@ -114,10 +148,22 @@ def _candidate_models():
     ]
     try:
         available = [model for model in models if not cache.get(_quota_cache_key(model))]
+        # Yakın zamanda zaman aşımına uğrayanlar listenin sonuna geçer (sırası korunur).
+        available = (
+            [m for m in available if not cache.get(_slow_cache_key(m))]
+            + [m for m in available if cache.get(_slow_cache_key(m))]
+        )
     except Exception:
         # Önbellek erişilemezse modelleri atlamadan devam et; çağrı başarısız olmasın.
         available = models
     return available or models
+
+
+def _mark_slow(model):
+    try:
+        cache.set(_slow_cache_key(model), True, _SLOW_DEMOTE_SECONDS)
+    except Exception:
+        logger.warning('Yavaşlık bilgisi önbelleğe yazılamadı (model=%s).', model)
 
 
 def _mark_quota_exhausted(model):
@@ -127,10 +173,22 @@ def _mark_quota_exhausted(model):
         logger.warning('Kota bilgisi önbelleğe yazılamadı (model=%s).', model)
 
 
-def _create_interaction(*, prompt, system_instruction, schema, thinking_level):
+def _create_interaction(*, prompt, system_instruction, schema, thinking_level, time_budget=None):
+    """Gemini'ye tek bir yapılandırılmış çıktı isteği gönderir; model yedek zincirini işletir.
+
+    Sıradaki modele geçiş nedenleri: 429 (günlük kota dolu), zaman aşımı (model yavaş) ve
+    5xx (Google tarafında geçici hata). Başka hatalar zinciri durdurur. time_budget (sn) yedekler dahil toplam süreyi sınırlar.
+    """
     last_quota_error = None
+    last_timeout_error = None
+    budget = _GENERATE_BUDGET_SECONDS if time_budget is None else time_budget
+    call_started = time.monotonic()
 
     for model in _candidate_models():
+        remaining = budget - (time.monotonic() - call_started)
+        if last_timeout_error is not None and remaining < _MIN_ATTEMPT_SECONDS:
+            break  # süre bitti; sıradaki model için beklemeye değmez
+        attempt_timeout = min(_CALL_TIMEOUT_SECONDS, max(remaining, _MIN_ATTEMPT_SECONDS))
         started = time.monotonic()
         try:
             interaction = _get_client().interactions.create(
@@ -143,9 +201,17 @@ def _create_interaction(*, prompt, system_instruction, schema, thinking_level):
                     'schema_': schema,
                 },
                 generation_config={'thinking_level': thinking_level},
-                timeout=_CALL_TIMEOUT_SECONDS,
+                timeout=attempt_timeout,
             )
         except Exception as exc:
+            if _is_timeout_error(exc) or _is_server_error(exc):
+                logger.warning(
+                    'Gemini yanıt vermedi ya da geçici hata verdi (model=%s, %.1f sn), '
+                    'sıradaki modele geçiliyor.', model, time.monotonic() - started,
+                )
+                _mark_slow(model)
+                last_timeout_error = exc
+                continue
             if _is_quota_error(exc):
                 # Bu modelin günlük payı dolu: sıradaki modele geç.
                 logger.warning(
@@ -171,6 +237,8 @@ def _create_interaction(*, prompt, system_instruction, schema, thinking_level):
 
         return interaction.output_text
 
+    if last_timeout_error is not None:
+        raise GeminiTimeoutError('Gemini modelleri süre sınırı içinde yanıt vermedi.') from last_timeout_error
     raise GeminiQuotaError('Tüm Gemini modellerinin kullanım kotası dolu.') from last_quota_error
 
 
@@ -261,6 +329,7 @@ def generate_questions(
         system_instruction=system_instruction,
         schema=_QuestionList.model_json_schema(),
         thinking_level='low',
+        time_budget=_GENERATE_BUDGET_SECONDS,
     )
 
     try:
@@ -312,6 +381,7 @@ def evaluate_answer(*, position_label, level_label, language, question_text, ans
         system_instruction=system_instruction,
         schema=_AnswerEvaluation.model_json_schema(),
         thinking_level='medium',
+        time_budget=_EVALUATE_BUDGET_SECONDS,
     )
 
     try:
@@ -363,6 +433,7 @@ def summarize_interview(*, position_label, level_label, language, qa_pairs):
         system_instruction=system_instruction,
         schema=_InterviewSummary.model_json_schema(),
         thinking_level='medium',
+        time_budget=_SUMMARIZE_BUDGET_SECONDS,
     )
 
     try:
