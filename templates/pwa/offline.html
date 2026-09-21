@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6B3BFF">
-    <title>Çevrimdışısın · You're offline</title>
+    <title>Siteye ulaşılamıyor · Can't reach the site</title>
     <link rel="stylesheet" href="/static/css/tokens.css">
     <link rel="stylesheet" href="/static/css/theme.css">
     <style>
@@ -33,13 +33,13 @@
     <main class="offline">
         <img class="offline__icon" src="/static/img/icon-192.png" alt="" width="96" height="96">
         <section lang="tr">
-            <h1>İnternet bağlantın yok</h1>
-            <p>Mülakat simülatörü yapay zekâya bağlı çalışır; sorular ve değerlendirmeler için internet gerekir. Bağlantın geri geldiğinde kaldığın yerden devam edebilirsin.</p>
+            <h1>Siteye ulaşılamıyor</h1>
+            <p>İnternet bağlantın kesilmiş olabilir ya da sunucu şu an yanıt vermiyor. Mülakat simülatörü yapay zekâya bağlı çalışır; bağlantı geri geldiğinde kaldığın yerden devam edebilirsin.</p>
             <button type="button" class="btn btn--primary" onclick="location.reload()">Tekrar dene</button>
         </section>
         <section lang="en" class="offline__en">
-            <h2>You're offline</h2>
-            <p>The interview simulator relies on AI, so questions and evaluations need an internet connection. Once you're back online you can pick up where you left off.</p>
+            <h2>Can't reach the site</h2>
+            <p>Your internet connection may have dropped, or the server isn't responding right now. The interview simulator relies on AI, so it needs a connection; once it's back you can pick up where you left off.</p>
             <button type="button" class="btn btn--ghost" onclick="location.reload()">Try again</button>
         </section>
     </main>

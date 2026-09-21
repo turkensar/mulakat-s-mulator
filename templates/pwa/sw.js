@@ -3,7 +3,7 @@
    Uygulama AI'ya bağlı olduğu için çevrimdışı çalışmaz; sayfalar, cevaplar ve kullanıcıya
    ait hiçbir veri önbelleğe alınmaz (ortak cihazda başka kullanıcının verisi sızmasın).
    Çevrimdışı sayfa ya da stilleri değişirse CACHE adındaki sürümü artır. */
-var CACHE = 'mulakat-offline-v3';
+var CACHE = 'mulakat-offline-v4';
 var OFFLINE_URL = '/cevrimdisi/';
 var OFFLINE_ASSETS = [OFFLINE_URL, '/static/css/tokens.css', '/static/css/theme.css', '/static/img/icon-192.png'];
 
@@ -37,11 +37,17 @@ self.addEventListener('fetch', function (event) {
 
     // Sayfa gezintisi: önce ağ; ağ hiç yoksa çevrimdışı sayfa. (Sunucu 4xx/5xx dönerse
     // o yanıt olduğu gibi gösterilir; yalnızca bağlantı hatasında yedek devreye girer.)
+    // Anlık kopmalarda (zayıf mobil bağlantı) boşuna hata sayfası görünmesin diye bir kez daha denenir.
     if (request.mode === 'navigate') {
         event.respondWith(
-            fetch(request).catch(function () {
-                return caches.match(OFFLINE_URL, {ignoreVary: true});
-            })
+            fetch(request.clone())
+                .catch(function () {
+                    return new Promise(function (resolve) { setTimeout(resolve, 600); })
+                        .then(function () { return fetch(request.clone()); });
+                })
+                .catch(function () {
+                    return caches.match(OFFLINE_URL, {ignoreVary: true});
+                })
         );
         return;
     }
