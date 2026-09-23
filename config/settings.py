@@ -188,6 +188,13 @@ LOGIN_URL = '/giris/'
 LOGIN_REDIRECT_URL = '/panel/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Varsayılan ModelBackend, is_active=False kullanıcıları authenticate() içinde
+# sessizce reddeder ve LoginForm.confirm_login_allowed hiç çağrılmaz; bu yüzden
+# e-posta doğrulanmamış hesaba "hesabını doğrula" gibi özel bir mesaj gösteremeyiz.
+# AllowAllUsersModelBackend is_active kontrolünü authenticate()'te atlar, kontrolü
+# forma (accounts/forms.py::LoginForm) bırakır.
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
+
 
 # Gemini API
 # https://ai.google.dev/gemini-api/docs
@@ -204,6 +211,41 @@ GEMINI_FALLBACK_MODELS = [
     ).split(',')
     if model.strip()
 ]
+
+
+# reCAPTCHA v2 (kayıt formu, bot koruması)
+# https://www.google.com/recaptcha/admin ile site+secret key alınır.
+if DEBUG:
+    # Google'ın herkese açık test anahtarları: her zaman geçer, gerçek koruma sağlamaz.
+    RECAPTCHA_PUBLIC_KEY = os.environ.get(
+        'RECAPTCHA_PUBLIC_KEY', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+    )
+    RECAPTCHA_PRIVATE_KEY = os.environ.get(
+        'RECAPTCHA_PRIVATE_KEY', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'
+    )
+else:
+    try:
+        RECAPTCHA_PUBLIC_KEY = os.environ['RECAPTCHA_PUBLIC_KEY']
+        RECAPTCHA_PRIVATE_KEY = os.environ['RECAPTCHA_PRIVATE_KEY']
+    except KeyError:
+        raise ImproperlyConfigured(
+            'RECAPTCHA_PUBLIC_KEY / RECAPTCHA_PRIVATE_KEY ortam değişkenleri tanımlı değil.'
+        )
+
+
+# Resend (kayıt e-posta doğrulaması). https://resend.com API anahtarı.
+# Yerelde anahtar yoksa doğrulama bağlantısı gönderilmez, sunucu logunda görünür
+# (bkz. accounts/emailing.py); üretimde anahtar zorunludur.
+RESEND_FROM_EMAIL = os.environ.get(
+    'RESEND_FROM_EMAIL', 'Mülakat Simülatörü <onboarding@resend.dev>'
+)
+if DEBUG:
+    RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
+else:
+    try:
+        RESEND_API_KEY = os.environ['RESEND_API_KEY']
+    except KeyError:
+        raise ImproperlyConfigured('RESEND_API_KEY ortam değişkeni tanımlı değil.')
 
 
 # Email

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "E-postanı doğrula - Mülakat Simülatörü" %}{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="/static/css/auth.css">{% endblock %}
+
+{% block content %}
+<section class="auth">
+    <header class="auth__head">
+        <h1>{% trans "Gelen kutunu kontrol et" %}</h1>
+        <p>{% blocktrans %}<strong>{{ email }}</strong> adresine bir doğrulama bağlantısı gönderdik. Bağlantıya tıklayınca hesabın etkinleşir.{% endblocktrans %}</p>
+    </header>
+
+    <p class="auth__alt">{% trans "Zaten hesabın var mı?" %} <a href="{% url 'login' %}">{% trans "Giriş yap" %}</a></p>
+</section>
+{% endblock %}

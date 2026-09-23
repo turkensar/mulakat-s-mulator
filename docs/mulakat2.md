@@ -70,7 +70,7 @@ Kullanıcı hedeflediği pozisyonu, seviyesini, mülakat türünü ve dilini se�
 | Katman | Teknoloji |
 |---|---|
 | Backend | Python, Django |
-| Kimlik doğrulama | Django'nun yerleşik auth sistemi |
+| Kimlik doğrulama | Django'nun yerleşik auth sistemi; kayıtta reCAPTCHA v2 (bot koruması) ve Resend ile e-posta doğrulama (hesap `is_active=False` başlar) |
 | Veritabanı | Supabase (PostgreSQL) |
 | Yapay zeka | Google Gemini API, model: `gemini-3.8-flash` |
 | AI kütüphanesi | `google-genai` (Google'ın resmi Gen AI SDK'sı) |
@@ -221,8 +221,9 @@ Beklenen JSON:
 | URL | Sayfa / İşlev |
 |---|---|
 | `/` | Tanıtım (landing) sayfası |
-| `/kayit/` | Kayıt |
-| `/giris/` | Giriş |
+| `/kayit/` | Kayıt (reCAPTCHA v2 zorunlu; hesap `is_active=False` oluşur, e-posta doğrulama bağlantısı gönderilir) |
+| `/dogrula/<uidb64>/<token>/` | Kayıt e-postasındaki doğrulama bağlantısı; hesabı etkinleştirir ve giriş yapar |
+| `/giris/` | Giriş (doğrulanmamış hesapta özel hata mesajı gösterir) |
 | `/cikis/` | Çıkış |
 | `/panel/` | Geçmiş mülakatlar |
 | `/mulakat/yeni/` | Mülakat oluşturma formu |

@@ -10,19 +10,43 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: accounts/forms.py:18
-msgid "Bu e-posta adresi zaten kullanılıyor."
-msgstr "This email address is already in use."
+#: accounts/emailing.py:31
+msgid "E-posta adresini doğrula"
+msgstr "Verify your email address"
 
-#: accounts/forms.py:9
+#: accounts/emailing.py:32
+msgid "Merhaba %(username)s,\n\nMülakat Simülatörü hesabını etkinleştirmek için aşağıdaki bağlantıya tıkla:\n%(link)s\n\nBu bağlantı 3 gün geçerlidir. Bu hesabı sen açmadıysan bu e-postayı yok sayabilirsin."
+msgstr "Hello %(username)s,\n\nClick the link below to activate your Interview Simulator account:\n%(link)s\n\nThis link is valid for 3 days. If you did not create this account, you can ignore this email."
+
+#: accounts/forms.py:11
 msgid "E-posta"
 msgstr "Email"
 
-#: accounts/views.py:20
+#: accounts/forms.py:21
+msgid "Bu e-posta adresi zaten kullanılıyor."
+msgstr "This email address is already in use."
+
+#: accounts/forms.py:36
+msgid "Hesabını kullanmadan önce e-postana gönderdiğimiz bağlantıyla doğrulaman gerekiyor."
+msgstr "You need to verify your account using the link we sent to your email before you can use it."
+
+#: accounts/recaptcha.py:46
+msgid "Doğrulama servisine ulaşılamadı. Lütfen tekrar dene."
+msgstr "Could not reach the verification service. Please try again."
+
+#: accounts/recaptcha.py:49
+msgid "Robot olmadığını doğrular mısın?"
+msgstr "Could you confirm you are not a robot?"
+
+#: accounts/views.py:25
 msgid "Çok fazla kayıt denemesi yapıldı. Lütfen bir süre sonra tekrar dene."
 msgstr "Too many sign-up attempts. Please try again in a while."
 
-#: accounts/views.py:42
+#: accounts/views.py:39
+msgid "Doğrulama e-postası gönderilemedi. Lütfen tekrar dene."
+msgstr "The verification email could not be sent. Please try again."
+
+#: accounts/views.py:76
 msgid "Çok fazla giriş denemesi yapıldı. Lütfen bir süre sonra tekrar dene."
 msgstr "Too many login attempts. Please try again in a while."
 
@@ -326,7 +350,7 @@ msgstr "Welcome back"
 msgid "Kaldığın yerden provaya devam et."
 msgstr "Pick up your practice where you left off."
 
-#: templates/accounts/login.html:18 templates/accounts/register.html:21 templates/home.html:22
+#: templates/accounts/login.html:18 templates/accounts/register.html:21 templates/accounts/verify_pending.html:15
 msgid "Giriş yap"
 msgstr "Log in"
 
@@ -358,13 +382,41 @@ msgstr "Create your account in a few seconds and jump into your first interview.
 msgid "Hesabın oluşturuluyor..."
 msgstr "Creating your account..."
 
-#: templates/accounts/register.html:21
+#: templates/accounts/register.html:21 templates/accounts/verify_pending.html:15
 msgid "Zaten hesabın var mı?"
 msgstr "Already have an account?"
 
 #: templates/accounts/register.html:4
 msgid "Kayıt Ol - Mülakat Simülatörü"
 msgstr "Sign up - Interview Simulator"
+
+#: templates/accounts/verify_invalid.html:11
+msgid "Bağlantı geçersiz ya da süresi dolmuş"
+msgstr "Link is invalid or expired"
+
+#: templates/accounts/verify_invalid.html:12
+msgid "Bu doğrulama bağlantısı artık çalışmıyor. Yeniden kayıt olarak yeni bir bağlantı alabilirsin."
+msgstr "This verification link no longer works. You can register again to get a new one."
+
+#: templates/accounts/verify_invalid.html:15
+msgid "Kayıt sayfasına dön"
+msgstr "Back to registration"
+
+#: templates/accounts/verify_invalid.html:4
+msgid "Bağlantı geçersiz - Mülakat Simülatörü"
+msgstr "Link invalid - Interview Simulator"
+
+#: templates/accounts/verify_pending.html:11
+msgid "Gelen kutunu kontrol et"
+msgstr "Check your inbox"
+
+#: templates/accounts/verify_pending.html:12
+msgid "<strong>%(email)s</strong> adresine bir doğrulama bağlantısı gönderdik. Bağlantıya tıklayınca hesabın etkinleşir."
+msgstr "We sent a verification link to <strong>%(email)s</strong>. Your account activates once you click it."
+
+#: templates/accounts/verify_pending.html:4
+msgid "E-postanı doğrula - Mülakat Simülatörü"
+msgstr "Verify your email - Interview Simulator"
 
 #: config/pwa.py:18 templates/base.html:12 templates/base.html:24
 msgid "Mülakat"
