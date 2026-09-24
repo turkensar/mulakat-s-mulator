@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Misafir Denemesi - Mülakat Simülatörü" %}{% endblock %}
+{% block meta_description %}{% trans "Hesap açmadan 2 soruluk kısa bir mülakat denemesi yap." %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/chat.css">
+<link rel="stylesheet" href="/static/css/detail.css">
+{% endblock %}
+
+{% block content %}
+<section class="session">
+    <header class="session__head">
+        <h1>{% trans "Misafir Denemesi" %}</h1>
+        <p class="session__lead">{% trans "Hesap açmadan kısa bir tat; sonunda kayıt olup tam sürüme geçebilirsin." %}</p>
+    </header>
+
+    <div class="progress-strip">
+        <p class="progress-strip__text">
+            <strong>{{ question_number }}</strong> / {{ total_questions }}
+            <span>{% trans "soru" %}</span>
+        </p>
+        <div class="progress" role="progressbar" aria-label="{% trans "Deneme ilerlemesi" %}"
+             aria-valuemin="0" aria-valuemax="{{ total_questions }}" aria-valuenow="{{ question_number }}">
+            <div class="progress__fill" style="width: {% widthratio question_number total_questions 100 %}%"></div>
+        </div>
+    </div>
+
+    <div class="thread">
+        <div class="msg msg--ai">
+            <span class="msg__avatar" aria-hidden="true">🎙️</span>
+            <div class="msg__body">
+                <p class="msg__label">{% blocktrans with order=question_number %}Soru {{ order }}{% endblocktrans %}</p>
+                <div class="bubble">{{ question.text }}</div>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" action="{% url 'guest_trial_answer' %}" class="composer">
+        {% csrf_token %}
+        <label for="answer-text" class="visually-hidden">{% trans "Cevabın" %}</label>
+        <textarea id="answer-text" name="answer" rows="4" placeholder="{% trans "Cevabını buraya yaz..." %}" required></textarea>
+        <div class="composer__actions">
+            <div class="composer__buttons">
+                <button type="submit" class="btn btn--primary">{% trans "Cevabı gönder" %}</button>
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock %}

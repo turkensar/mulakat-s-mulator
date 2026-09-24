@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load interview_extras %}
+
+{% block title %}{% trans "Deneme Sonucun - Mülakat Simülatörü" %}{% endblock %}
+{% block meta_description %}{% trans "Misafir denemenin puanı ve tam sürüme geçmek için sonraki adım." %}{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="/static/css/report.css">{% endblock %}
+
+{% block content %}
+<article class="report">
+    <section class="hero band-{{ average_score|score_band }}" aria-labelledby="hero-title">
+        <div class="ring" role="img" aria-label="{% blocktrans with score=average_score|floatformat:1 %}Deneme skoru: {{ score }} / 10{% endblocktrans %}">
+            <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+                <circle class="ring__track" cx="60" cy="60" r="52" pathLength="100"></circle>
+                <circle class="ring__value" cx="60" cy="60" r="52" pathLength="100"
+                        style="stroke-dasharray: {% widthratio average_score 10 100 %} 100"></circle>
+            </svg>
+            <div class="ring__label" aria-hidden="true">
+                <strong>{{ average_score|floatformat:1 }}</strong>
+                <span>/ 10</span>
+            </div>
+        </div>
+
+        <div class="hero__text">
+            <h2 id="hero-title">{% trans "Fena değil, bu daha başlangıç!" %}</h2>
+            <p class="hero__summary">{% trans "Bu, yalnızca 2 sorudan oluşan kısa bir tattı. Ücretsiz hesap açarak pozisyonuna özel tam mülakatlar yapabilir, gelişimini zaman içinde takip edebilirsin." %}</p>
+            <a href="{% url 'register' %}" class="btn btn--primary">{% trans "Ücretsiz hesap aç" %}</a>
+        </div>
+    </section>
+</article>
+{% endblock %}

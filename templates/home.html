@@ -37,7 +37,10 @@
                 <a href="{% url 'interview_create' %}" class="btn btn--primary">{% trans "Yeni mülakat başlat" %}</a>
                 <a href="{% url 'panel' %}" class="home__link">{% trans "Panelime git" %}</a>
             {% else %}
-                <a href="{% url 'register' %}" class="btn btn--primary">{% trans "Provaya başla" %}</a>
+                <form method="post" action="{% url 'guest_trial_start' %}" class="home__trial-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn--primary">{% trans "Provaya başla" %}</button>
+                </form>
                 <p class="home__note">{% trans "Hesabın var mı?" %} <a href="{% url 'login' %}">{% trans "Giriş yap" %}</a></p>
             {% endif %}
         </div>

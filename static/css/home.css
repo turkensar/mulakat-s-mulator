@@ -39,6 +39,10 @@
     margin-top: var(--space-8);
 }
 
+.home__trial-form {
+    margin: 0;
+}
+
 .home__note {
     margin: 0;
     color: var(--ink-soft);
