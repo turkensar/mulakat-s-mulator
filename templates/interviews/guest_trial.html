@@ -43,9 +43,10 @@
         <textarea id="answer-text" name="answer" rows="4" placeholder="{% trans "Cevabını buraya yaz..." %}" required></textarea>
         <div class="composer__actions">
             <div class="composer__buttons">
-                <button type="submit" class="btn btn--primary">{% trans "Cevabı gönder" %}</button>
+                <button type="submit" class="btn btn--primary" data-busy="{% trans "Değerlendiriliyor…" %}">{% trans "Cevabı gönder" %}</button>
             </div>
         </div>
     </form>
 </section>
+{% include '_submit_lock.html' %}
 {% endblock %}

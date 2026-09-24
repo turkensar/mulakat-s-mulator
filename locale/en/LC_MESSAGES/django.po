@@ -74,23 +74,23 @@ msgstr "Could not reach the verification service. Please try again."
 msgid "Robot olmadığını doğrular mısın?"
 msgstr "Could you confirm you are not a robot?"
 
-#: accounts/views.py:108
+#: accounts/views.py:110
 msgid "Çok fazla giriş denemesi yapıldı. Lütfen bir süre sonra tekrar dene."
 msgstr "Too many login attempts. Please try again in a while."
 
-#: accounts/views.py:29
+#: accounts/views.py:31
 msgid "Çok fazla kayıt denemesi yapıldı. Lütfen bir süre sonra tekrar dene."
 msgstr "Too many sign-up attempts. Please try again in a while."
 
-#: accounts/views.py:43
+#: accounts/views.py:45
 msgid "Doğrulama e-postası gönderilemedi. Lütfen tekrar dene."
 msgstr "The verification email could not be sent. Please try again."
 
-#: accounts/views.py:75
+#: accounts/views.py:77
 msgid "Çok fazla deneme yapıldı. Lütfen bir süre sonra tekrar dene."
 msgstr "Too many attempts. Please try again later."
 
-#: accounts/views.py:82
+#: accounts/views.py:84
 msgid "Google ile giriş doğrulanamadı. Lütfen tekrar dene."
 msgstr "Sign-in with Google couldn't be verified. Please try again."
 
@@ -214,39 +214,39 @@ msgstr "e.g. Marketing specialist, e-commerce company"
 msgid "İlan metnini buraya yapıştır (görev tanımı, aranan nitelikler, kullanılan teknolojiler...)"
 msgstr "Paste the job posting here (responsibilities, requirements, technologies used...)"
 
-#: interviews/guest_views.py:107 interviews/views.py:284
+#: interviews/guest_views.py:109 interviews/views.py:284
 msgid "Değerlendirme sırasında bir hata oluştu. Lütfen tekrar dene."
 msgstr "An error occurred during evaluation. Please try again."
 
-#: interviews/guest_views.py:14 interviews/views.py:26
+#: interviews/guest_views.py:16 interviews/views.py:26
 msgid "Yapay zeka servisi şu an yavaş ya da yoğun. Birkaç dakika sonra tekrar dene."
 msgstr "The AI service is slow or busy right now. Try again in a few minutes."
 
-#: interviews/guest_views.py:15
+#: interviews/guest_views.py:17
 msgid "Yapay zeka servisinin ücretsiz kullanım kotası şu an dolu. Birkaç dakika sonra tekrar dene."
 msgstr "The AI service’s free usage quota is full right now. Try again in a few minutes."
 
-#: interviews/guest_views.py:29
+#: interviews/guest_views.py:31
 msgid "Bugünlük misafir deneme hakkını kullandın. Yarın tekrar deneyebilir ya da hesap açabilirsin."
 msgstr "You've used today's guest trial. Try again tomorrow, or create an account."
 
-#: interviews/guest_views.py:35 interviews/guest_views.py:94
+#: interviews/guest_views.py:37 interviews/guest_views.py:96
 msgid "Genel"
 msgstr "General"
 
-#: interviews/guest_views.py:36 interviews/guest_views.py:95 interviews/models.py:20
+#: interviews/guest_views.py:38 interviews/guest_views.py:97 interviews/models.py:20
 msgid "Junior"
 msgstr "Junior"
 
-#: interviews/guest_views.py:37 interviews/models.py:26
+#: interviews/guest_views.py:39 interviews/models.py:26
 msgid "Karışık"
 msgstr "Mixed"
 
-#: interviews/guest_views.py:48 interviews/views.py:104
+#: interviews/guest_views.py:50 interviews/views.py:104
 msgid "Sorular oluşturulurken bir hata oluştu. Lütfen tekrar dene."
 msgstr "An error occurred while creating the questions. Please try again."
 
-#: interviews/guest_views.py:88 interviews/views.py:145 interviews/views.py:254
+#: interviews/guest_views.py:90 interviews/views.py:145 interviews/views.py:254
 msgid "Cevap boş olamaz."
 msgstr "The answer can't be empty."
 
@@ -534,43 +534,43 @@ msgstr "Privacy Notice (KVKK)"
 msgid "Eğitim amaçlı bir proje; kâr amacı gütmez."
 msgstr "An educational project; not run for profit."
 
-#: templates/home.html:100
+#: templates/home.html:101
 msgid "Hangi pozisyonlar için?"
 msgstr "Which roles is it for?"
 
-#: interviews/models.py:8 templates/home.html:102
+#: interviews/models.py:8 templates/home.html:103
 msgid "Junior Yazılım Geliştirici"
 msgstr "Junior Software Developer"
 
-#: interviews/models.py:10 templates/home.html:104
+#: interviews/models.py:10 templates/home.html:105
 msgid "Backend Geliştirici"
 msgstr "Backend Developer"
 
-#: interviews/models.py:11 templates/home.html:105
+#: interviews/models.py:11 templates/home.html:106
 msgid "Veri Analisti"
 msgstr "Data Analyst"
 
-#: interviews/models.py:12 templates/home.html:106
+#: interviews/models.py:12 templates/home.html:107
 msgid "İş Analisti"
 msgstr "Business Analyst"
 
-#: interviews/models.py:13 templates/home.html:107
+#: interviews/models.py:13 templates/home.html:108
 msgid "Stajyer (Genel)"
 msgstr "Intern (General)"
 
-#: templates/home.html:108
+#: templates/home.html:109
 msgid "+ Diğer: alanını sen tarif et"
 msgstr "+ Other: describe your own field"
 
-#: templates/home.html:113
+#: templates/home.html:114
 msgid "Özellikler"
 msgstr "Features"
 
-#: templates/home.html:117
+#: templates/home.html:118
 msgid "Sesli mülakat"
 msgstr "Voice interview"
 
-#: templates/home.html:118
+#: templates/home.html:119
 msgid "Soruları dinle, cevabını konuşarak ver."
 msgstr "Listen to the questions and answer by speaking."
 
@@ -578,87 +578,87 @@ msgstr "Listen to the questions and answer by speaking."
 msgid "Mülakat Simülatörü — mülakattan önce provanı yap"
 msgstr "Interview Simulator — rehearse before the real thing"
 
-#: templates/home.html:122
+#: templates/home.html:123
 msgid "CV'ne özel sorular"
 msgstr "Questions tailored to your CV"
 
-#: templates/home.html:123
+#: templates/home.html:124
 msgid "CV metnini yapıştır, sana özel sorular hazırlansın."
 msgstr "Paste your CV text and get questions tailored to you."
 
-#: templates/home.html:127
+#: templates/home.html:128
 msgid "İlana özel sorular"
 msgstr "Questions tailored to the job posting"
 
-#: templates/home.html:128
+#: templates/home.html:129
 msgid "Başvurduğun ilanı yapıştır, ona uygun sorularla pratik yap."
 msgstr "Paste the job posting you applied to and practice with matching questions."
 
-#: templates/home.html:132
+#: templates/home.html:133
 msgid "Gelişim takibi"
 msgstr "Progress tracking"
 
-#: templates/home.html:133
+#: templates/home.html:134
 msgid "Skorunu ve zayıf kaldığın konuları zaman içinde izle."
 msgstr "Track your score and weak spots over time."
 
-#: templates/home.html:137
+#: templates/home.html:138
 msgid "Mobilde de çalışır"
 msgstr "Works on mobile too"
 
-#: templates/home.html:138
+#: templates/home.html:139
 msgid "Uygulama gibi yükleyebilir, çevrimdışıyken bile açabilirsin."
 msgstr "Install it like an app and open it even when you’re offline."
 
-#: templates/home.html:142
+#: templates/home.html:143
 msgid "Türkçe ve İngilizce"
 msgstr "Turkish and English"
 
-#: templates/home.html:143
+#: templates/home.html:144
 msgid "Arayüzü ve mülakat dilini istediğin gibi seç."
 msgstr "Choose the interface and interview language you prefer."
 
-#: templates/home.html:149
+#: templates/home.html:150
 msgid "Sıkça sorulan sorular"
 msgstr "Frequently asked questions"
 
-#: templates/home.html:152
+#: templates/home.html:153
 msgid "Kullanımı ücretsiz mi?"
 msgstr "Is it free to use?"
 
-#: templates/home.html:153
+#: templates/home.html:154
 msgid "Evet, tamamen ücretsiz. Günlük mülakat sayısı, yoğun kullanımı dengelemek için sınırlıdır."
 msgstr "Yes, completely free. The daily interview count is limited to balance heavy usage."
 
-#: templates/home.html:156
+#: templates/home.html:157
 msgid "Günde kaç mülakat yapabilirim?"
 msgstr "How many interviews can I do per day?"
 
-#: templates/home.html:157
+#: templates/home.html:158
 msgid "Günde en fazla 3 yeni mülakat başlatabilirsin; yarım kalanlara istediğin kadar devam edebilirsin."
 msgstr "You can start up to 3 new interviews a day; you can continue unfinished ones as many times as you like."
 
-#: templates/home.html:160
+#: templates/home.html:161
 msgid "CV'm ya da cevaplarım saklanıyor mu?"
 msgstr "Is my CV or my answers stored?"
 
-#: templates/home.html:161
+#: templates/home.html:162
 msgid "CV metni hiçbir yerde saklanmaz, yalnızca soru üretimi için kullanılır. Cevapların, gelişimini takip edebilmen için hesabına kaydedilir."
 msgstr "Your CV text isn’t stored anywhere; it’s only used to generate questions. Your answers are saved to your account so you can track your progress."
 
-#: templates/home.html:164
+#: templates/home.html:165
 msgid "Sesli mülakat nasıl çalışır?"
 msgstr "How does the voice interview work?"
 
-#: templates/home.html:165
+#: templates/home.html:166
 msgid "Sorular sesli okunabilir, cevabını mikrofonla söyleyip yazıya döktürebilirsin; tarayıcının kendi ses tanıma özelliğini kullanır."
 msgstr "Questions can be read aloud, and you can speak your answer into text; it uses your browser’s own speech recognition."
 
-#: templates/home.html:168
+#: templates/home.html:169
 msgid "Hangi diller destekleniyor?"
 msgstr "Which languages are supported?"
 
-#: templates/home.html:169
+#: templates/home.html:170
 msgid "Arayüz Türkçe ve İngilizce; mülakatı da istediğin dilde yapabilirsin."
 msgstr "The interface is available in Turkish and English; you can also take the interview in either language."
 
@@ -686,67 +686,75 @@ msgstr "Practice interviews for free with an AI interviewer: questions matched t
 msgid "Provaya başla"
 msgstr "Start practicing"
 
+#: templates/home.html:42
+msgid "Sorular hazırlanıyor…"
+msgstr "Preparing questions…"
+
 #: templates/home.html:44
 msgid "Hesabın var mı?"
 msgstr "Already have an account?"
 
-#: templates/home.html:49
+#: templates/home.html:45
+msgid "Sorular hazırlanması bazen bir dakikaya kadar sürebilir, sayfadan ayrılma."
+msgstr "Preparing questions can sometimes take up to a minute; don’t leave the page."
+
+#: templates/home.html:50
 msgid "Örnek bir mülakattan kesit"
 msgstr "Excerpt from a sample interview"
 
-#: interviews/models.py:9 templates/home.html:103 templates/home.html:52
+#: interviews/models.py:9 templates/home.html:104 templates/home.html:53
 msgid "Frontend Geliştirici"
 msgstr "Frontend Developer"
 
-#: interviews/models.py:24 interviews/models.py:46 templates/home.html:53
+#: interviews/models.py:24 interviews/models.py:46 templates/home.html:54
 msgid "Teknik"
 msgstr "Technical"
 
-#: templates/home.html:55
+#: templates/home.html:56
 msgid "<strong>2</strong> / 5 soru cevaplandı"
 msgstr "<strong>2</strong> / 5 questions answered"
 
-#: templates/home.html:63
+#: templates/home.html:64
 msgid "Soru 2 · Teknik"
 msgstr "Question 2 · Technical"
 
-#: templates/home.html:64
+#: templates/home.html:65
 msgid "CSS'te flex ile grid arasındaki fark nedir? Hangisini ne zaman seçersin?"
 msgstr "What's the difference between flex and grid in CSS? Which one would you pick, and when?"
 
-#: templates/home.html:68
+#: templates/home.html:69
 msgid "Flex tek eksende, grid iki eksende yerleşim yapar. Kart listesi için grid, navbar için flex kullanırım."
 msgstr "Flex lays things out along one axis, grid along two. I'd use grid for a card list and flex for a navbar."
 
-#: templates/home.html:72
+#: templates/home.html:73
 msgid "Net ve örnekli bir cevap."
 msgstr "A clear answer with an example."
 
-#: templates/home.html:79
+#: templates/home.html:80
 msgid "Nasıl çalışır?"
 msgstr "How it works"
 
-#: templates/home.html:83
+#: templates/home.html:84
 msgid "Pozisyonunu seç"
 msgstr "Pick your role"
 
-#: templates/home.html:84
+#: templates/home.html:85
 msgid "Alanını, seviyeni ve mülakat türünü belirle; istersen ilana ya da CV'ne özel sorular üretelim."
 msgstr "Set your field, level, and interview type; we can also tailor questions to a job posting or your CV if you'd like."
 
-#: templates/home.html:88
+#: templates/home.html:89
 msgid "Sorulara cevap ver"
 msgstr "Answer the questions"
 
-#: templates/home.html:89
+#: templates/home.html:90
 msgid "Yazarak ya da sesli konuşarak cevapla; istediğin an ara verip devam edebilirsin."
 msgstr "Answer by typing or speaking; you can pause anytime and continue later."
 
-#: templates/home.html:93
+#: templates/home.html:94
 msgid "Anında geri bildirim al"
 msgstr "Get instant feedback"
 
-#: templates/home.html:94
+#: templates/home.html:95
 msgid "Her cevabın puanlanır; mülakat sonunda güçlü ve gelişime açık yönlerini görürsün."
 msgstr "Every answer is scored; at the end you’ll see your strengths and areas to improve."
 
@@ -961,6 +969,10 @@ msgstr "Question %(order)s"
 #: templates/interviews/guest_trial.html:4
 msgid "Misafir Denemesi - Mülakat Simülatörü"
 msgstr "Guest Trial - Interview Simulator"
+
+#: templates/interviews/guest_trial.html:46
+msgid "Değerlendiriliyor…"
+msgstr "Evaluating…"
 
 #: templates/interviews/guest_trial.html:5
 msgid "Hesap açmadan 2 soruluk kısa bir mülakat denemesi yap."

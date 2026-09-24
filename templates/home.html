@@ -39,9 +39,10 @@
             {% else %}
                 <form method="post" action="{% url 'guest_trial_start' %}" class="home__trial-form">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn--primary">{% trans "Provaya başla" %}</button>
+                    <button type="submit" class="btn btn--primary" data-busy="{% trans "Sorular hazırlanıyor…" %}">{% trans "Provaya başla" %}</button>
                 </form>
                 <p class="home__note">{% trans "Hesabın var mı?" %} <a href="{% url 'login' %}">{% trans "Giriş yap" %}</a></p>
+                <p class="home__note">{% trans "Sorular hazırlanması bazen bir dakikaya kadar sürebilir, sayfadan ayrılma." %}</p>
             {% endif %}
         </div>
     </div>
@@ -170,4 +171,5 @@
         </details>
     </div>
 </section>
+{% include '_submit_lock.html' %}
 {% endblock %}

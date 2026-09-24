@@ -1,0 +1,26 @@
+{% comment %}
+    Genel amacli "gonderiliyor" kilidi: sayfadaki herhangi bir formda
+    data-busy tasiyan submit dugmesi icin calisir, ID'ye bagli degildir.
+{% endcomment %}
+<script>
+    document.addEventListener('submit', function (event) {
+        var button = event.target.querySelector('button[type="submit"][data-busy]');
+        if (!button || button.disabled) {
+            return;
+        }
+        button.disabled = true;
+        button.dataset.label = button.textContent;
+        button.textContent = button.dataset.busy;
+    });
+    window.addEventListener('pageshow', function (event) {
+        if (!event.persisted) {
+            return;
+        }
+        document.querySelectorAll('button[type="submit"][disabled]').forEach(function (button) {
+            if (button.dataset.label) {
+                button.disabled = false;
+                button.textContent = button.dataset.label;
+            }
+        });
+    });
+</script>
