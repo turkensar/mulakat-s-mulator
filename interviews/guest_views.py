@@ -6,6 +6,8 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 from django_ratelimit.decorators import ratelimit
 
+from config.ratelimit import client_ip
+
 from .services.gemini import GeminiError, GeminiQuotaError, GeminiTimeoutError, evaluate_answer, generate_questions
 
 SESSION_KEY = 'guest_trial'
@@ -18,7 +20,7 @@ QUOTA_MESSAGE = _(
 
 
 @require_POST
-@ratelimit(key='ip', rate='3/d', method='POST', block=False)
+@ratelimit(key=client_ip, rate='3/d', method='POST', block=False)
 def guest_trial_start(request):
     if request.user.is_authenticated:
         return redirect('interview_create')

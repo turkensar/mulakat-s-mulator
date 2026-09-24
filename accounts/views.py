@@ -11,13 +11,15 @@ from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 from django_ratelimit.decorators import ratelimit
 
+from config.ratelimit import client_ip
+
 from .emailing import EmailSendError, send_verification_email
 from .forms import LoginForm, RegisterForm
 from .google_auth import GoogleTokenError, verify_google_credential
 from .utils import unique_username
 
 
-@ratelimit(key='ip', rate='5/h', method='POST', block=False)
+@ratelimit(key=client_ip, rate='5/h', method='POST', block=False)
 def register(request):
     if request.user.is_authenticated:
         return redirect('panel')
@@ -69,7 +71,7 @@ def verify_email(request, uidb64, token):
 
 
 @require_POST
-@ratelimit(key='ip', rate='15/h', method='POST', block=False)
+@ratelimit(key=client_ip, rate='15/h', method='POST', block=False)
 def google_login(request):
     if getattr(request, 'limited', False):
         messages.error(request, _('Çok fazla deneme yapıldı. Lütfen bir süre sonra tekrar dene.'))
@@ -96,7 +98,7 @@ def google_login(request):
     return redirect('panel')
 
 
-@method_decorator(ratelimit(key='ip', rate='10/h', method='POST', block=False), name='post')
+@method_decorator(ratelimit(key=client_ip, rate='10/h', method='POST', block=False), name='post')
 class RateLimitedLoginView(auth_views.LoginView):
     template_name = 'accounts/login.html'
     authentication_form = LoginForm
