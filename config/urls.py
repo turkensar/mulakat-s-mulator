@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import TemplateView
 
 from interviews.views import home, panel
 
@@ -29,6 +30,8 @@ urlpatterns = [
     path('cevrimdisi/', pwa.offline, name='offline'),
     path('', home, name='home'),
     path('panel/', panel, name='panel'),
+    path('gizlilik/', TemplateView.as_view(template_name='legal/privacy.html'), name='privacy'),
+    path('kvkk/', TemplateView.as_view(template_name='legal/kvkk.html'), name='kvkk'),
     path('', include('accounts.urls')),
     path('', include('interviews.urls')),
 ]

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "KVKK Aydınlatma Metni - Mülakat Simülatörü" %}{% endblock %}
+{% block meta_description %}{% trans "6698 sayılı KVKK kapsamında kişisel verilerinin nasıl işlendiğine dair aydınlatma metni." %}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="/static/css/legal.css">{% endblock %}
+
+{% block content %}
+<section class="legal">
+    <header class="legal__head">
+        <h1>{% trans "KVKK Aydınlatma Metni" %}</h1>
+        <p class="legal__draft-notice">{% trans "Bu metin bir taslaktır; hukuki bağlayıcılık için avukat incelemesinden geçmesi önerilir." %}</p>
+    </header>
+
+    <div class="legal__body">
+        <h2>{% trans "1. Veri Sorumlusu" %}</h2>
+        <p>{% blocktrans %}6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") uyarınca, Mülakat Simülatörü'nü işleten veri sorumlusu olarak, kişisel verilerin aşağıda açıklanan şekilde işlenmesi hakkında seni bilgilendirmek isteriz.{% endblocktrans %}</p>
+
+        <h2>{% trans "2. İşlenen Kişisel Veriler" %}</h2>
+        <p>{% blocktrans %}Kimlik ve iletişim verisi (e-posta), hesap verisi (kullanıcı adı, şifrelenmiş parola), mülakat içerik verisi (seçtiğin pozisyon/seviye, cevapların, aldığın puanlar), isteğe bağlı olarak paylaştığın iş ilanı ve CV metni (bu ikisi saklanmaz, yalnızca anlık işlenir) işlenmektedir.{% endblocktrans %}</p>
+
+        <h2>{% trans "3. İşleme Amaçları" %}</h2>
+        <p>{% blocktrans %}Verilerin; hesabının oluşturulması ve doğrulanması, sana özel mülakat sorularının hazırlanması ve cevaplarının değerlendirilmesi, gelişimini takip edebilmen, hizmetin güvenliğinin sağlanması (kötüye kullanımın önlenmesi) amaçlarıyla işlenir.{% endblocktrans %}</p>
+
+        <h2>{% trans "4. Hukuki Sebep" %}</h2>
+        <p>{% blocktrans %}Veriler, seninle aramızdaki hizmet sözleşmesinin kurulması ve ifası (KVKK m. 5/2-c) ile açık rızan (KVKK m. 5/1, özellikle isteğe bağlı CV/ilan paylaşımı için) hukuki sebeplerine dayanılarak işlenir.{% endblocktrans %}</p>
+
+        <h2>{% trans "5. Verilerin Aktarıldığı Taraflar" %}</h2>
+        <p>{% blocktrans %}Soru üretimi ve değerlendirme için Google Gemini API'ye (Google LLC), doğrulama e-postaların için Resend'e, hesap doğrulaman için Google reCAPTCHA'ya, veritabanı barındırma için Supabase'e, dağıtım için Vercel'e veri aktarılmaktadır. Bu hizmet sağlayıcılar yurt dışında konumlanmış olabilir.{% endblocktrans %}</p>
+
+        <h2>{% trans "6. Saklama Süresi" %}</h2>
+        <p>{% blocktrans %}Hesap ve mülakat verilerin, hesabını silmeni talep etmene ya da yasal saklama sürelerinin dolmasına kadar saklanır. CV ve iş ilanı metinleri hiç saklanmaz.{% endblocktrans %}</p>
+
+        <h2>{% trans "7. KVKK Kapsamındaki Hakların" %}</h2>
+        <p>{% blocktrans %}KVKK m. 11 uyarınca; kişisel verinin işlenip işlenmediğini öğrenme, işlenmişse buna ilişkin bilgi talep etme, işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme, yurt içinde/dışında aktarıldığı üçüncü kişileri bilme, eksik/yanlış işlenmişse düzeltilmesini isteme, silinmesini/yok edilmesini isteme ve bu işlemlerin aktarıldığı üçüncü kişilere bildirilmesini isteme haklarına sahipsin.{% endblocktrans %}</p>
+
+        <h2>{% trans "8. Başvuru Yolu" %}</h2>
+        <p>{% blocktrans %}Haklarını kullanmak için <a href="mailto:turkensar07@gmail.com">turkensar07@gmail.com</a> adresine yazılı olarak başvurabilirsin.{% endblocktrans %}</p>
+    </div>
+</section>
+{% endblock %}

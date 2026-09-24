@@ -1,0 +1,41 @@
+/* Gizlilik/KVKK gibi düz metin sayfaları: okunabilir tek sütun */
+
+.legal {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-4);
+}
+
+.legal__head h1 {
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
+}
+
+.legal__draft-notice {
+    margin-top: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border-left: 4px solid var(--sun);
+    border-radius: var(--radius-badge);
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+}
+
+.legal__body {
+    margin-top: var(--space-8);
+}
+
+.legal__body h2 {
+    margin-top: var(--space-8);
+    font-size: 1.25rem;
+}
+
+.legal__body p {
+    margin-top: var(--space-2);
+    color: var(--ink-soft);
+    line-height: 1.6;
+}
+
+.legal__body a {
+    color: var(--violet);
+    font-weight: 700;
+}
