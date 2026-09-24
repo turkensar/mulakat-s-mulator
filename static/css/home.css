@@ -143,3 +143,159 @@
         box-shadow: 8px 8px 0 var(--line);
     }
 }
+
+/* --- Hero altındaki bölümler: nasıl çalışır / pozisyonlar / özellikler / SSS --- */
+
+.home ~ section {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: var(--space-12) var(--space-4);
+}
+
+.how h2,
+.positions h2,
+.features h2,
+.faq h2 {
+    font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.25rem);
+    text-align: center;
+    margin-bottom: var(--space-8);
+}
+
+.how__steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.how__step {
+    padding: var(--space-6);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+    box-shadow: 6px 6px 0 var(--line);
+}
+
+.how__num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-bottom: var(--space-3);
+    background: var(--violet);
+    color: var(--on-violet);
+    border-radius: var(--radius-pill);
+    font-weight: 800;
+}
+
+.how__step h3 {
+    margin-bottom: var(--space-2);
+}
+
+.how__step p {
+    color: var(--ink-soft);
+    line-height: 1.5;
+}
+
+.positions__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.positions__list li {
+    padding: var(--space-2) var(--space-4);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-pill);
+    font-weight: 700;
+}
+
+.positions__other {
+    background: var(--bg);
+    color: var(--ink-soft);
+    font-weight: 500;
+}
+
+.features__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+}
+
+.feature {
+    padding: var(--space-6);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+}
+
+.feature__icon {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: var(--space-2);
+}
+
+.feature h3 {
+    margin-bottom: var(--space-1);
+}
+
+.feature p {
+    color: var(--ink-soft);
+    line-height: 1.5;
+}
+
+.faq__list {
+    max-width: 720px;
+    margin: 0 auto;
+    display: grid;
+    gap: var(--space-3);
+}
+
+.faq__item {
+    padding: var(--space-4) var(--space-6);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+}
+
+.faq__item summary {
+    cursor: pointer;
+    font-weight: 700;
+    list-style: none;
+}
+
+.faq__item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq__item summary::after {
+    content: '+';
+    float: right;
+    font-weight: 800;
+    color: var(--violet);
+}
+
+.faq__item[open] summary::after {
+    content: '−';
+}
+
+.faq__item p {
+    margin-top: var(--space-3);
+    color: var(--ink-soft);
+    line-height: 1.6;
+}
+
+@media (max-width: 860px) {
+    .how__steps,
+    .features__grid {
+        grid-template-columns: 1fr;
+    }
+}

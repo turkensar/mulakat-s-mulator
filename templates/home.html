@@ -71,4 +71,100 @@
         </div>
     </div>
 </section>
+
+<section class="how" aria-labelledby="how-title">
+    <h2 id="how-title">{% trans "Nasıl çalışır?" %}</h2>
+    <ol class="how__steps">
+        <li class="how__step">
+            <span class="how__num" aria-hidden="true">1</span>
+            <h3>{% trans "Pozisyonunu seç" %}</h3>
+            <p>{% trans "Alanını, seviyeni ve mülakat türünü belirle; istersen ilana ya da CV'ne özel sorular üretelim." %}</p>
+        </li>
+        <li class="how__step">
+            <span class="how__num" aria-hidden="true">2</span>
+            <h3>{% trans "Sorulara cevap ver" %}</h3>
+            <p>{% trans "Yazarak ya da sesli konuşarak cevapla; istediğin an ara verip devam edebilirsin." %}</p>
+        </li>
+        <li class="how__step">
+            <span class="how__num" aria-hidden="true">3</span>
+            <h3>{% trans "Anında geri bildirim al" %}</h3>
+            <p>{% trans "Her cevabın puanlanır; mülakat sonunda güçlü ve gelişime açık yönlerini görürsün." %}</p>
+        </li>
+    </ol>
+</section>
+
+<section class="positions" aria-labelledby="positions-title">
+    <h2 id="positions-title">{% trans "Hangi pozisyonlar için?" %}</h2>
+    <ul class="positions__list">
+        <li>{% trans "Junior Yazılım Geliştirici" %}</li>
+        <li>{% trans "Frontend Geliştirici" %}</li>
+        <li>{% trans "Backend Geliştirici" %}</li>
+        <li>{% trans "Veri Analisti" %}</li>
+        <li>{% trans "İş Analisti" %}</li>
+        <li>{% trans "Stajyer (Genel)" %}</li>
+        <li class="positions__other">{% trans "+ Diğer: alanını sen tarif et" %}</li>
+    </ul>
+</section>
+
+<section class="features" aria-labelledby="features-title">
+    <h2 id="features-title">{% trans "Özellikler" %}</h2>
+    <div class="features__grid">
+        <div class="feature">
+            <span class="feature__icon" aria-hidden="true">🎙️</span>
+            <h3>{% trans "Sesli mülakat" %}</h3>
+            <p>{% trans "Soruları dinle, cevabını konuşarak ver." %}</p>
+        </div>
+        <div class="feature">
+            <span class="feature__icon" aria-hidden="true">📄</span>
+            <h3>{% trans "CV'ne özel sorular" %}</h3>
+            <p>{% trans "CV metnini yapıştır, sana özel sorular hazırlansın." %}</p>
+        </div>
+        <div class="feature">
+            <span class="feature__icon" aria-hidden="true">📋</span>
+            <h3>{% trans "İlana özel sorular" %}</h3>
+            <p>{% trans "Başvurduğun ilanı yapıştır, ona uygun sorularla pratik yap." %}</p>
+        </div>
+        <div class="feature">
+            <span class="feature__icon" aria-hidden="true">📈</span>
+            <h3>{% trans "Gelişim takibi" %}</h3>
+            <p>{% trans "Skorunu ve zayıf kaldığın konuları zaman içinde izle." %}</p>
+        </div>
+        <div class="feature">
+            <span class="feature__icon" aria-hidden="true">📱</span>
+            <h3>{% trans "Mobilde de çalışır" %}</h3>
+            <p>{% trans "Uygulama gibi yükleyebilir, çevrimdışıyken bile açabilirsin." %}</p>
+        </div>
+        <div class="feature">
+            <span class="feature__icon" aria-hidden="true">🌐</span>
+            <h3>{% trans "Türkçe ve İngilizce" %}</h3>
+            <p>{% trans "Arayüzü ve mülakat dilini istediğin gibi seç." %}</p>
+        </div>
+    </div>
+</section>
+
+<section class="faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">{% trans "Sıkça sorulan sorular" %}</h2>
+    <div class="faq__list">
+        <details class="faq__item">
+            <summary>{% trans "Kullanımı ücretsiz mi?" %}</summary>
+            <p>{% trans "Evet, tamamen ücretsiz. Günlük mülakat sayısı, yoğun kullanımı dengelemek için sınırlıdır." %}</p>
+        </details>
+        <details class="faq__item">
+            <summary>{% trans "Günde kaç mülakat yapabilirim?" %}</summary>
+            <p>{% trans "Günde en fazla 3 yeni mülakat başlatabilirsin; yarım kalanlara istediğin kadar devam edebilirsin." %}</p>
+        </details>
+        <details class="faq__item">
+            <summary>{% trans "CV'm ya da cevaplarım saklanıyor mu?" %}</summary>
+            <p>{% trans "CV metni hiçbir yerde saklanmaz, yalnızca soru üretimi için kullanılır. Cevapların, gelişimini takip edebilmen için hesabına kaydedilir." %}</p>
+        </details>
+        <details class="faq__item">
+            <summary>{% trans "Sesli mülakat nasıl çalışır?" %}</summary>
+            <p>{% trans "Sorular sesli okunabilir, cevabını mikrofonla söyleyip yazıya döktürebilirsin; tarayıcının kendi ses tanıma özelliğini kullanır." %}</p>
+        </details>
+        <details class="faq__item">
+            <summary>{% trans "Hangi diller destekleniyor?" %}</summary>
+            <p>{% trans "Arayüz Türkçe ve İngilizce; mülakatı da istediğin dilde yapabilirsin." %}</p>
+        </details>
+    </div>
+</section>
 {% endblock %}
