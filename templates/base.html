@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% trans "Mülakat Simülatörü" %}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{% trans "Yapay zeka mülakatçıyla ücretsiz mülakat pratiği yap: pozisyonuna uygun sorular, anında puanlama ve gelişim takibi." %}{% endblock %}">
+    {% block extra_meta %}{% endblock %}
     <meta name="theme-color" content="#6B3BFF">
     <link rel="manifest" href="{% url 'manifest' %}">
     <link rel="icon" href="/static/img/logo-mark.svg" type="image/svg+xml">

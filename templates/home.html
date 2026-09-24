@@ -1,6 +1,25 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block meta_description %}{% trans "Yapay zeka mülakatçıyla ücretsiz mülakat pratiği yap: pozisyonuna uygun sorular, anında puanlama ve gelişim takibi. Stressiz, istediğin kadar pratik." %}{% endblock %}
+
+{% block extra_meta %}
+{% get_current_language as LANGUAGE_CODE %}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{% trans "Mülakat Simülatörü" %}">
+<meta property="og:locale" content="{% if LANGUAGE_CODE == 'tr' %}tr_TR{% else %}en_US{% endif %}">
+<meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{% url 'home' %}">
+<meta property="og:title" content="{% trans "Mülakat Simülatörü — mülakattan önce provanı yap" %}">
+<meta property="og:description" content="{% trans "Yapay zeka mülakatçıyla ücretsiz mülakat pratiği yap: pozisyonuna uygun sorular, anında puanlama ve gelişim takibi." %}">
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/static/img/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{% trans "Mülakat Simülatörü — mülakattan önce provanı yap" %}">
+<meta name="twitter:description" content="{% trans "Yapay zeka mülakatçıyla ücretsiz mülakat pratiği yap: pozisyonuna uygun sorular, anında puanlama ve gelişim takibi." %}">
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}/static/img/og-image.png">
+{% endblock %}
+
 {% block extra_css %}
 <link rel="stylesheet" href="/static/css/chat.css">
 <link rel="stylesheet" href="/static/css/home.css">
