@@ -10,7 +10,7 @@
 <section class="panel">
     <header class="panel__head">
         <div>
-            <h1>{% blocktrans with name=user.username %}Merhaba, {{ name }}{% endblocktrans %}</h1>
+            <h1>{% blocktrans with name=display_name %}Merhaba, {{ name }}{% endblocktrans %}</h1>
             <p class="panel__lead">{% trans "Provalarına buradan devam edebilir ya da yeni bir tane başlatabilirsin." %}</p>
         </div>
         {% if in_progress or completed %}

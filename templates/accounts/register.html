@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block title %}{% trans "Kayıt Ol - Mülakat Simülatörü" %}{% endblock %}
+{% block meta_description %}{% trans "Birkaç saniyede ücretsiz hesabını oluştur, ilk mülakat provanı hemen başlasın." %}{% endblock %}
 
 {% block extra_css %}<link rel="stylesheet" href="/static/css/auth.css">{% endblock %}
 
@@ -17,6 +18,8 @@
         {% include 'accounts/_fields.html' %}
         <button type="submit" class="btn btn--primary" id="auth-submit" data-busy="{% trans "Hesabın oluşturuluyor..." %}">{% trans "Kayıt ol" %}</button>
     </form>
+
+    {% include 'accounts/_google_button.html' %}
 
     <p class="auth__alt">{% trans "Zaten hesabın var mı?" %} <a href="{% url 'login' %}">{% trans "Giriş yap" %}</a></p>
 </section>

@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import User
@@ -7,10 +8,13 @@ from django.utils.decorators import method_decorator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext as _
+from django.views.decorators.http import require_POST
 from django_ratelimit.decorators import ratelimit
 
 from .emailing import EmailSendError, send_verification_email
 from .forms import LoginForm, RegisterForm
+from .google_auth import GoogleTokenError, verify_google_credential
+from .utils import unique_username
 
 
 @ratelimit(key='ip', rate='5/h', method='POST', block=False)
@@ -62,6 +66,34 @@ def verify_email(request, uidb64, token):
         return redirect('panel')
 
     return render(request, 'accounts/verify_invalid.html', status=400)
+
+
+@require_POST
+@ratelimit(key='ip', rate='15/h', method='POST', block=False)
+def google_login(request):
+    if getattr(request, 'limited', False):
+        messages.error(request, _('Çok fazla deneme yapıldı. Lütfen bir süre sonra tekrar dene.'))
+        return redirect('login')
+
+    credential = request.POST.get('credential', '')
+    try:
+        email = verify_google_credential(credential)
+    except GoogleTokenError:
+        messages.error(request, _('Google ile giriş doğrulanamadı. Lütfen tekrar dene.'))
+        return redirect('login')
+
+    user = User.objects.filter(email__iexact=email).first()
+    if user is None:
+        user = User(email=email, username=unique_username(email), is_active=True)
+        user.set_unusable_password()
+        user.save()
+    elif not user.is_active:
+        # Google e-postayı zaten doğruladığı için kendi doğrulama adımımızı atlıyoruz.
+        user.is_active = True
+        user.save(update_fields=['is_active'])
+
+    login(request, user, backend='accounts.auth_backends.EmailAuthBackend')
+    return redirect('panel')
 
 
 @method_decorator(ratelimit(key='ip', rate='10/h', method='POST', block=False), name='post')

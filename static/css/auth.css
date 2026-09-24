@@ -44,6 +44,32 @@
     font: inherit;
 }
 
+.field:has(input[type="checkbox"]) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px var(--space-2);
+}
+
+.field:has(input[type="checkbox"]) label {
+    order: 2;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.field input[type="checkbox"] {
+    order: 1;
+    width: 20px;
+    height: 20px;
+    flex: none;
+}
+
+.field:has(input[type="checkbox"]) .field__error,
+.field:has(input[type="checkbox"]) .field__help {
+    order: 3;
+    flex-basis: 100%;
+}
+
 .field input:focus-visible {
     background: var(--surface);
     border-color: var(--violet);
@@ -75,6 +101,28 @@
 .auth__card .btn {
     width: 100%;
     margin-top: var(--space-2);
+}
+
+.auth__divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: var(--space-6) 0;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+}
+
+.auth__divider::before,
+.auth__divider::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--line);
+}
+
+.auth__google {
+    display: flex;
+    justify-content: center;
 }
 
 .auth__alt {

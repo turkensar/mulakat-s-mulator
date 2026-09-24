@@ -1,19 +1,50 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
+from django.urls import reverse_lazy
+from django.utils.html import format_html
 from django.utils.translation import gettext as gettext_now
 from django.utils.translation import gettext_lazy as _
 
 from .recaptcha import ReCaptchaField
+from .utils import unique_username
 
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True, label=_('E-posta'))
+    password1 = forms.CharField(
+        label=_('Parola'),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        help_text=_('En az 8 karakter.'),
+    )
+    password2 = forms.CharField(
+        label=_('Parola (tekrar)'),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        help_text=_('Aynı parolayı bir daha yaz.'),
+    )
+    kvkk_consent = forms.BooleanField(
+        required=True,
+        label=_("Aydınlatma Metni'ni okudum, kabul ediyorum."),
+        error_messages={'required': _("Devam etmek için Aydınlatma Metni'ni onaylaman gerekiyor.")},
+    )
     captcha = ReCaptchaField()
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('email', 'password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['kvkk_consent'].help_text = format_html(
+            '<a href="{}" target="_blank" rel="noopener">{}</a>',
+            reverse_lazy('kvkk'), gettext_now("Aydınlatma Metni'ni aç"),
+        )
+
+    error_messages = {
+        'password_mismatch': _('Parolalar eşleşmiyor, tekrar dener misin?'),
+    }
 
     def clean_email(self):
         email = self.cleaned_data['email']
@@ -23,13 +54,25 @@ class RegisterForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
+        email = self.cleaned_data['email']
+        user.email = email
+        user.username = unique_username(email)
         if commit:
             user.save()
         return user
 
 
 class LoginForm(AuthenticationForm):
+    username = forms.CharField(
+        label=_('E-posta'),
+        widget=forms.TextInput(attrs={'autocomplete': 'email', 'autofocus': True}),
+    )
+    password = forms.CharField(
+        label=_('Parola'),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password'}),
+    )
+
     def confirm_login_allowed(self, user):
         if not user.is_active:
             raise forms.ValidationError(
@@ -39,3 +82,9 @@ class LoginForm(AuthenticationForm):
                 ),
                 code='inactive',
             )
+
+    def get_invalid_login_error(self):
+        return forms.ValidationError(
+            gettext_now('E-posta ya da parola hatalı.'),
+            code='invalid_login',
+        )

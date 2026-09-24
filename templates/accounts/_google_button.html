@@ -1,0 +1,35 @@
+{% load i18n %}
+{% if GOOGLE_CLIENT_ID %}
+<div class="auth__divider"><span>{% trans "ya da" %}</span></div>
+<div id="g_id_signin_container" class="auth__google"></div>
+
+<form id="google-login-form" method="post" action="{% url 'google_login' %}" class="visually-hidden">
+    {% csrf_token %}
+    <input type="hidden" name="credential" id="google-credential">
+</form>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+    window.handleGoogleCredential = function (response) {
+        document.getElementById('google-credential').value = response.credential;
+        document.getElementById('google-login-form').submit();
+    };
+    (function () {
+        function init() {
+            if (!(window.google && google.accounts && google.accounts.id)) {
+                window.setTimeout(init, 200);
+                return;
+            }
+            google.accounts.id.initialize({
+                client_id: '{{ GOOGLE_CLIENT_ID }}',
+                callback: handleGoogleCredential,
+            });
+            google.accounts.id.renderButton(
+                document.getElementById('g_id_signin_container'),
+                {theme: 'outline', size: 'large', width: 320, locale: '{{ LANGUAGE_CODE }}'}
+            );
+        }
+        init();
+    })();
+</script>
+{% endif %}

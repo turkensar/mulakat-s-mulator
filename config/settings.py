@@ -98,6 +98,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'config.context_processors.google_client_id',
             ],
         },
     },
@@ -188,12 +189,11 @@ LOGIN_URL = '/giris/'
 LOGIN_REDIRECT_URL = '/panel/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Varsayılan ModelBackend, is_active=False kullanıcıları authenticate() içinde
-# sessizce reddeder ve LoginForm.confirm_login_allowed hiç çağrılmaz; bu yüzden
-# e-posta doğrulanmamış hesaba "hesabını doğrula" gibi özel bir mesaj gösteremeyiz.
-# AllowAllUsersModelBackend is_active kontrolünü authenticate()'te atlar, kontrolü
-# forma (accounts/forms.py::LoginForm) bırakır.
-AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
+# accounts.auth_backends.EmailAuthBackend: e-posta veya (eski kullanıcılar için)
+# kullanıcı adıyla giriş yapar; is_active kontrolünü authenticate()'te değil
+# forma bırakır (accounts/forms.py::LoginForm.confirm_login_allowed), böylece
+# e-posta doğrulanmamış hesaba özel bir mesaj gösterebiliriz.
+AUTHENTICATION_BACKENDS = ['accounts.auth_backends.EmailAuthBackend']
 
 
 # Gemini API
@@ -231,6 +231,13 @@ else:
         raise ImproperlyConfigured(
             'RECAPTCHA_PUBLIC_KEY / RECAPTCHA_PRIVATE_KEY ortam değişkenleri tanımlı değil.'
         )
+
+
+# Google ile giriş (Google Identity Services). Boşsa buton hiç gösterilmez;
+# https://console.cloud.google.com/apis/credentials, OAuth Client ID (Web application),
+# "Authorized JavaScript origins" alanına sitenin adresi eklenir. Sunucu tarafı bir
+# sır (client secret) gerekmez, yalnızca herkese açık client ID kullanılır.
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
 
 
 # Resend (kayıt e-posta doğrulaması). https://resend.com API anahtarı.

@@ -9,6 +9,8 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.utils.translation import gettext as _
 
+from .utils import display_name
+
 logger = logging.getLogger(__name__)
 
 RESEND_URL = 'https://api.resend.com/emails'
@@ -34,7 +36,7 @@ def send_verification_email(user, request):
             'Mülakat Simülatörü hesabını etkinleştirmek için aşağıdaki bağlantıya tıkla:\n'
             '%(link)s\n\n'
             'Bu bağlantı 3 gün geçerlidir. Bu hesabı sen açmadıysan bu e-postayı yok sayabilirsin.'
-        ) % {'username': user.username, 'link': link}
+        ) % {'username': display_name(user), 'link': link}
 
     if not settings.RESEND_API_KEY:
         # Yerel geliştirmede gerçek Resend hesabı gerekmesin diye bağlantı konsola yazılır.

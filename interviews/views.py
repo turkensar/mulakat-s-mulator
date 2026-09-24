@@ -13,6 +13,8 @@ from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
 from django.views.decorators.http import require_POST
 
+from accounts.utils import display_name
+
 from .forms import InterviewForm
 from .models import Answer, DAILY_INTERVIEW_LIMIT, Question
 from .services.gemini import (
@@ -44,6 +46,7 @@ def panel(request):
     context = {
         'in_progress': [i for i in interviews if i.status == 'in_progress'],
         'completed': [i for i in interviews if i.status == 'completed'],
+        'display_name': display_name(request.user),
     }
     return render(request, 'interviews/panel.html', context)
 
