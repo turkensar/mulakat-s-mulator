@@ -3,7 +3,7 @@
   "regions": ["fra1"],
   "functions": {
     "config/wsgi.py": {
-      "maxDuration": 120
+      "maxDuration": 300
     }
   }
 }
