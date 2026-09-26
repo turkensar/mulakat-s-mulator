@@ -71,7 +71,8 @@ Kullanıcı hedeflediği pozisyonu, seviyesini, mülakat türünü ve dilini se�
 | Katman | Teknoloji |
 |---|---|
 | Backend | Python, Django |
-| Kimlik doğrulama | Django'nun yerleşik auth sistemi; kayıtta reCAPTCHA v2 (bot koruması) ve Resend ile e-posta doğrulama (hesap `is_active=False` başlar) |
+| Kimlik doğrulama | Django'nun yerleşik auth sistemi; kayıtta reCAPTCHA v2 (bot koruması) ve e-posta doğrulama (hesap `is_active=False` başlar) |
+| E-posta | Gmail SMTP (Django 6.1 `MAILERS`, uygulama şifresi ile; domain gerekmez, günde ~500 gönderim). Yerelde değişkenler boşsa konsola yazılır |
 | Veritabanı | Supabase (PostgreSQL) |
 | Yapay zeka | Google Gemini API, model: `gemini-3.8-flash` |
 | AI kütüphanesi | `google-genai` (Google'ın resmi Gen AI SDK'sı) |

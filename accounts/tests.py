@@ -1,9 +1,10 @@
+import smtplib
 from unittest.mock import patch
 
-import requests
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
-from django.test import Client, TestCase, override_settings
+from django.core import mail
+from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -12,27 +13,18 @@ from .google_auth import GoogleTokenError
 
 
 class FakeResponse:
-    def __init__(self, json_data, status_code=200):
+    def __init__(self, json_data):
         self._json = json_data
-        self.status_code = status_code
 
     def json(self):
         return self._json
 
-    def raise_for_status(self):
-        if self.status_code >= 400:
-            raise requests.HTTPError(f'HTTP {self.status_code}')
 
-
-def make_fake_post(captcha_ok=True, email_ok=True):
-    # accounts.recaptcha ve accounts.emailing aynı `requests` modülünü paylaştığı
-    # için tek bir `requests.post` sahtesi, URL'e göre iki farklı çağrıyı da yanıtlar.
+def make_fake_post(captcha_ok=True):
+    # reCAPTCHA doğrulaması requests.post ile yapılır; e-postalar ise Django'nun
+    # e-posta sistemiyle gider ve testlerde mail.outbox'a düşer.
     def fake_post(url, **kwargs):
-        if 'siteverify' in url:
-            return FakeResponse({'success': captcha_ok})
-        if not email_ok:
-            raise requests.RequestException('Resend API erişilemedi')
-        return FakeResponse({'id': 'fake-email-id'})
+        return FakeResponse({'success': captcha_ok})
 
     return fake_post
 
@@ -46,7 +38,6 @@ REGISTER_DATA = {
 }
 
 
-@override_settings(RESEND_API_KEY='test-key')
 class RegisterFlowTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -60,6 +51,10 @@ class RegisterFlowTests(TestCase):
         self.assertFalse(user.is_active)
         self.assertTemplateUsed(response, 'accounts/verify_pending.html')
         self.assertFalse('_auth_user_id' in self.client.session)
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ['yeni@example.com'])
+        self.assertIn('/dogrula/', mail.outbox[0].body)
 
     @patch('requests.post', side_effect=make_fake_post())
     def test_register_username_gets_suffix_on_collision(self, mock_post):
@@ -85,8 +80,9 @@ class RegisterFlowTests(TestCase):
         self.assertFalse(User.objects.filter(email='yeni@example.com').exists())
         self.assertContains(response, 'Robot olmadığını doğrular mısın?')
 
-    @patch('requests.post', side_effect=make_fake_post(email_ok=False))
-    def test_register_rolls_back_user_if_email_fails(self, mock_post):
+    @patch('accounts.emailing.send_mail', side_effect=smtplib.SMTPException('Gmail reddetti'))
+    @patch('requests.post', side_effect=make_fake_post())
+    def test_register_rolls_back_user_if_email_fails(self, mock_post, mock_send):
         response = self.client.post(reverse('register'), REGISTER_DATA)
 
         self.assertFalse(User.objects.filter(email='yeni@example.com').exists())
@@ -223,3 +219,4 @@ class InactiveLoginTests(TestCase):
             reverse('login'), {'username': 'pasif', 'password': 'parola-123456'}
         )
         self.assertRedirects(response, reverse('panel'))
+

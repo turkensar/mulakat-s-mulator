@@ -240,33 +240,36 @@ else:
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
 
 
-# Resend (kayıt e-posta doğrulaması). https://resend.com API anahtarı.
-# Yerelde anahtar yoksa doğrulama bağlantısı gönderilmez, sunucu logunda görünür
-# (bkz. accounts/emailing.py); üretimde anahtar zorunludur.
-RESEND_FROM_EMAIL = os.environ.get(
-    'RESEND_FROM_EMAIL', 'Mülakat Simülatörü <onboarding@resend.dev>'
-)
-if DEBUG:
-    RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
-else:
-    try:
-        RESEND_API_KEY = os.environ['RESEND_API_KEY']
-    except KeyError:
-        raise ImproperlyConfigured('RESEND_API_KEY ortam değişkeni tanımlı değil.')
-
-
-# Email
+# Email (kayıt doğrulama ve şifre sıfırlama e-postaları)
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
+#
+# Gmail SMTP: GMAIL_ADDRESS Gmail adresi, GMAIL_APP_PASSWORD bir "uygulama
+# şifresi"dir (hesap parolası değil; iki adımlı doğrulama açıkken
+# myaccount.google.com/apppasswords'ten alınır). Yerelde ikisi de boşsa e-postalar
+# konsola yazılır; üretimde zorunludur. Değişkenler küçük harfle tutulur: Django
+# 6.1, MAILERS tanımlıyken eski EMAIL_* ayar adlarına izin vermiyor.
+_gmail_address = os.environ.get('GMAIL_ADDRESS', '')
+_gmail_app_password = os.environ.get('GMAIL_APP_PASSWORD', '')
 
-# Uygulama e-posta göndermiyor. Lokalde konsola yazılır; üretimde SMTP arka ucu
-# seçilir (Django'nun `check --deploy`'u konsol ve dummy arka uçlarını hata sayar).
-# SMTP yapılandırılmadığı için ileride kodda e-posta gönderilirse sessizce
-# kaybolmaz, bağlantı hatası verir; o zaman gerçek bir SMTP servisi ayarlanmalıdır.
-MAILERS = {
-    'default': {
-        'BACKEND': (
-            'django.core.mail.backends.console.EmailBackend' if DEBUG
-            else 'django.core.mail.backends.smtp.EmailBackend'
-        ),
-    },
-}
+if _gmail_address and _gmail_app_password:
+    MAILERS = {
+        'default': {
+            'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+            'OPTIONS': {
+                'host': 'smtp.gmail.com',
+                'port': 587,
+                'use_tls': True,
+                'username': _gmail_address,
+                'password': _gmail_app_password,
+                'timeout': 10,
+            },
+        },
+    }
+elif DEBUG:
+    MAILERS = {'default': {'BACKEND': 'django.core.mail.backends.console.EmailBackend'}}
+else:
+    raise ImproperlyConfigured(
+        'GMAIL_ADDRESS / GMAIL_APP_PASSWORD ortam değişkenleri tanımlı değil.'
+    )
+
+DEFAULT_FROM_EMAIL = f'Mülakat Simülatörü <{_gmail_address or "noreply@localhost"}>'

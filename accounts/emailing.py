@@ -1,8 +1,8 @@
 import logging
+import smtplib
 
-import requests
-from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
 from django.urls import reverse
 from django.utils import translation
 from django.utils.encoding import force_bytes
@@ -12,8 +12,6 @@ from django.utils.translation import gettext as _
 from .utils import display_name
 
 logger = logging.getLogger(__name__)
-
-RESEND_URL = 'https://api.resend.com/emails'
 
 
 class EmailSendError(Exception):
@@ -38,24 +36,9 @@ def send_verification_email(user, request):
             'Bu bağlantı 3 gün geçerlidir. Bu hesabı sen açmadıysan bu e-postayı yok sayabilirsin.'
         ) % {'username': display_name(user), 'link': link}
 
-    if not settings.RESEND_API_KEY:
-        # Yerel geliştirmede gerçek Resend hesabı gerekmesin diye bağlantı konsola yazılır.
-        logger.info('RESEND_API_KEY yok; doğrulama bağlantısı (%s): %s', user.email, link)
-        return
-
     try:
-        response = requests.post(
-            RESEND_URL,
-            headers={'Authorization': f'Bearer {settings.RESEND_API_KEY}'},
-            json={
-                'from': settings.RESEND_FROM_EMAIL,
-                'to': [user.email],
-                'subject': str(subject),
-                'text': body,
-            },
-            timeout=10,
-        )
-        response.raise_for_status()
-    except requests.RequestException as exc:
+        send_mail(subject, body, None, [user.email])
+    except (smtplib.SMTPException, OSError) as exc:
+        # OSError: bağlantı reddi / zaman aşımı gibi ağ hataları (socket.timeout dahil).
         logger.warning('Doğrulama e-postası gönderilemedi (%s): %s', user.email, exc)
         raise EmailSendError(str(exc)) from exc
