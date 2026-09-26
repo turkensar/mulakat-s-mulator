@@ -10,59 +10,67 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: accounts/emailing.py:33
+#: accounts/emailing.py:31
 msgid "E-posta adresini doğrula"
 msgstr "Verify your email address"
 
-#: accounts/emailing.py:34
+#: accounts/emailing.py:32
 msgid "Merhaba %(username)s,\n\nMülakat Simülatörü hesabını etkinleştirmek için aşağıdaki bağlantıya tıkla:\n%(link)s\n\nBu bağlantı 3 gün geçerlidir. Bu hesabı sen açmadıysan bu e-postayı yok sayabilirsin."
 msgstr "Hello %(username)s,\n\nClick the link below to activate your Interview Simulator account:\n%(link)s\n\nThis link is valid for 3 days. If you did not create this account, you can ignore this email."
 
-#: accounts/forms.py:14 accounts/forms.py:67
+#: accounts/forms.py:105
+msgid "Yeni parola"
+msgstr "New password"
+
+#: accounts/forms.py:111
+msgid "Yeni parola (tekrar)"
+msgstr "New password (again)"
+
+#: accounts/forms.py:16 accounts/forms.py:69 accounts/forms.py:97
 msgid "E-posta"
 msgstr "Email"
 
-#: accounts/forms.py:16 accounts/forms.py:71
+#: accounts/forms.py:18 accounts/forms.py:73
 msgid "Parola"
 msgstr "Password"
 
-#: accounts/forms.py:19
+#: accounts/forms.py:108 accounts/forms.py:21
 msgid "En az 8 karakter."
 msgstr "At least 8 characters."
 
-#: accounts/forms.py:22
+#: accounts/forms.py:24
 msgid "Parola (tekrar)"
 msgstr "Password (again)"
 
-#: accounts/forms.py:25
+#: accounts/forms.py:114 accounts/forms.py:27
 msgid "Aynı parolayı bir daha yaz."
 msgstr "Type the same password again."
 
-#: accounts/forms.py:29
+#: accounts/forms.py:31
 msgid "Aydınlatma Metni'ni okudum, kabul ediyorum."
 msgstr "I've read and accept the Privacy Notice."
 
-#: accounts/forms.py:30
+#: accounts/forms.py:32
 msgid "Devam etmek için Aydınlatma Metni'ni onaylaman gerekiyor."
 msgstr "You need to accept the Privacy Notice to continue."
 
-#: accounts/forms.py:42
+#: accounts/forms.py:44
 msgid "Aydınlatma Metni'ni aç"
 msgstr "Open the Privacy Notice"
 
-#: accounts/forms.py:46
+#: accounts/forms.py:119 accounts/forms.py:48
 msgid "Parolalar eşleşmiyor, tekrar dener misin?"
 msgstr "Passwords don't match, want to try again?"
 
-#: accounts/forms.py:52
+#: accounts/forms.py:54
 msgid "Bu e-posta adresi zaten kullanılıyor."
 msgstr "This email address is already in use."
 
-#: accounts/forms.py:79
+#: accounts/forms.py:81
 msgid "Hesabını kullanmadan önce e-postana gönderdiğimiz bağlantıyla doğrulaman gerekiyor."
 msgstr "You need to verify your account using the link we sent to your email before you can use it."
 
-#: accounts/forms.py:88
+#: accounts/forms.py:90
 msgid "E-posta ya da parola hatalı."
 msgstr "Wrong email or password."
 
@@ -86,7 +94,7 @@ msgstr "Too many sign-up attempts. Please try again in a while."
 msgid "Doğrulama e-postası gönderilemedi. Lütfen tekrar dene."
 msgstr "The verification email could not be sent. Please try again."
 
-#: accounts/views.py:77
+#: accounts/views.py:129 accounts/views.py:77
 msgid "Çok fazla deneme yapıldı. Lütfen bir süre sonra tekrar dene."
 msgstr "Too many attempts. Please try again later."
 
@@ -390,7 +398,7 @@ msgstr "Welcome back"
 msgid "Kaldığın yerden provaya devam et."
 msgstr "Pick up your practice where you left off."
 
-#: templates/accounts/login.html:19 templates/accounts/register.html:24 templates/accounts/verify_pending.html:16
+#: templates/accounts/login.html:19 templates/accounts/password_reset_complete.html:16 templates/accounts/register.html:24
 msgid "Giriş yap"
 msgstr "Log in"
 
@@ -398,11 +406,15 @@ msgstr "Log in"
 msgid "Giriş yapılıyor..."
 msgstr "Logging in..."
 
-#: templates/accounts/login.html:24
+#: templates/accounts/login.html:22 templates/accounts/password_reset_form.html:12
+msgid "Şifreni mi unuttun?"
+msgstr "Forgot your password?"
+
+#: templates/accounts/login.html:26
 msgid "Hesabın yok mu?"
 msgstr "Don't have an account?"
 
-#: templates/accounts/login.html:24 templates/accounts/register.html:19
+#: templates/accounts/login.html:26 templates/accounts/register.html:19
 msgid "Kayıt ol"
 msgstr "Sign up"
 
@@ -413,6 +425,114 @@ msgstr "Log in - Interview Simulator"
 #: templates/accounts/login.html:5
 msgid "Hesabına giriş yap, kaldığın yerden mülakat pratiğine devam et."
 msgstr "Sign in to your account and pick up your interview practice where you left off."
+
+#: templates/accounts/password_reset_complete.html:12
+msgid "Şifren değişti"
+msgstr "Your password was changed"
+
+#: templates/accounts/password_reset_complete.html:13
+msgid "Artık yeni şifrenle giriş yapabilirsin."
+msgstr "You can now sign in with your new password."
+
+#: templates/accounts/password_reset_complete.html:4
+msgid "Şifren değişti - Mülakat Simülatörü"
+msgstr "Password changed - Interview Simulator"
+
+#: templates/accounts/password_reset_complete.html:5
+msgid "Yeni şifrenle giriş yapabilirsin."
+msgstr "You can sign in with your new password."
+
+#: templates/accounts/password_reset_confirm.html:13
+msgid "Yeni şifre belirle"
+msgstr "Set a new password"
+
+#: templates/accounts/password_reset_confirm.html:14
+msgid "Yeni şifreni iki kez yaz."
+msgstr "Type your new password twice."
+
+#: templates/accounts/password_reset_confirm.html:20
+msgid "Kaydediliyor..."
+msgstr "Saving..."
+
+#: templates/accounts/password_reset_confirm.html:20
+msgid "Şifreyi kaydet"
+msgstr "Save password"
+
+#: templates/accounts/password_reset_confirm.html:25 templates/accounts/verify_invalid.html:12
+msgid "Bağlantı geçersiz ya da süresi dolmuş"
+msgstr "Link is invalid or expired"
+
+#: templates/accounts/password_reset_confirm.html:26
+msgid "Bu sıfırlama bağlantısı daha önce kullanılmış ya da süresi dolmuş olabilir. Yeni bir bağlantı isteyebilirsin."
+msgstr "This reset link may have already been used or expired. You can request a new one."
+
+#: templates/accounts/password_reset_confirm.html:29
+msgid "Yeni bağlantı iste"
+msgstr "Request a new link"
+
+#: templates/accounts/password_reset_confirm.html:4
+msgid "Yeni şifre belirle - Mülakat Simülatörü"
+msgstr "Set a new password - Interview Simulator"
+
+#: templates/accounts/password_reset_confirm.html:5
+msgid "Hesabın için yeni bir şifre belirle."
+msgstr "Set a new password for your account."
+
+#: templates/accounts/password_reset_done.html:12 templates/accounts/verify_pending.html:12
+msgid "Gelen kutunu kontrol et"
+msgstr "Check your inbox"
+
+#: templates/accounts/password_reset_done.html:13
+msgid "Bu adresle kayıtlı bir hesap varsa, şifre sıfırlama bağlantısını birkaç dakika içinde alacaksın. Gelmezse spam klasörüne de bak."
+msgstr "If an account is registered with this address, you'll receive a password reset link within a few minutes. If it doesn't arrive, check your spam folder too."
+
+#: templates/accounts/password_reset_done.html:16 templates/accounts/password_reset_form.html:22
+msgid "Girişe dön"
+msgstr "Back to sign in"
+
+#: templates/accounts/password_reset_done.html:4
+msgid "Gelen kutunu kontrol et - Mülakat Simülatörü"
+msgstr "Check your inbox - Interview Simulator"
+
+#: templates/accounts/password_reset_done.html:5
+msgid "Şifre sıfırlama bağlantısı e-postana gönderildi."
+msgstr "A password reset link has been sent to your email."
+
+#: templates/accounts/password_reset_email.txt:1
+msgid "Merhaba,"
+msgstr "Hello,"
+
+#: templates/accounts/password_reset_email.txt:3
+msgid "Mülakat Simülatörü hesabın için şifre sıfırlama isteği aldık. Yeni şifreni belirlemek için aşağıdaki bağlantıya tıkla:"
+msgstr "We received a request to reset the password for your Interview Simulator account. Click the link below to set a new password:"
+
+#: templates/accounts/password_reset_email.txt:7
+msgid "Bu bağlantı 3 gün geçerlidir ve yalnızca bir kez kullanılabilir. Bu isteği sen yapmadıysan bu e-postayı yok sayabilirsin; şifren değişmez."
+msgstr "This link is valid for 3 days and can only be used once. If you didn't make this request, you can ignore this email; your password won't change."
+
+#: templates/accounts/password_reset_form.html:13
+msgid "Hesabının e-posta adresini yaz, yeni şifre belirlemen için bir bağlantı gönderelim."
+msgstr "Enter your account's email address and we'll send you a link to set a new password."
+
+#: templates/accounts/password_reset_form.html:19
+msgid "Bağlantıyı gönder"
+msgstr "Send link"
+
+#: templates/accounts/password_reset_form.html:19
+msgid "Gönderiliyor..."
+msgstr "Sending..."
+
+#: templates/accounts/password_reset_form.html:4
+msgid "Şifremi unuttum - Mülakat Simülatörü"
+msgstr "Forgot password - Interview Simulator"
+
+#: templates/accounts/password_reset_form.html:5
+msgid "Şifreni mi unuttun? E-postana bir sıfırlama bağlantısı gönderelim."
+msgstr "Forgot your password? We'll send a reset link to your email."
+
+#: templates/accounts/password_reset_subject.txt:1
+msgid "Şifreni sıfırla"
+msgstr "Reset your password"
 
 #: templates/accounts/register.html:12
 msgid "Provaya başlayalım"
@@ -438,10 +558,6 @@ msgstr "Sign up - Interview Simulator"
 msgid "Birkaç saniyede ücretsiz hesabını oluştur, ilk mülakat provanı hemen başlasın."
 msgstr "Create your free account in seconds and start your first mock interview right away."
 
-#: templates/accounts/verify_invalid.html:12
-msgid "Bağlantı geçersiz ya da süresi dolmuş"
-msgstr "Link is invalid or expired"
-
 #: templates/accounts/verify_invalid.html:13
 msgid "Bu doğrulama bağlantısı artık çalışmıyor. Yeniden kayıt olarak yeni bir bağlantı alabilirsin."
 msgstr "This verification link no longer works. You can register again to get a new one."
@@ -457,10 +573,6 @@ msgstr "Link invalid - Interview Simulator"
 #: templates/accounts/verify_invalid.html:5
 msgid "Doğrulama bağlantısının süresi dolmuş olabilir; yeniden kayıt olarak yenisini alabilirsin."
 msgstr "The verification link may have expired; you can register again to get a new one."
-
-#: templates/accounts/verify_pending.html:12
-msgid "Gelen kutunu kontrol et"
-msgstr "Check your inbox"
 
 #: templates/accounts/verify_pending.html:13
 msgid "<strong>%(email)s</strong> adresine bir doğrulama bağlantısı gönderdik. Bağlantıya tıklayınca hesabın etkinleşir."

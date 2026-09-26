@@ -113,7 +113,7 @@ def extract():
     result = {}
     for directory in SCAN_DIRS:
         for path in sorted((ROOT / directory).rglob('*')):
-            if path.suffix not in ('.py', '.html') or SKIP_PARTS & set(path.parts):
+            if path.suffix not in ('.py', '.html', '.txt') or SKIP_PARTS & set(path.parts):
                 continue
             rel = path.relative_to(ROOT).as_posix()
             text = path.read_text(encoding='utf-8')

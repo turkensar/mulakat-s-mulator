@@ -71,7 +71,7 @@ Kullanıcı hedeflediği pozisyonu, seviyesini, mülakat türünü ve dilini se�
 | Katman | Teknoloji |
 |---|---|
 | Backend | Python, Django |
-| Kimlik doğrulama | Django'nun yerleşik auth sistemi; kayıtta reCAPTCHA v2 (bot koruması) ve e-posta doğrulama (hesap `is_active=False` başlar) |
+| Kimlik doğrulama | Django'nun yerleşik auth sistemi; kayıtta reCAPTCHA v2 (bot koruması) ve e-posta doğrulama (hesap `is_active=False` başlar), şifremi unuttum akışı |
 | E-posta | Gmail SMTP (Django 6.1 `MAILERS`, uygulama şifresi ile; domain gerekmez, günde ~500 gönderim). Yerelde değişkenler boşsa konsola yazılır |
 | Veritabanı | Supabase (PostgreSQL) |
 | Yapay zeka | Google Gemini API, model: `gemini-3.8-flash` |
@@ -226,6 +226,8 @@ Beklenen JSON:
 | `/kayit/` | Kayıt (reCAPTCHA v2 zorunlu; hesap `is_active=False` oluşur, e-posta doğrulama bağlantısı gönderilir) |
 | `/dogrula/<uidb64>/<token>/` | Kayıt e-postasındaki doğrulama bağlantısı; hesabı etkinleştirir ve giriş yapar |
 | `/giris/` | Giriş (doğrulanmamış hesapta özel hata mesajı gösterir) |
+| `/sifremi-unuttum/`, `/sifremi-unuttum/gonderildi/` | Şifre sıfırlama isteği (IP başına 5/saat; e-posta kayıtlı olsun olmasın aynı sayfa gösterilir) |
+| `/sifre-sifirla/<uidb64>/<token>/`, `/sifre-sifirla/tamam/` | E-postadaki bağlantıyla yeni şifre belirleme (3 gün geçerli, tek kullanımlık) |
 | `/google-giris/` | Google Identity Services ile giriş/kayıt (POST, `credential` JWT'sini doğrular) |
 | `/cikis/` | Çıkış |
 | `/panel/` | Geçmiş mülakatlar |

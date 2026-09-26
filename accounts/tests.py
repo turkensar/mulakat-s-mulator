@@ -1,3 +1,4 @@
+import re
 import smtplib
 from unittest.mock import patch
 
@@ -220,3 +221,58 @@ class InactiveLoginTests(TestCase):
         )
         self.assertRedirects(response, reverse('panel'))
 
+
+class PasswordResetTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='unutkan@example.com', email='unutkan@example.com',
+            password='eski-parola-123', is_active=True,
+        )
+
+    def _reset_link_from_outbox(self):
+        match = re.search(r'https?://[^/\s]+(/sifre-sifirla/[^\s]+/)', mail.outbox[0].body)
+        self.assertIsNotNone(match)
+        return match.group(1)
+
+    def test_full_reset_flow_changes_password(self):
+        response = self.client.post(reverse('password_reset'), {'email': 'unutkan@example.com'})
+        self.assertRedirects(response, reverse('password_reset_done'))
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ['unutkan@example.com'])
+
+        # Django geçerli jetonu oturuma alıp "set-password" adresine yönlendirir.
+        confirm_page = self.client.get(self._reset_link_from_outbox(), follow=True)
+        self.assertContains(confirm_page, 'Yeni şifre belirle')
+
+        response = self.client.post(
+            confirm_page.redirect_chain[-1][0],
+            {'new_password1': 'yeni-guclu-parola-456', 'new_password2': 'yeni-guclu-parola-456'},
+        )
+        self.assertRedirects(response, reverse('password_reset_complete'))
+
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password('yeni-guclu-parola-456'))
+
+    def test_unknown_email_shows_same_page_but_sends_nothing(self):
+        response = self.client.post(reverse('password_reset'), {'email': 'yok@example.com'})
+        self.assertRedirects(response, reverse('password_reset_done'))
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_google_only_user_gets_no_reset_email(self):
+        google_user = User(username='g@example.com', email='g@example.com', is_active=True)
+        google_user.set_unusable_password()
+        google_user.save()
+
+        self.client.post(reverse('password_reset'), {'email': 'g@example.com'})
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_invalid_link_shows_friendly_message(self):
+        uidb64 = urlsafe_base64_encode(force_bytes(self.user.pk))
+        response = self.client.get(
+            reverse('password_reset_confirm', args=[uidb64, 'gecersiz-jeton'])
+        )
+        self.assertContains(response, 'Yeni bağlantı iste')
+
+    def test_login_page_links_to_reset(self):
+        response = self.client.get(reverse('login'))
+        self.assertContains(response, reverse('password_reset'))

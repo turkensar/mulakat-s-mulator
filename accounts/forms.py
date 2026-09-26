@@ -1,5 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import (
+    AuthenticationForm, PasswordResetForm, SetPasswordForm, UserCreationForm,
+)
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.utils.html import format_html
@@ -88,3 +90,31 @@ class LoginForm(AuthenticationForm):
             gettext_now('E-posta ya da parola hatalı.'),
             code='invalid_login',
         )
+
+
+class ResetRequestForm(PasswordResetForm):
+    email = forms.EmailField(
+        label=_('E-posta'),
+        max_length=254,
+        widget=forms.EmailInput(attrs={'autocomplete': 'email', 'autofocus': True}),
+    )
+
+
+class NewPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        label=_('Yeni parola'),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'autofocus': True}),
+        help_text=_('En az 8 karakter.'),
+    )
+    new_password2 = forms.CharField(
+        label=_('Yeni parola (tekrar)'),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        help_text=_('Aynı parolayı bir daha yaz.'),
+    )
+
+    error_messages = {
+        **SetPasswordForm.error_messages,
+        'password_mismatch': _('Parolalar eşleşmiyor, tekrar dener misin?'),
+    }
