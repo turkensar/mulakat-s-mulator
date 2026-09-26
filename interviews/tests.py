@@ -70,3 +70,12 @@ class GuestTrialTests(TestCase):
     def test_guest_trial_without_session_redirects_home(self):
         response = self.client.get(reverse('guest_trial'))
         self.assertRedirects(response, reverse('home'))
+
+
+class ContactEmailTests(TestCase):
+    def test_public_pages_show_app_contact_email_only(self):
+        for name in ('home', 'privacy', 'kvkk'):
+            response = self.client.get(reverse(name))
+            self.assertContains(response, 'mulakatsimulatoru%40gmail.com' if name == 'home'
+                                else 'mailto:mulakatsimulatoru@gmail.com')
+            self.assertNotContains(response, 'turkensar07')

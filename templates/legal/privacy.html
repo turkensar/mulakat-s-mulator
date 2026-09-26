@@ -32,7 +32,7 @@
         <p>{% blocktrans %}Verilerine erişmek, düzeltmek veya hesabınla birlikte tüm verilerinin silinmesini istemek için bizimle iletişime geçebilirsin.{% endblocktrans %}</p>
 
         <h2>{% trans "7. İletişim" %}</h2>
-        <p>{% blocktrans %}Sorularını <a href="mailto:turkensar07@gmail.com">turkensar07@gmail.com</a> adresine yazabilirsin.{% endblocktrans %}</p>
+        <p>{% blocktrans with email=CONTACT_EMAIL %}Sorularını <a href="mailto:{{ email }}">{{ email }}</a> adresine yazabilirsin.{% endblocktrans %}</p>
     </div>
 </section>
 {% endblock %}

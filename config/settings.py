@@ -99,6 +99,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'config.context_processors.google_client_id',
+                'config.context_processors.contact_email',
             ],
         },
     },
@@ -273,3 +274,6 @@ else:
     )
 
 DEFAULT_FROM_EMAIL = f'Mülakat Simülatörü <{_gmail_address or "noreply@localhost"}>'
+
+# Sitede gösterilen iletişim adresi (footer, Gizlilik Politikası, KVKK metni).
+CONTACT_EMAIL = 'mulakatsimulatoru@gmail.com'

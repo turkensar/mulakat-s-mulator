@@ -35,7 +35,7 @@
         <p>{% blocktrans %}KVKK m. 11 uyarınca; kişisel verinin işlenip işlenmediğini öğrenme, işlenmişse buna ilişkin bilgi talep etme, işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme, yurt içinde/dışında aktarıldığı üçüncü kişileri bilme, eksik/yanlış işlenmişse düzeltilmesini isteme, silinmesini/yok edilmesini isteme ve bu işlemlerin aktarıldığı üçüncü kişilere bildirilmesini isteme haklarına sahipsin.{% endblocktrans %}</p>
 
         <h2>{% trans "8. Başvuru Yolu" %}</h2>
-        <p>{% blocktrans %}Haklarını kullanmak için <a href="mailto:turkensar07@gmail.com">turkensar07@gmail.com</a> adresine yazılı olarak başvurabilirsin.{% endblocktrans %}</p>
+        <p>{% blocktrans with email=CONTACT_EMAIL %}Haklarını kullanmak için <a href="mailto:{{ email }}">{{ email }}</a> adresine yazılı olarak başvurabilirsin.{% endblocktrans %}</p>
     </div>
 </section>
 {% endblock %}

@@ -1365,8 +1365,8 @@ msgid "8. Başvuru Yolu"
 msgstr "8. How to Apply"
 
 #: templates/legal/kvkk.html:38
-msgid "Haklarını kullanmak için <a href=\"mailto:turkensar07@gmail.com\">turkensar07@gmail.com</a> adresine yazılı olarak başvurabilirsin."
-msgstr "To exercise your rights, you can apply in writing to <a href=\"mailto:turkensar07@gmail.com\">turkensar07@gmail.com</a>."
+msgid "Haklarını kullanmak için <a href=\"mailto:%(email)s\">%(email)s</a> adresine yazılı olarak başvurabilirsin."
+msgstr "To exercise your rights, you can apply in writing to <a href=\"mailto:%(email)s\">%(email)s</a>."
 
 #: templates/legal/kvkk.html:4
 msgid "KVKK Aydınlatma Metni - Mülakat Simülatörü"
@@ -1429,8 +1429,8 @@ msgid "7. İletişim"
 msgstr "7. Contact"
 
 #: templates/legal/privacy.html:35
-msgid "Sorularını <a href=\"mailto:turkensar07@gmail.com\">turkensar07@gmail.com</a> adresine yazabilirsin."
-msgstr "You can send your questions to <a href=\"mailto:turkensar07@gmail.com\">turkensar07@gmail.com</a>."
+msgid "Sorularını <a href=\"mailto:%(email)s\">%(email)s</a> adresine yazabilirsin."
+msgstr "You can send your questions to <a href=\"mailto:%(email)s\">%(email)s</a>."
 
 #: templates/legal/privacy.html:4
 msgid "Gizlilik Politikası - Mülakat Simülatörü"
