@@ -193,7 +193,7 @@ LOGOUT_REDIRECT_URL = '/'
 # accounts.auth_backends.EmailAuthBackend: e-posta veya (eski kullanıcılar için)
 # kullanıcı adıyla giriş yapar; is_active kontrolünü authenticate()'te değil
 # forma bırakır (accounts/forms.py::LoginForm.confirm_login_allowed), böylece
-# e-posta doğrulanmamış hesaba özel bir mesaj gösterebiliriz.
+# devre dışı hesaba "yanlış parola" yerine açık bir mesaj gösterebiliriz.
 AUTHENTICATION_BACKENDS = ['accounts.auth_backends.EmailAuthBackend']
 
 
@@ -241,7 +241,7 @@ else:
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
 
 
-# Email (kayıt doğrulama ve şifre sıfırlama e-postaları)
+# Email (şifre sıfırlama e-postaları)
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 #
 # Gmail SMTP: GMAIL_ADDRESS Gmail adresi, GMAIL_APP_PASSWORD bir "uygulama

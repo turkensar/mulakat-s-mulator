@@ -2,18 +2,14 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
-from django.utils.encoding import force_str
-from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 from django_ratelimit.decorators import ratelimit
 
 from config.ratelimit import client_ip
 
-from .emailing import EmailSendError, send_verification_email
 from .forms import LoginForm, NewPasswordForm, RegisterForm, ResetRequestForm
 from .google_auth import GoogleTokenError, verify_google_credential
 from .utils import unique_username
@@ -33,41 +29,13 @@ def register(request):
         else:
             form = RegisterForm(request.POST)
             if form.is_valid():
-                user = form.save(commit=False)
-                user.is_active = False
-                user.save()
-                try:
-                    send_verification_email(user, request)
-                except EmailSendError:
-                    user.delete()
-                    form.add_error(
-                        None,
-                        _('Doğrulama e-postası gönderilemedi. Lütfen tekrar dene.'),
-                    )
-                else:
-                    return render(
-                        request, 'accounts/verify_pending.html', {'email': user.email}
-                    )
+                user = form.save()
+                login(request, user, backend='accounts.auth_backends.EmailAuthBackend')
+                return redirect('panel')
     else:
         form = RegisterForm()
 
     return render(request, 'accounts/register.html', {'form': form})
-
-
-def verify_email(request, uidb64, token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    if user is not None and not user.is_active and default_token_generator.check_token(user, token):
-        user.is_active = True
-        user.save(update_fields=['is_active'])
-        login(request, user)
-        return redirect('panel')
-
-    return render(request, 'accounts/verify_invalid.html', status=400)
 
 
 @require_POST
@@ -90,9 +58,8 @@ def google_login(request):
         user.set_unusable_password()
         user.save()
     elif not user.is_active:
-        # Google e-postayı zaten doğruladığı için kendi doğrulama adımımızı atlıyoruz.
-        user.is_active = True
-        user.save(update_fields=['is_active'])
+        messages.error(request, _('Bu hesap devre dışı bırakılmış.'))
+        return redirect('login')
 
     login(request, user, backend='accounts.auth_backends.EmailAuthBackend')
     return redirect('panel')

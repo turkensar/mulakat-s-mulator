@@ -1,9 +1,7 @@
 import re
-import smtplib
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
 from django.core import mail
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -44,18 +42,15 @@ class RegisterFlowTests(TestCase):
         self.client = Client()
 
     @patch('requests.post', side_effect=make_fake_post())
-    def test_register_creates_inactive_user_and_does_not_log_in(self, mock_post):
+    def test_register_creates_active_user_and_logs_in(self, mock_post):
         response = self.client.post(reverse('register'), REGISTER_DATA)
 
         user = User.objects.get(email='yeni@example.com')
         self.assertEqual(user.username, 'yeni@example.com')
-        self.assertFalse(user.is_active)
-        self.assertTemplateUsed(response, 'accounts/verify_pending.html')
-        self.assertFalse('_auth_user_id' in self.client.session)
-
-        self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].to, ['yeni@example.com'])
-        self.assertIn('/dogrula/', mail.outbox[0].body)
+        self.assertTrue(user.is_active)
+        self.assertRedirects(response, reverse('panel'))
+        self.assertEqual(int(self.client.session['_auth_user_id']), user.pk)
+        self.assertEqual(len(mail.outbox), 0)
 
     @patch('requests.post', side_effect=make_fake_post())
     def test_register_username_gets_suffix_on_collision(self, mock_post):
@@ -80,50 +75,6 @@ class RegisterFlowTests(TestCase):
 
         self.assertFalse(User.objects.filter(email='yeni@example.com').exists())
         self.assertContains(response, 'Robot olmadığını doğrular mısın?')
-
-    @patch('accounts.emailing.send_mail', side_effect=smtplib.SMTPException('Gmail reddetti'))
-    @patch('requests.post', side_effect=make_fake_post())
-    def test_register_rolls_back_user_if_email_fails(self, mock_post, mock_send):
-        response = self.client.post(reverse('register'), REGISTER_DATA)
-
-        self.assertFalse(User.objects.filter(email='yeni@example.com').exists())
-        self.assertContains(response, 'Doğrulama e-postası gönderilemedi')
-
-
-class VerifyEmailTests(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(
-            username='dogrulanacak', email='dogrulanacak@example.com', password='parola-123456',
-            is_active=False,
-        )
-        self.uidb64 = urlsafe_base64_encode(force_bytes(self.user.pk))
-        self.token = default_token_generator.make_token(self.user)
-
-    def test_valid_link_activates_and_logs_in(self):
-        url = reverse('verify_email', args=[self.uidb64, self.token])
-        response = self.client.get(url)
-
-        self.user.refresh_from_db()
-        self.assertTrue(self.user.is_active)
-        self.assertRedirects(response, reverse('panel'))
-        self.assertEqual(int(self.client.session['_auth_user_id']), self.user.pk)
-
-    def test_invalid_token_rejected(self):
-        url = reverse('verify_email', args=[self.uidb64, 'gecersiz-token'])
-        response = self.client.get(url)
-
-        self.user.refresh_from_db()
-        self.assertFalse(self.user.is_active)
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(response, 'accounts/verify_invalid.html')
-
-    def test_already_used_link_rejected_on_second_visit(self):
-        url = reverse('verify_email', args=[self.uidb64, self.token])
-        self.client.get(url)
-        self.client.logout()
-
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 400)
 
 
 class EmailLoginTests(TestCase):
@@ -180,16 +131,18 @@ class GoogleLoginTests(TestCase):
         self.assertRedirects(response, reverse('panel'))
 
     @patch('accounts.views.verify_google_credential', return_value='mevcut@example.com')
-    def test_existing_inactive_user_activated_via_google(self, mock_verify):
+    def test_disabled_user_cannot_sign_in_via_google(self, mock_verify):
         User.objects.create_user(
             username='mevcut@example.com', email='mevcut@example.com', password='x',
             is_active=False,
         )
-        response = self.client.post(reverse('google_login'), {'credential': 'sahte-jwt'})
+        response = self.client.post(
+            reverse('google_login'), {'credential': 'sahte-jwt'}, follow=True
+        )
 
-        user = User.objects.get(email='mevcut@example.com')
-        self.assertTrue(user.is_active)
-        self.assertRedirects(response, reverse('panel'))
+        self.assertFalse(User.objects.get(email='mevcut@example.com').is_active)
+        self.assertContains(response, 'devre dışı')
+        self.assertFalse('_auth_user_id' in self.client.session)
 
     @patch('accounts.views.verify_google_credential', side_effect=GoogleTokenError('geçersiz'))
     def test_invalid_token_redirects_to_login_with_message(self, mock_verify):
@@ -210,7 +163,7 @@ class InactiveLoginTests(TestCase):
         response = self.client.post(
             reverse('login'), {'username': 'pasif', 'password': 'parola-123456'}
         )
-        self.assertContains(response, 'e-postana gönderdiğimiz bağlantıyla')
+        self.assertContains(response, 'devre dışı')
         self.assertFalse('_auth_user_id' in self.client.session)
 
     def test_active_user_can_log_in(self):

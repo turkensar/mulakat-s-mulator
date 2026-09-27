@@ -6,8 +6,8 @@ from django.db.models import Q
 class EmailAuthBackend(ModelBackend):
     """Yeni kullanıcılar e-postayla (username=email), eski kullanıcılar kendi
     kullanıcı adıyla giriş yapabilir. is_active kontrolü burada değil,
-    LoginForm.confirm_login_allowed'da yapılır (özel "doğrulaman gerekiyor"
-    mesajı gösterebilmek için authenticate() inaktif hesabı reddetmemeli).
+    LoginForm.confirm_login_allowed'da yapılır (devre dışı hesaba açık bir mesaj
+    gösterebilmek için authenticate() inaktif hesabı reddetmemeli).
     """
 
     def authenticate(self, request, username=None, password=None, **kwargs):

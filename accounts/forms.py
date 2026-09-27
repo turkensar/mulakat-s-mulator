@@ -78,10 +78,7 @@ class LoginForm(AuthenticationForm):
     def confirm_login_allowed(self, user):
         if not user.is_active:
             raise forms.ValidationError(
-                gettext_now(
-                    'Hesabını kullanmadan önce e-postana gönderdiğimiz bağlantıyla '
-                    'doğrulaman gerekiyor.'
-                ),
+                gettext_now('Bu hesap devre dışı bırakılmış.'),
                 code='inactive',
             )
 
