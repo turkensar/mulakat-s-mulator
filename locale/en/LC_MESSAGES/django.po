@@ -10,23 +10,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: accounts/emailing.py:31
-msgid "E-posta adresini doğrula"
-msgstr "Verify your email address"
-
-#: accounts/emailing.py:32
-msgid "Merhaba %(username)s,\n\nMülakat Simülatörü hesabını etkinleştirmek için aşağıdaki bağlantıya tıkla:\n%(link)s\n\nBu bağlantı 3 gün geçerlidir. Bu hesabı sen açmadıysan bu e-postayı yok sayabilirsin."
-msgstr "Hello %(username)s,\n\nClick the link below to activate your Interview Simulator account:\n%(link)s\n\nThis link is valid for 3 days. If you did not create this account, you can ignore this email."
-
-#: accounts/forms.py:105
+#: accounts/forms.py:102
 msgid "Yeni parola"
 msgstr "New password"
 
-#: accounts/forms.py:111
+#: accounts/forms.py:108
 msgid "Yeni parola (tekrar)"
 msgstr "New password (again)"
 
-#: accounts/forms.py:16 accounts/forms.py:69 accounts/forms.py:97
+#: accounts/forms.py:131
+msgid "Parolan"
+msgstr "Your password"
+
+#: accounts/forms.py:134
+msgid "E-posta adresin"
+msgstr "Your email address"
+
+#: accounts/forms.py:141
+msgid "Parola hatalı."
+msgstr "Wrong password."
+
+#: accounts/forms.py:143
+msgid "E-posta adresin eşleşmiyor."
+msgstr "Your email address doesn't match."
+
+#: accounts/forms.py:16 accounts/forms.py:69 accounts/forms.py:94
 msgid "E-posta"
 msgstr "Email"
 
@@ -34,7 +42,7 @@ msgstr "Email"
 msgid "Parola"
 msgstr "Password"
 
-#: accounts/forms.py:108 accounts/forms.py:21
+#: accounts/forms.py:105 accounts/forms.py:21
 msgid "En az 8 karakter."
 msgstr "At least 8 characters."
 
@@ -42,7 +50,7 @@ msgstr "At least 8 characters."
 msgid "Parola (tekrar)"
 msgstr "Password (again)"
 
-#: accounts/forms.py:114 accounts/forms.py:27
+#: accounts/forms.py:111 accounts/forms.py:27
 msgid "Aynı parolayı bir daha yaz."
 msgstr "Type the same password again."
 
@@ -58,7 +66,7 @@ msgstr "You need to accept the Privacy Notice to continue."
 msgid "Aydınlatma Metni'ni aç"
 msgstr "Open the Privacy Notice"
 
-#: accounts/forms.py:119 accounts/forms.py:48
+#: accounts/forms.py:116 accounts/forms.py:48
 msgid "Parolalar eşleşmiyor, tekrar dener misin?"
 msgstr "Passwords don't match, want to try again?"
 
@@ -66,11 +74,11 @@ msgstr "Passwords don't match, want to try again?"
 msgid "Bu e-posta adresi zaten kullanılıyor."
 msgstr "This email address is already in use."
 
-#: accounts/forms.py:81
-msgid "Hesabını kullanmadan önce e-postana gönderdiğimiz bağlantıyla doğrulaman gerekiyor."
-msgstr "You need to verify your account using the link we sent to your email before you can use it."
+#: accounts/forms.py:81 accounts/views.py:64
+msgid "Bu hesap devre dışı bırakılmış."
+msgstr "This account has been disabled."
 
-#: accounts/forms.py:90
+#: accounts/forms.py:87
 msgid "E-posta ya da parola hatalı."
 msgstr "Wrong email or password."
 
@@ -82,25 +90,25 @@ msgstr "Could not reach the verification service. Please try again."
 msgid "Robot olmadığını doğrular mısın?"
 msgstr "Could you confirm you are not a robot?"
 
-#: accounts/views.py:110
-msgid "Çok fazla giriş denemesi yapıldı. Lütfen bir süre sonra tekrar dene."
-msgstr "Too many login attempts. Please try again in a while."
+#: accounts/views.py:119
+msgid "Hesabın ve tüm verilerin silindi."
+msgstr "Your account and all your data have been deleted."
 
-#: accounts/views.py:31
+#: accounts/views.py:30
 msgid "Çok fazla kayıt denemesi yapıldı. Lütfen bir süre sonra tekrar dene."
 msgstr "Too many sign-up attempts. Please try again in a while."
 
-#: accounts/views.py:45
-msgid "Doğrulama e-postası gönderilemedi. Lütfen tekrar dene."
-msgstr "The verification email could not be sent. Please try again."
-
-#: accounts/views.py:129 accounts/views.py:77
+#: accounts/views.py:48 accounts/views.py:99
 msgid "Çok fazla deneme yapıldı. Lütfen bir süre sonra tekrar dene."
 msgstr "Too many attempts. Please try again later."
 
-#: accounts/views.py:84
+#: accounts/views.py:55
 msgid "Google ile giriş doğrulanamadı. Lütfen tekrar dene."
 msgstr "Sign-in with Google couldn't be verified. Please try again."
+
+#: accounts/views.py:80
+msgid "Çok fazla giriş denemesi yapıldı. Lütfen bir süre sonra tekrar dene."
+msgstr "Too many login attempts. Please try again in a while."
 
 #: config/pwa.py:17
 msgid "AI Mülakat Simülatörü"
@@ -222,41 +230,41 @@ msgstr "e.g. Marketing specialist, e-commerce company"
 msgid "İlan metnini buraya yapıştır (görev tanımı, aranan nitelikler, kullanılan teknolojiler...)"
 msgstr "Paste the job posting here (responsibilities, requirements, technologies used...)"
 
-#: interviews/guest_views.py:109 interviews/views.py:284
+#: interviews/guest_views.py:113 interviews/views.py:172 interviews/views.py:281
+msgid "Cevap boş olamaz."
+msgstr "The answer can't be empty."
+
+#: interviews/guest_views.py:127 interviews/views.py:311
 msgid "Değerlendirme sırasında bir hata oluştu. Lütfen tekrar dene."
 msgstr "An error occurred during evaluation. Please try again."
 
-#: interviews/guest_views.py:16 interviews/views.py:26
+#: interviews/guest_views.py:19 interviews/views.py:27
 msgid "Yapay zeka servisi şu an yavaş ya da yoğun. Birkaç dakika sonra tekrar dene."
 msgstr "The AI service is slow or busy right now. Try again in a few minutes."
 
-#: interviews/guest_views.py:17
+#: interviews/guest_views.py:20
 msgid "Yapay zeka servisinin ücretsiz kullanım kotası şu an dolu. Birkaç dakika sonra tekrar dene."
 msgstr "The AI service’s free usage quota is full right now. Try again in a few minutes."
 
-#: interviews/guest_views.py:31
+#: interviews/guest_views.py:57
 msgid "Bugünlük misafir deneme hakkını kullandın. Yarın tekrar deneyebilir ya da hesap açabilirsin."
 msgstr "You've used today's guest trial. Try again tomorrow, or create an account."
 
-#: interviews/guest_views.py:37 interviews/guest_views.py:96
+#: interviews/guest_views.py:118 interviews/guest_views.py:63
 msgid "Genel"
 msgstr "General"
 
-#: interviews/guest_views.py:38 interviews/guest_views.py:97 interviews/models.py:20
+#: interviews/guest_views.py:119 interviews/guest_views.py:64 interviews/models.py:20
 msgid "Junior"
 msgstr "Junior"
 
-#: interviews/guest_views.py:39 interviews/models.py:26
+#: interviews/guest_views.py:65 interviews/models.py:26
 msgid "Karışık"
 msgstr "Mixed"
 
-#: interviews/guest_views.py:50 interviews/views.py:104
+#: interviews/guest_views.py:72 interviews/views.py:109
 msgid "Sorular oluşturulurken bir hata oluştu. Lütfen tekrar dene."
 msgstr "An error occurred while creating the questions. Please try again."
-
-#: interviews/guest_views.py:90 interviews/views.py:145 interviews/views.py:254
-msgid "Cevap boş olamaz."
-msgstr "The answer can't be empty."
 
 #: interviews/models.py:15
 msgid "Diğer"
@@ -270,11 +278,11 @@ msgstr "Intern"
 msgid "İK (Davranışsal)"
 msgstr "HR (Behavioral)"
 
-#: interviews/models.py:30 interviews/views.py:209
+#: interviews/models.py:30 interviews/views.py:236
 msgid "Türkçe"
 msgstr "Turkish"
 
-#: interviews/models.py:31 interviews/views.py:209
+#: interviews/models.py:31 interviews/views.py:236
 msgid "İngilizce"
 msgstr "English"
 
@@ -294,101 +302,175 @@ msgstr "Behavioral"
 msgid "%(low)s sorularında ortalaman %(low_avg)s, %(high_lower)s sorularında %(high_avg)s. Önce %(low_lower)s alana odaklanabilirsin."
 msgstr "Your average for %(low_lower)s questions is %(low_avg)s, and for %(high_lower)s questions it's %(high_avg)s. You could focus on the %(low_lower)s area first."
 
-#: interviews/views.py:147
+#: interviews/views.py:174
 msgid "Cevabın değerlendiriliyor ve raporun hazırlanıyor"
 msgstr "Evaluating your answer and preparing your report"
 
-#: interviews/views.py:148
+#: interviews/views.py:175
 msgid "Bağlantı hatası. Lütfen tekrar dene."
 msgstr "Connection error. Please try again."
 
-#: interviews/views.py:149
+#: interviews/views.py:176
 msgid "Bir hata oluştu. Lütfen tekrar dene."
 msgstr "Something went wrong. Please try again."
 
-#: interviews/views.py:150
+#: interviews/views.py:177
 msgid "Soru"
 msgstr "Question"
 
-#: interviews/views.py:152
+#: interviews/views.py:179
 msgid "⏹ Durdur"
 msgstr "⏹ Stop"
 
-#: interviews/views.py:154
+#: interviews/views.py:181
 msgid "Bu cihazda %(lang)s konuşma sesi bulunamadı; soruları sesli okuma kullanılamıyor."
 msgstr "No %(lang)s speech voice was found on this device; reading questions aloud isn't available."
 
-#: interviews/views.py:158
+#: interviews/views.py:185
 msgid "⏳ Başlıyor…"
 msgstr "⏳ Starting…"
 
-#: interviews/views.py:159
+#: interviews/views.py:186
 msgid "⏹ Bitir"
 msgstr "⏹ Finish"
 
-#: interviews/views.py:160
+#: interviews/views.py:187
 msgid "Cevap gönderilirken sesle yazılamaz; değerlendirme bitince tekrar dene."
 msgstr "You can't dictate while your answer is being sent; try again once the evaluation is done."
 
-#: interviews/views.py:161
+#: interviews/views.py:188
 msgid "Ses tanıma henüz başlamadı. Adres çubuğunda mikrofon izni penceresi varsa \"İzin ver\"e bas; yoksa sayfayı Ctrl+F5 ile yenileyip tekrar dene ya da Chrome/Edge kullan."
 msgstr "Speech recognition hasn't started yet. If a microphone permission prompt is shown in the address bar, click \"Allow\"; otherwise refresh the page with Ctrl+F5 and try again, or use Chrome/Edge."
 
-#: interviews/views.py:165
+#: interviews/views.py:192
 msgid "Ses tanıma başlamadan kapandı. Tekrar dene; sürerse Chrome/Edge kullan."
 msgstr "Speech recognition closed before it started. Try again; if it keeps happening, use Chrome/Edge."
 
-#: interviews/views.py:166
+#: interviews/views.py:193
 msgid "Ses tanıma başlatılamadı (%(error)s). Birkaç saniye sonra tekrar dene."
 msgstr "Couldn't start speech recognition (%(error)s). Try again in a few seconds."
 
-#: interviews/views.py:167
+#: interviews/views.py:194
 msgid "Ses tanıma sırasında bir sorun oluştu (%(error)s)."
 msgstr "A problem occurred during speech recognition (%(error)s)."
 
-#: interviews/views.py:168
+#: interviews/views.py:195
 msgid "bilinmeyen hata"
 msgstr "unknown error"
 
-#: interviews/views.py:170
+#: interviews/views.py:197
 msgid "Mikrofon izni verilmedi. Tarayıcının adres çubuğundaki izin ayarından mikrofona izin ver."
 msgstr "Microphone permission wasn't granted. Allow the microphone in your browser's address bar permission settings."
 
-#: interviews/views.py:173
+#: interviews/views.py:200
 msgid "Bu tarayıcı ses tanıma hizmetine izin vermiyor."
 msgstr "This browser doesn't allow the speech recognition service."
 
-#: interviews/views.py:174
+#: interviews/views.py:201
 msgid "Ses algılanmadı. Mikrofona yakın konuşup tekrar dene."
 msgstr "No speech was detected. Speak close to the microphone and try again."
 
-#: interviews/views.py:175
+#: interviews/views.py:202
 msgid "Mikrofon bulunamadı. Bir mikrofon bağlı olduğundan emin ol."
 msgstr "No microphone found. Make sure a microphone is connected."
 
-#: interviews/views.py:176
+#: interviews/views.py:203
 msgid "Ses tanıma hizmetine ulaşılamadı. İnternet bağlantını kontrol edip tekrar dene."
 msgstr "Couldn't reach the speech recognition service. Check your internet connection and try again."
 
-#: interviews/views.py:179
+#: interviews/views.py:206
 msgid "%(lang)s için ses tanıma bu tarayıcıda desteklenmiyor."
 msgstr "Speech recognition for %(lang)s isn't supported in this browser."
 
-#: interviews/views.py:250
+#: interviews/views.py:277
 msgid "Geçersiz istek."
 msgstr "Invalid request."
 
-#: interviews/views.py:272 interviews/views.py:277
+#: interviews/views.py:299 interviews/views.py:304
 msgid "Yazdığın cevap korundu."
 msgstr "Your answer was kept."
 
-#: interviews/views.py:30
+#: interviews/views.py:31
 msgid "Yapay zeka servisinin ücretsiz kullanım kotası şu an dolu. Birkaç dakika sonra ya da yarın tekrar dene."
 msgstr "The AI service's free usage quota is full right now. Try again in a few minutes or tomorrow."
+
+#: templates/_async_progress.html:12
+msgid "Yapay zeka bazen bir dakikaya kadar düşünebiliyor. Sayfadan ayrılma."
+msgstr "The AI can sometimes take up to a minute. Don't leave the page."
+
+#: templates/_async_progress.html:16
+msgid "Cevabın okunuyor…"
+msgstr "Reading your answer…"
+
+#: templates/_async_progress.html:17
+msgid "Güçlü yönlerin ve eksiklerin belirleniyor…"
+msgstr "Identifying your strengths and gaps…"
+
+#: templates/_async_progress.html:18
+msgid "Puanın hesaplanıyor…"
+msgstr "Calculating your score…"
+
+#: templates/_async_progress.html:20
+msgid "Pozisyonun ve seviyen inceleniyor…"
+msgstr "Looking at your role and level…"
+
+#: templates/_async_progress.html:21
+msgid "Sorular yazılıyor…"
+msgstr "Writing the questions…"
+
+#: templates/_async_progress.html:22
+msgid "Sorular son kez gözden geçiriliyor…"
+msgstr "Giving the questions a final check…"
+
+#: templates/_async_progress.html:24
+msgid "Yapay zeka şu an biraz yoğun, beklemeye devam ediyoruz…"
+msgstr "The AI is a bit busy right now, we're still waiting…"
+
+#: templates/_async_progress.html:5
+msgid "{s} sn"
+msgstr "{s} s"
 
 #: templates/accounts/_google_button.html:3
 msgid "ya da"
 msgstr "or"
+
+#: templates/accounts/account_delete.html:12 templates/interviews/panel.html:91
+msgid "Hesabımı sil"
+msgstr "Delete my account"
+
+#: templates/accounts/account_delete.html:15
+msgid "Hesabın kalıcı olarak silinecek."
+msgstr "Your account will be permanently deleted."
+
+#: templates/accounts/account_delete.html:17
+msgid "Hesabın ve %(counter)s mülakatın (soruları, cevapları, puanları ve raporlarıyla birlikte) kalıcı olarak silinecek."
+msgid_plural "Hesabın ve %(counter)s mülakatın (soruları, cevapları, puanları ve raporlarıyla birlikte) kalıcı olarak silinecek."
+msgstr[0] "Your account and %(counter)s interview (with its questions, answers, scores and report) will be permanently deleted."
+msgstr[1] "Your account and %(counter)s interviews (with their questions, answers, scores and reports) will be permanently deleted."
+
+#: templates/accounts/account_delete.html:23
+msgid "Bu işlem geri alınamaz."
+msgstr "This cannot be undone."
+
+#: templates/accounts/account_delete.html:30
+msgid "Hesabımı kalıcı olarak sil"
+msgstr "Permanently delete my account"
+
+#: templates/accounts/account_delete.html:30
+msgid "Siliniyor..."
+msgstr "Deleting..."
+
+#: templates/accounts/account_delete.html:33
+msgid "Vazgeç, panele dön"
+msgstr "Cancel, back to dashboard"
+
+#: templates/accounts/account_delete.html:4
+msgid "Hesabımı sil - Mülakat Simülatörü"
+msgstr "Delete my account - Interview Simulator"
+
+#: templates/accounts/account_delete.html:5
+msgid "Hesabını ve tüm verilerini kalıcı olarak sil."
+msgstr "Permanently delete your account and all your data."
 
 #: templates/accounts/login.html:12
 msgid "Tekrar hoş geldin"
@@ -458,7 +540,7 @@ msgstr "Saving..."
 msgid "Şifreyi kaydet"
 msgstr "Save password"
 
-#: templates/accounts/password_reset_confirm.html:25 templates/accounts/verify_invalid.html:12
+#: templates/accounts/password_reset_confirm.html:25
 msgid "Bağlantı geçersiz ya da süresi dolmuş"
 msgstr "Link is invalid or expired"
 
@@ -478,7 +560,7 @@ msgstr "Set a new password - Interview Simulator"
 msgid "Hesabın için yeni bir şifre belirle."
 msgstr "Set a new password for your account."
 
-#: templates/accounts/password_reset_done.html:12 templates/accounts/verify_pending.html:12
+#: templates/accounts/password_reset_done.html:12
 msgid "Gelen kutunu kontrol et"
 msgstr "Check your inbox"
 
@@ -546,7 +628,7 @@ msgstr "Create your account in a few seconds and jump into your first interview.
 msgid "Hesabın oluşturuluyor..."
 msgstr "Creating your account..."
 
-#: templates/accounts/register.html:24 templates/accounts/verify_pending.html:16
+#: templates/accounts/register.html:24
 msgid "Zaten hesabın var mı?"
 msgstr "Already have an account?"
 
@@ -557,34 +639,6 @@ msgstr "Sign up - Interview Simulator"
 #: templates/accounts/register.html:5
 msgid "Birkaç saniyede ücretsiz hesabını oluştur, ilk mülakat provanı hemen başlasın."
 msgstr "Create your free account in seconds and start your first mock interview right away."
-
-#: templates/accounts/verify_invalid.html:13
-msgid "Bu doğrulama bağlantısı artık çalışmıyor. Yeniden kayıt olarak yeni bir bağlantı alabilirsin."
-msgstr "This verification link no longer works. You can register again to get a new one."
-
-#: templates/accounts/verify_invalid.html:16
-msgid "Kayıt sayfasına dön"
-msgstr "Back to registration"
-
-#: templates/accounts/verify_invalid.html:4
-msgid "Bağlantı geçersiz - Mülakat Simülatörü"
-msgstr "Link invalid - Interview Simulator"
-
-#: templates/accounts/verify_invalid.html:5
-msgid "Doğrulama bağlantısının süresi dolmuş olabilir; yeniden kayıt olarak yenisini alabilirsin."
-msgstr "The verification link may have expired; you can register again to get a new one."
-
-#: templates/accounts/verify_pending.html:13
-msgid "<strong>%(email)s</strong> adresine bir doğrulama bağlantısı gönderdik. Bağlantıya tıklayınca hesabın etkinleşir."
-msgstr "We sent a verification link to <strong>%(email)s</strong>. Your account activates once you click it."
-
-#: templates/accounts/verify_pending.html:4
-msgid "E-postanı doğrula - Mülakat Simülatörü"
-msgstr "Verify your email - Interview Simulator"
-
-#: templates/accounts/verify_pending.html:5
-msgid "Hesabını etkinleştirmek için gelen kutundaki doğrulama bağlantısına tıkla."
-msgstr "Click the verification link in your inbox to activate your account."
 
 #: config/pwa.py:18 templates/base.html:14 templates/base.html:26
 msgid "Mülakat"
@@ -646,131 +700,135 @@ msgstr "Privacy Notice (KVKK)"
 msgid "Eğitim amaçlı bir proje; kâr amacı gütmez."
 msgstr "An educational project; not run for profit."
 
-#: templates/home.html:101
+#: templates/home.html:100
+msgid "Her cevabın puanlanır; mülakat sonunda güçlü ve gelişime açık yönlerini görürsün."
+msgstr "Every answer is scored; at the end you’ll see your strengths and areas to improve."
+
+#: templates/home.html:106
 msgid "Hangi pozisyonlar için?"
 msgstr "Which roles is it for?"
 
-#: interviews/models.py:8 templates/home.html:103
+#: interviews/models.py:8 templates/home.html:108
 msgid "Junior Yazılım Geliştirici"
 msgstr "Junior Software Developer"
 
-#: interviews/models.py:10 templates/home.html:105
+#: interviews/models.py:10 templates/home.html:110
 msgid "Backend Geliştirici"
 msgstr "Backend Developer"
 
-#: interviews/models.py:11 templates/home.html:106
+#: interviews/models.py:11 templates/home.html:111
 msgid "Veri Analisti"
 msgstr "Data Analyst"
 
-#: interviews/models.py:12 templates/home.html:107
+#: interviews/models.py:12 templates/home.html:112
 msgid "İş Analisti"
 msgstr "Business Analyst"
 
-#: interviews/models.py:13 templates/home.html:108
+#: interviews/models.py:13 templates/home.html:113
 msgid "Stajyer (Genel)"
 msgstr "Intern (General)"
 
-#: templates/home.html:109
+#: templates/home.html:114
 msgid "+ Diğer: alanını sen tarif et"
 msgstr "+ Other: describe your own field"
 
-#: templates/home.html:114
+#: templates/home.html:119
 msgid "Özellikler"
 msgstr "Features"
-
-#: templates/home.html:118
-msgid "Sesli mülakat"
-msgstr "Voice interview"
-
-#: templates/home.html:119
-msgid "Soruları dinle, cevabını konuşarak ver."
-msgstr "Listen to the questions and answer by speaking."
 
 #: templates/home.html:12 templates/home.html:18
 msgid "Mülakat Simülatörü — mülakattan önce provanı yap"
 msgstr "Interview Simulator — rehearse before the real thing"
 
 #: templates/home.html:123
+msgid "Sesli mülakat"
+msgstr "Voice interview"
+
+#: templates/home.html:124
+msgid "Soruları dinle, cevabını konuşarak ver."
+msgstr "Listen to the questions and answer by speaking."
+
+#: templates/home.html:128
 msgid "CV'ne özel sorular"
 msgstr "Questions tailored to your CV"
 
-#: templates/home.html:124
+#: templates/home.html:129
 msgid "CV metnini yapıştır, sana özel sorular hazırlansın."
 msgstr "Paste your CV text and get questions tailored to you."
 
-#: templates/home.html:128
+#: templates/home.html:133
 msgid "İlana özel sorular"
 msgstr "Questions tailored to the job posting"
 
-#: templates/home.html:129
+#: templates/home.html:134
 msgid "Başvurduğun ilanı yapıştır, ona uygun sorularla pratik yap."
 msgstr "Paste the job posting you applied to and practice with matching questions."
 
-#: templates/home.html:133
+#: templates/home.html:138
 msgid "Gelişim takibi"
 msgstr "Progress tracking"
 
-#: templates/home.html:134
+#: templates/home.html:139
 msgid "Skorunu ve zayıf kaldığın konuları zaman içinde izle."
 msgstr "Track your score and weak spots over time."
 
-#: templates/home.html:138
+#: templates/home.html:143
 msgid "Mobilde de çalışır"
 msgstr "Works on mobile too"
 
-#: templates/home.html:139
+#: templates/home.html:144
 msgid "Uygulama gibi yükleyebilir, çevrimdışıyken bile açabilirsin."
 msgstr "Install it like an app and open it even when you’re offline."
 
-#: templates/home.html:143
+#: templates/home.html:148
 msgid "Türkçe ve İngilizce"
 msgstr "Turkish and English"
 
-#: templates/home.html:144
+#: templates/home.html:149
 msgid "Arayüzü ve mülakat dilini istediğin gibi seç."
 msgstr "Choose the interface and interview language you prefer."
 
-#: templates/home.html:150
+#: templates/home.html:155
 msgid "Sıkça sorulan sorular"
 msgstr "Frequently asked questions"
 
-#: templates/home.html:153
+#: templates/home.html:158
 msgid "Kullanımı ücretsiz mi?"
 msgstr "Is it free to use?"
 
-#: templates/home.html:154
+#: templates/home.html:159
 msgid "Evet, tamamen ücretsiz. Günlük mülakat sayısı, yoğun kullanımı dengelemek için sınırlıdır."
 msgstr "Yes, completely free. The daily interview count is limited to balance heavy usage."
 
-#: templates/home.html:157
+#: templates/home.html:162
 msgid "Günde kaç mülakat yapabilirim?"
 msgstr "How many interviews can I do per day?"
 
-#: templates/home.html:158
+#: templates/home.html:163
 msgid "Günde en fazla 3 yeni mülakat başlatabilirsin; yarım kalanlara istediğin kadar devam edebilirsin."
 msgstr "You can start up to 3 new interviews a day; you can continue unfinished ones as many times as you like."
 
-#: templates/home.html:161
+#: templates/home.html:166
 msgid "CV'm ya da cevaplarım saklanıyor mu?"
 msgstr "Is my CV or my answers stored?"
 
-#: templates/home.html:162
+#: templates/home.html:167
 msgid "CV metni hiçbir yerde saklanmaz, yalnızca soru üretimi için kullanılır. Cevapların, gelişimini takip edebilmen için hesabına kaydedilir."
 msgstr "Your CV text isn’t stored anywhere; it’s only used to generate questions. Your answers are saved to your account so you can track your progress."
 
-#: templates/home.html:165
+#: templates/home.html:170
 msgid "Sesli mülakat nasıl çalışır?"
 msgstr "How does the voice interview work?"
 
-#: templates/home.html:166
+#: templates/home.html:171
 msgid "Sorular sesli okunabilir, cevabını mikrofonla söyleyip yazıya döktürebilirsin; tarayıcının kendi ses tanıma özelliğini kullanır."
 msgstr "Questions can be read aloud, and you can speak your answer into text; it uses your browser’s own speech recognition."
 
-#: templates/home.html:169
+#: templates/home.html:174
 msgid "Hangi diller destekleniyor?"
 msgstr "Which languages are supported?"
 
-#: templates/home.html:170
+#: templates/home.html:175
 msgid "Arayüz Türkçe ve İngilizce; mülakatı da istediğin dilde yapabilirsin."
 msgstr "The interface is available in Turkish and English; you can also take the interview in either language."
 
@@ -782,7 +840,7 @@ msgstr "<span class=\"home__mark\">Rehearse</span> before the interview"
 msgid "Yapay zeka mülakatçı sana pozisyonuna uygun sorular sorar, cevaplarını puanlar ve nerede gelişebileceğini gösterir. Stressiz, istediğin kadar pratik."
 msgstr "The AI interviewer asks you questions suited to your position, scores your answers and shows where you can improve. No stress, practice as much as you like."
 
-#: templates/home.html:37 templates/interviews/progress.html:61 templates/interviews/report.html:99
+#: templates/home.html:37 templates/interviews/progress.html:61 templates/interviews/report.html:100
 msgid "Yeni mülakat başlat"
 msgstr "Start a new interview"
 
@@ -795,172 +853,180 @@ msgid "Yapay zeka mülakatçıyla ücretsiz mülakat pratiği yap: pozisyonuna u
 msgstr "Practice interviews for free with an AI interviewer: questions matched to your role, instant scoring, and progress tracking. No stress, practice as much as you like."
 
 #: templates/home.html:42
+msgid "Bağlantı koptu ya da sunucu çok geç yanıt verdi. Birkaç dakika sonra tekrar dene."
+msgstr "The connection dropped or the server took too long to respond. Try again in a few minutes."
+
+#: templates/home.html:44
 msgid "Provaya başla"
 msgstr "Start practicing"
 
-#: templates/home.html:42
+#: templates/home.html:44
 msgid "Sorular hazırlanıyor…"
 msgstr "Preparing questions…"
 
-#: templates/home.html:44
+#: templates/home.html:46
 msgid "Hesabın var mı?"
 msgstr "Already have an account?"
 
-#: templates/home.html:45
-msgid "Sorular hazırlanması bazen bir dakikaya kadar sürebilir, sayfadan ayrılma."
-msgstr "Preparing questions can sometimes take up to a minute; don’t leave the page."
-
-#: templates/home.html:50
+#: templates/home.html:55
 msgid "Örnek bir mülakattan kesit"
 msgstr "Excerpt from a sample interview"
 
-#: interviews/models.py:9 templates/home.html:104 templates/home.html:53
+#: interviews/models.py:9 templates/home.html:109 templates/home.html:58
 msgid "Frontend Geliştirici"
 msgstr "Frontend Developer"
 
-#: interviews/models.py:24 interviews/models.py:46 templates/home.html:54
+#: interviews/models.py:24 interviews/models.py:46 templates/home.html:59
 msgid "Teknik"
 msgstr "Technical"
 
-#: templates/home.html:56
+#: templates/home.html:61
 msgid "<strong>2</strong> / 5 soru cevaplandı"
 msgstr "<strong>2</strong> / 5 questions answered"
 
-#: templates/home.html:64
+#: templates/home.html:69
 msgid "Soru 2 · Teknik"
 msgstr "Question 2 · Technical"
 
-#: templates/home.html:65
+#: templates/home.html:70
 msgid "CSS'te flex ile grid arasındaki fark nedir? Hangisini ne zaman seçersin?"
 msgstr "What's the difference between flex and grid in CSS? Which one would you pick, and when?"
 
-#: templates/home.html:69
+#: templates/home.html:74
 msgid "Flex tek eksende, grid iki eksende yerleşim yapar. Kart listesi için grid, navbar için flex kullanırım."
 msgstr "Flex lays things out along one axis, grid along two. I'd use grid for a card list and flex for a navbar."
 
-#: templates/home.html:73
+#: templates/home.html:78
 msgid "Net ve örnekli bir cevap."
 msgstr "A clear answer with an example."
 
-#: templates/home.html:80
+#: templates/home.html:85
 msgid "Nasıl çalışır?"
 msgstr "How it works"
 
-#: templates/home.html:84
+#: templates/home.html:89
 msgid "Pozisyonunu seç"
 msgstr "Pick your role"
 
-#: templates/home.html:85
+#: templates/home.html:90
 msgid "Alanını, seviyeni ve mülakat türünü belirle; istersen ilana ya da CV'ne özel sorular üretelim."
 msgstr "Set your field, level, and interview type; we can also tailor questions to a job posting or your CV if you'd like."
 
-#: templates/home.html:89
+#: templates/home.html:94
 msgid "Sorulara cevap ver"
 msgstr "Answer the questions"
 
-#: templates/home.html:90
+#: templates/home.html:95
 msgid "Yazarak ya da sesli konuşarak cevapla; istediğin an ara verip devam edebilirsin."
 msgstr "Answer by typing or speaking; you can pause anytime and continue later."
 
-#: templates/home.html:94
+#: templates/home.html:99
 msgid "Anında geri bildirim al"
 msgstr "Get instant feedback"
 
-#: templates/home.html:95
-msgid "Her cevabın puanlanır; mülakat sonunda güçlü ve gelişime açık yönlerini görürsün."
-msgstr "Every answer is scored; at the end you’ll see your strengths and areas to improve."
+#: templates/interviews/create.html:100
+msgid "Sorular CV'ndeki eğitim, deneyim, proje ve becerilere göre hazırlanır. Dosya yüklemek yerine metni yapıştırırsın; böylece neyin gideceğini görüp düzenleyebilirsin."
+msgstr "Questions are prepared around the education, experience, projects and skills in your CV. You paste the text instead of uploading a file, so you can see and edit what gets sent."
 
-#: templates/interviews/create.html:102
+#: templates/interviews/create.html:106
+msgid "<strong>Gizlilik.</strong> Metindeki e-posta, telefon, IBAN/kimlik numarası ve bağlantılar göndermeden önce otomatik silinir; adını ve adresini ise sen çıkar. CV metni bizde saklanmaz, yalnızca soruları hazırlamak için kullanılır."
+msgstr "<strong>Privacy.</strong> Emails, phone numbers, IBAN/ID numbers and links in the text are removed automatically before sending; you should remove your name and address yourself. Your CV text isn't stored by us; it's only used to prepare the questions."
+
+#: templates/interviews/create.html:107
+msgid "Yapay zeka hizmeti olarak Google Gemini'nin ücretsiz katmanını kullanıyoruz. Bu katmanda gönderilen içerik Google tarafından ürünlerini geliştirmek için kullanılabilir ve insanlar tarafından okunabilir."
+msgstr "We use Google Gemini's free tier as our AI service. On this tier, content you send may be used by Google to improve its products and may be read by humans."
+
+#: templates/interviews/create.html:110
 msgid "Bunu anladım, CV metnimin bu şekilde işlenmesini kabul ediyorum."
 msgstr "I understand, and I agree to my CV text being processed this way."
 
-#: templates/interviews/create.html:108
+#: templates/interviews/create.html:119
 msgid "Seçimlerin özeti"
 msgstr "Summary of your choices"
-
-#: templates/interviews/create.html:116
-msgid "Mülakatı başlat"
-msgstr "Start the interview"
 
 #: templates/interviews/create.html:12
 msgid "Bugünlük bu kadar"
 msgstr "That's it for today"
 
+#: templates/interviews/create.html:127
+msgid "Mülakatı başlat"
+msgstr "Start the interview"
+
+#: templates/interviews/create.html:127
+msgid "Sorular hazırlanıyor..."
+msgstr "Preparing your questions..."
+
 #: templates/interviews/create.html:13
 msgid "Bugünkü mülakat hakkını kullandın (günde en fazla 3 mülakat). Yarın tekrar deneyebilirsin; geçmiş mülakatlarına panelden bakabilirsin."
 msgstr "You've used today's interview allowance (at most 3 interviews per day). You can try again tomorrow, and you can look at your past interviews on the dashboard."
 
-#: templates/interviews/create.html:131
-msgid "Hazırsın!"
-msgstr "You're ready!"
-
-#: templates/interviews/create.html:132
-msgid "seçildi"
-msgstr "selected"
-
-#: templates/interviews/create.html:133
-msgid "Sorular hazırlanıyor..."
-msgstr "Preparing your questions..."
-
-#: templates/interviews/create.html:14 templates/interviews/report.html:100
+#: templates/interviews/create.html:14 templates/interviews/report.html:101
 msgid "Panele dön"
 msgstr "Back to dashboard"
 
-#: templates/interviews/create.html:22
+#: templates/interviews/create.html:142
+msgid "Hazırsın!"
+msgstr "You're ready!"
+
+#: templates/interviews/create.html:143
+msgid "seçildi"
+msgstr "selected"
+
+#: templates/interviews/create.html:20
+msgid "Bağlantı koptu ya da sunucu çok geç yanıt verdi. Seçimlerin ve yapıştırdığın metinler duruyor, tekrar deneyebilirsin."
+msgstr "The connection dropped or the server took too long to respond. Your choices and pasted texts are still here, you can try again."
+
+#: templates/interviews/create.html:24
 msgid "Provanı kuralım"
 msgstr "Let's set up your practice"
 
-#: templates/interviews/create.html:23
+#: templates/interviews/create.html:25
 msgid "Beş küçük seçim yap, sana özel sorular hazırlansın."
 msgstr "Make five small choices and questions will be prepared just for you."
+
+#: templates/interviews/create.html:28
+msgid "Önceki mülakatının ayarları seçili geldi, istersen değiştirebilirsin. Sorular yeniden üretileceği için bu kez farklı olacak."
+msgstr "Your previous interview settings are preselected; you can change them if you like. The questions will be generated again, so they will be different this time."
+
+#: templates/interviews/create.html:29
+msgid "O mülakat CV'ne özeldi. CV'ni saklamadığımız için aşağıya yeniden yapıştırman gerekiyor."
+msgstr "That interview was tailored to your CV. Since we don't store your CV, you'll need to paste it again below."
 
 #: templates/interviews/create.html:4
 msgid "Yeni Mülakat - Mülakat Simülatörü"
 msgstr "New Interview - Interview Simulator"
 
-#: templates/interviews/create.html:47
-msgid "Yazılım dışı bir alan mı? Kendin tarif et."
-msgstr "A field outside software? Describe it yourself."
-
 #: templates/interviews/create.html:5
 msgid "Pozisyonunu, seviyeni ve mülakat türünü seç; yapay zeka sana özel sorular hazırlasın."
 msgstr "Pick your role, level, and interview type; the AI will prepare questions tailored to you."
 
-#: templates/interviews/create.html:67
+#: templates/interviews/create.html:55
+msgid "Yazılım dışı bir alan mı? Kendin tarif et."
+msgstr "A field outside software? Describe it yourself."
+
+#: templates/interviews/create.html:75
 msgid "Nasıl bir mülakat olacak?"
 msgstr "What kind of interview is it?"
 
-#: templates/interviews/create.html:68
+#: templates/interviews/create.html:76
 msgid "Hangi meslek ya da alan için hazırlanıyorsun? Kısaca yaz; sorular buna göre hazırlanır."
 msgstr "Which profession or field are you preparing for? Describe it briefly; the questions will be prepared accordingly."
 
-#: templates/interviews/create.html:78
+#: templates/interviews/create.html:86
 msgid "Varsa iş ilanını yapıştır"
 msgstr "Paste the job posting, if you have one"
 
-#: templates/interviews/create.html:79 templates/interviews/create.html:90
+#: templates/interviews/create.html:87 templates/interviews/create.html:98
 msgid "isteğe bağlı"
 msgstr "optional"
 
-#: templates/interviews/create.html:81
+#: templates/interviews/create.html:89
 msgid "Sorular ilandaki görevlere, aranan niteliklere ve teknolojilere göre hazırlanır. Boş bırakırsan pozisyonuna göre genel sorular gelir."
 msgstr "Questions are prepared around the responsibilities, requirements and technologies in the posting. If you leave it empty, you'll get general questions for your position."
 
-#: templates/interviews/create.html:89
+#: templates/interviews/create.html:97
 msgid "Varsa CV'ni yapıştır"
 msgstr "Paste your CV, if you have one"
-
-#: templates/interviews/create.html:92
-msgid "Sorular CV'ndeki eğitim, deneyim, proje ve becerilere göre hazırlanır. Dosya yüklemek yerine metni yapıştırırsın; böylece neyin gideceğini görüp düzenleyebilirsin."
-msgstr "Questions are prepared around the education, experience, projects and skills in your CV. You paste the text instead of uploading a file, so you can see and edit what gets sent."
-
-#: templates/interviews/create.html:98
-msgid "<strong>Gizlilik.</strong> Metindeki e-posta, telefon, IBAN/kimlik numarası ve bağlantılar göndermeden önce otomatik silinir; adını ve adresini ise sen çıkar. CV metni bizde saklanmaz, yalnızca soruları hazırlamak için kullanılır."
-msgstr "<strong>Privacy.</strong> Emails, phone numbers, IBAN/ID numbers and links in the text are removed automatically before sending; you should remove your name and address yourself. Your CV text isn't stored by us; it's only used to prepare the questions."
-
-#: templates/interviews/create.html:99
-msgid "Yapay zeka hizmeti olarak Google Gemini'nin ücretsiz katmanını kullanıyoruz. Bu katmanda gönderilen içerik Google tarafından ürünlerini geliştirmek için kullanılabilir ve insanlar tarafından okunabilir."
-msgstr "We use Google Gemini's free tier as our AI service. On this tier, content you send may be used by Google to improve its products and may be read by humans."
 
 #: templates/interviews/detail.html:22 templates/interviews/panel.html:38 templates/interviews/panel.html:67
 msgid "İlana özel"
@@ -994,11 +1060,11 @@ msgstr "Interview chat"
 msgid "Soru %(order)s · %(category)s"
 msgstr "Question %(order)s · %(category)s"
 
-#: interviews/views.py:153 templates/interviews/detail.html:49 templates/interviews/detail.html:63
+#: interviews/views.py:180 templates/interviews/detail.html:49 templates/interviews/detail.html:63
 msgid "Soruyu sesli oku"
 msgstr "Read the question aloud"
 
-#: interviews/views.py:151 templates/interviews/detail.html:49 templates/interviews/detail.html:63
+#: interviews/views.py:178 templates/interviews/detail.html:49 templates/interviews/detail.html:63
 msgid "🔊 Dinle"
 msgstr "🔊 Listen"
 
@@ -1006,15 +1072,15 @@ msgstr "🔊 Listen"
 msgid "Sorulara cevap ver, anında yapay zeka değerlendirmesi al."
 msgstr "Answer the questions and get instant AI feedback."
 
-#: interviews/views.py:146 templates/interviews/detail.html:74
+#: interviews/views.py:173 templates/interviews/detail.html:74
 msgid "Cevabın değerlendiriliyor"
 msgstr "Evaluating your answer"
 
-#: templates/interviews/detail.html:82 templates/interviews/guest_trial.html:42 templates/interviews/report.html:72
+#: templates/interviews/detail.html:82 templates/interviews/guest_trial.html:47 templates/interviews/report.html:72
 msgid "Cevabın"
 msgstr "Your answer"
 
-#: templates/interviews/detail.html:83 templates/interviews/guest_trial.html:43
+#: templates/interviews/detail.html:83 templates/interviews/guest_trial.html:48
 msgid "Cevabını buraya yaz..."
 msgstr "Type your answer here..."
 
@@ -1026,11 +1092,11 @@ msgstr "🎙️ When you dictate, your browser may use its own speech recognitio
 msgid "Ctrl + Enter ile gönder"
 msgstr "Send with Ctrl + Enter"
 
-#: interviews/views.py:157 templates/interviews/detail.html:90
+#: interviews/views.py:184 templates/interviews/detail.html:90
 msgid "🎙️ Sesle yaz"
 msgstr "🎙️ Dictate"
 
-#: templates/interviews/detail.html:91 templates/interviews/guest_trial.html:46
+#: templates/interviews/detail.html:91 templates/interviews/guest_trial.html:51
 msgid "Cevabı gönder"
 msgstr "Send answer"
 
@@ -1082,13 +1148,17 @@ msgstr "Question %(order)s"
 msgid "Misafir Denemesi - Mülakat Simülatörü"
 msgstr "Guest Trial - Interview Simulator"
 
-#: templates/interviews/guest_trial.html:46
-msgid "Değerlendiriliyor…"
-msgstr "Evaluating…"
+#: templates/interviews/guest_trial.html:45
+msgid "Bağlantı koptu ya da sunucu çok geç yanıt verdi. Yazdığın cevap duruyor, tekrar gönderebilirsin."
+msgstr "The connection dropped or the server took too long to respond. Your answer is still here, you can send it again."
 
 #: templates/interviews/guest_trial.html:5
 msgid "Hesap açmadan 2 soruluk kısa bir mülakat denemesi yap."
 msgstr "Try a short 2-question interview without an account."
+
+#: templates/interviews/guest_trial.html:51
+msgid "Değerlendiriliyor…"
+msgstr "Evaluating…"
 
 #: templates/interviews/panel.html:14
 msgid "Merhaba, %(name)s"
@@ -1300,6 +1370,10 @@ msgstr "Sample good answer"
 msgid "Dil kullanımı"
 msgstr "Language use"
 
+#: templates/interviews/report.html:99
+msgid "Aynı ayarlarla tekrar dene"
+msgstr "Try again with the same settings"
+
 #: templates/legal/kvkk.html:12 templates/legal/privacy.html:12
 msgid "Bu metin bir taslaktır; hukuki bağlayıcılık için avukat incelemesinden geçmesi önerilir."
 msgstr "This text is a draft; legal review by a lawyer is recommended before it is treated as binding."
@@ -1341,16 +1415,16 @@ msgid "5. Verilerin Aktarıldığı Taraflar"
 msgstr "5. Parties Data Is Transferred To"
 
 #: templates/legal/kvkk.html:29
-msgid "Soru üretimi ve değerlendirme için Google Gemini API'ye (Google LLC), doğrulama e-postaların için Resend'e, hesap doğrulaman için Google reCAPTCHA'ya, veritabanı barındırma için Supabase'e, dağıtım için Vercel'e veri aktarılmaktadır. Bu hizmet sağlayıcılar yurt dışında konumlanmış olabilir."
-msgstr "Data is transferred to Google Gemini API (Google LLC) for question generation and evaluation, to Resend for your verification emails, to Google reCAPTCHA for account verification, to Supabase for database hosting, and to Vercel for deployment. These service providers may be located abroad."
+msgid "Soru üretimi ve değerlendirme için Google Gemini API'ye (Google LLC), şifre sıfırlama e-postaların için Gmail'e (Google LLC), kayıt formundaki bot koruması için Google reCAPTCHA'ya, veritabanı barındırma için Supabase'e, dağıtım için Vercel'e, hata takibi için Sentry'ye (yalnızca teknik hata bilgisi; form içerikleri, çerezler ve IP adresi gönderilmez) veri aktarılmaktadır. Bu hizmet sağlayıcılar yurt dışında konumlanmış olabilir."
+msgstr "Data is transferred to Google Gemini API (Google LLC) for question generation and evaluation, to Gmail (Google LLC) for your password reset emails, to Google reCAPTCHA for bot protection on the registration form, to Supabase for database hosting, to Vercel for deployment, and to Sentry for error tracking (technical error information only; form contents, cookies and IP addresses are not sent). These service providers may be located abroad."
 
 #: templates/legal/kvkk.html:31
 msgid "6. Saklama Süresi"
 msgstr "6. Retention Period"
 
 #: templates/legal/kvkk.html:32
-msgid "Hesap ve mülakat verilerin, hesabını silmeni talep etmene ya da yasal saklama sürelerinin dolmasına kadar saklanır. CV ve iş ilanı metinleri hiç saklanmaz."
-msgstr "Your account and interview data are kept until you request deletion of your account or until legal retention periods expire. CV and job posting texts are never stored."
+msgid "Hesap ve mülakat verilerin, hesabını silene (panelindeki \"Hesabımı sil\" bağlantısıyla, anında ve kalıcı olarak) ya da yasal saklama sürelerinin dolmasına kadar saklanır. CV ve iş ilanı metinleri hiç saklanmaz."
+msgstr "Your account and interview data are kept until you delete your account (instantly and permanently, via the \"Delete my account\" link on your dashboard) or until legal retention periods expire. CV and job posting texts are never stored."
 
 #: templates/legal/kvkk.html:34
 msgid "7. KVKK Kapsamındaki Hakların"
@@ -1405,8 +1479,8 @@ msgid "4. Verilerini kimlerle paylaşıyoruz?"
 msgstr "4. Who do we share your data with?"
 
 #: templates/legal/privacy.html:26
-msgid "Sorularını hazırlamak ve cevaplarını değerlendirmek için Google Gemini API kullanılır (ücretsiz katmanda gönderilen içerik Google tarafından ürün geliştirmede kullanılabilir; bu yüzden CV'ne hassas bilgi eklememeni öneririz). Hesap doğrulama e-postaları Resend üzerinden gönderilir. Verilerin Supabase altyapısındaki bir veritabanında tutulur. Kayıt formunda bot koruması için Google reCAPTCHA kullanılır. Bu hizmetlerin dışında verilerini üçüncü taraflarla paylaşmayız ya da satmayız."
-msgstr "Google Gemini API is used to prepare your questions and evaluate your answers (content sent on the free tier may be used by Google for product development, so we recommend not including sensitive information in your CV). Account verification emails are sent through Resend. Your data is kept in a database on Supabase's infrastructure. Google reCAPTCHA is used for bot protection on the registration form. Beyond these services, we don't share or sell your data to third parties."
+msgid "Sorularını hazırlamak ve cevaplarını değerlendirmek için Google Gemini API kullanılır (ücretsiz katmanda gönderilen içerik Google tarafından ürün geliştirmede kullanılabilir; bu yüzden CV'ne hassas bilgi eklememeni öneririz). Şifre sıfırlama e-postaları Gmail üzerinden gönderilir. Verilerin Supabase altyapısındaki bir veritabanında tutulur. Kayıt formunda bot koruması için Google reCAPTCHA kullanılır. Sitede oluşan teknik hataları görebilmek için Sentry kullanılır; Sentry'ye yalnızca hatanın türü ve kodda nerede oluştuğu gider, yazdığın metinler, çerezlerin ve IP adresin gönderilmez. Bu hizmetlerin dışında verilerini üçüncü taraflarla paylaşmayız ya da satmayız."
+msgstr "Google Gemini API is used to prepare your questions and evaluate your answers (content sent on the free tier may be used by Google for product development, so we recommend not including sensitive information in your CV). Password reset emails are sent through Gmail. Your data is kept in a database on Supabase's infrastructure. Google reCAPTCHA is used for bot protection on the registration form. Sentry is used so we can see technical errors on the site; only the type of error and where in the code it happened are sent to Sentry, not the texts you write, your cookies or your IP address. Beyond these services, we don't share or sell your data to third parties."
 
 #: templates/legal/privacy.html:28
 msgid "5. Çerezler"
@@ -1421,8 +1495,8 @@ msgid "6. Haklarını nasıl kullanırsın?"
 msgstr "6. How do you exercise your rights?"
 
 #: templates/legal/privacy.html:32
-msgid "Verilerine erişmek, düzeltmek veya hesabınla birlikte tüm verilerinin silinmesini istemek için bizimle iletişime geçebilirsin."
-msgstr "You can contact us to access or correct your data, or to request that your account and all your data be deleted."
+msgid "Hesabını ve tüm verilerini, panelinin en altındaki \"Hesabımı sil\" bağlantısıyla istediğin an kendin kalıcı olarak silebilirsin. Verilerine erişmek ya da düzeltmek için bizimle iletişime geçebilirsin."
+msgstr "You can permanently delete your account and all your data yourself at any time using the \"Delete my account\" link at the bottom of your dashboard. To access or correct your data, you can contact us."
 
 #: templates/legal/privacy.html:34
 msgid "7. İletişim"

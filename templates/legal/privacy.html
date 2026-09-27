@@ -23,13 +23,13 @@
         <p>{% blocktrans %}Sesle yazma ve soruları sesli dinleme özellikleri tarayıcının kendi ses tanıma/sentezleme servisini kullanır (örneğin Google Chrome'da Google'ın servisi). Bu ses verisi bizim sunucularımıza gelmez, doğrudan tarayıcın ile ses servisi arasında işlenir.{% endblocktrans %}</p>
 
         <h2>{% trans "4. Verilerini kimlerle paylaşıyoruz?" %}</h2>
-        <p>{% blocktrans %}Sorularını hazırlamak ve cevaplarını değerlendirmek için Google Gemini API kullanılır (ücretsiz katmanda gönderilen içerik Google tarafından ürün geliştirmede kullanılabilir; bu yüzden CV'ne hassas bilgi eklememeni öneririz). Hesap doğrulama e-postaları Resend üzerinden gönderilir. Verilerin Supabase altyapısındaki bir veritabanında tutulur. Kayıt formunda bot koruması için Google reCAPTCHA kullanılır. Bu hizmetlerin dışında verilerini üçüncü taraflarla paylaşmayız ya da satmayız.{% endblocktrans %}</p>
+        <p>{% blocktrans %}Sorularını hazırlamak ve cevaplarını değerlendirmek için Google Gemini API kullanılır (ücretsiz katmanda gönderilen içerik Google tarafından ürün geliştirmede kullanılabilir; bu yüzden CV'ne hassas bilgi eklememeni öneririz). Şifre sıfırlama e-postaları Gmail üzerinden gönderilir. Verilerin Supabase altyapısındaki bir veritabanında tutulur. Kayıt formunda bot koruması için Google reCAPTCHA kullanılır. Sitede oluşan teknik hataları görebilmek için Sentry kullanılır; Sentry'ye yalnızca hatanın türü ve kodda nerede oluştuğu gider, yazdığın metinler, çerezlerin ve IP adresin gönderilmez. Bu hizmetlerin dışında verilerini üçüncü taraflarla paylaşmayız ya da satmayız.{% endblocktrans %}</p>
 
         <h2>{% trans "5. Çerezler" %}</h2>
         <p>{% blocktrans %}Oturumunu açık tutmak (session), formları güvenli göndermek (CSRF) ve dil tercihini hatırlamak için zorunlu çerezler kullanılır. Reklam ya da takip amaçlı çerez kullanılmaz.{% endblocktrans %}</p>
 
         <h2>{% trans "6. Haklarını nasıl kullanırsın?" %}</h2>
-        <p>{% blocktrans %}Verilerine erişmek, düzeltmek veya hesabınla birlikte tüm verilerinin silinmesini istemek için bizimle iletişime geçebilirsin.{% endblocktrans %}</p>
+        <p>{% blocktrans %}Hesabını ve tüm verilerini, panelinin en altındaki "Hesabımı sil" bağlantısıyla istediğin an kendin kalıcı olarak silebilirsin. Verilerine erişmek ya da düzeltmek için bizimle iletişime geçebilirsin.{% endblocktrans %}</p>
 
         <h2>{% trans "7. İletişim" %}</h2>
         <p>{% blocktrans with email=CONTACT_EMAIL %}Sorularını <a href="mailto:{{ email }}">{{ email }}</a> adresine yazabilirsin.{% endblocktrans %}</p>
