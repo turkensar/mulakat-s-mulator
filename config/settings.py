@@ -277,3 +277,23 @@ DEFAULT_FROM_EMAIL = f'Mülakat Simülatörü <{_gmail_address or "noreply@local
 
 # Sitede gösterilen iletişim adresi (footer, Gizlilik Politikası, KVKK metni).
 CONTACT_EMAIL = 'mulakatsimulatoru@gmail.com'
+
+
+# Hata takibi (Sentry, ücretsiz plan). SENTRY_DSN boşsa tamamen kapalıdır.
+# Gizlilik: istek gövdesi (CV/ilan/cevap metinleri), yığın izindeki yerel
+# değişkenler (ör. cv_text), çerezler ve IP adresi Sentry'ye GÖNDERİLMEZ; yalnızca
+# hata türü, mesajı, satırı ve istek adresi gider. SQL parametreleri de gitmez
+# (Django entegrasyonunda varsayılan kapalı).
+SENTRY_DSN = os.environ.get('SENTRY_DSN', '')
+if SENTRY_DSN:
+    import sentry_sdk
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        environment=os.environ.get('VERCEL_ENV', 'development'),
+        release=os.environ.get('VERCEL_GIT_COMMIT_SHA') or None,
+        send_default_pii=False,
+        max_request_body_size='never',
+        include_local_variables=False,
+        traces_sample_rate=0,
+    )
