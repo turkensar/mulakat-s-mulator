@@ -37,14 +37,19 @@
                 <a href="{% url 'interview_create' %}" class="btn btn--primary">{% trans "Yeni mülakat başlat" %}</a>
                 <a href="{% url 'panel' %}" class="home__link">{% trans "Panelime git" %}</a>
             {% else %}
-                <form method="post" action="{% url 'guest_trial_start' %}" class="home__trial-form">
+                <form method="post" action="{% url 'guest_trial_start' %}" class="home__trial-form" data-async
+                      data-error-target="trial-error" data-progress-target="trial-progress"
+                      data-network-error="{% trans "Bağlantı koptu ya da sunucu çok geç yanıt verdi. Birkaç dakika sonra tekrar dene." %}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn--primary" data-busy="{% trans "Sorular hazırlanıyor…" %}">{% trans "Provaya başla" %}</button>
                 </form>
                 <p class="home__note">{% trans "Hesabın var mı?" %} <a href="{% url 'login' %}">{% trans "Giriş yap" %}</a></p>
-                <p class="home__note">{% trans "Sorular hazırlanması bazen bir dakikaya kadar sürebilir, sayfadan ayrılma." %}</p>
             {% endif %}
         </div>
+        {% if not user.is_authenticated %}
+            <div class="notice home__trial-error" id="trial-error" role="alert" hidden><p></p></div>
+            {% include '_async_progress.html' with progress_id='trial-progress' kind='generate' %}
+        {% endif %}
     </div>
 
     <div class="demo" role="group" aria-label="{% trans "Örnek bir mülakattan kesit" %}">
@@ -171,5 +176,5 @@
         </details>
     </div>
 </section>
-{% include '_submit_lock.html' %}
+<script src="/static/js/async_form.js"></script>
 {% endblock %}

@@ -117,3 +117,77 @@ class RepeatInterviewTests(TestCase):
     def test_bad_repeat_param_is_ignored(self):
         response = self.client.get(reverse('interview_create') + '?tekrar=abc')
         self.assertEqual(response.status_code, 200)
+
+
+FETCH = {'HTTP_X_REQUESTED_WITH': 'fetch'}
+CREATE_DATA = {
+    'position': 'junior_developer', 'level': 'junior', 'interview_type': 'technical',
+    'language': 'tr', 'question_count': '5', 'job_posting': '', 'cv_text': '', 'custom_position': '',
+}
+
+
+class AsyncCreateTests(TestCase):
+    def setUp(self):
+        from unittest.mock import patch
+
+        self.user = User.objects.create_user(username='a@example.com', email='a@example.com', password='x')
+        self.client.force_login(self.user)
+        self.patch = patch('interviews.views.generate_questions', side_effect=fake_generate_questions)
+        self.mock = self.patch.start()
+        self.addCleanup(self.patch.stop)
+
+    def test_success_returns_redirect_json(self):
+        response = self.client.post(reverse('interview_create'), CREATE_DATA, **FETCH)
+        interview = self.user.interviews.get()
+        self.assertEqual(response.json(), {'redirect': reverse('interview_detail', args=[interview.pk])})
+        self.assertEqual(interview.questions.count(), 2)
+
+    def test_invalid_form_asks_for_native_resubmit(self):
+        response = self.client.post(reverse('interview_create'), {**CREATE_DATA, 'position': ''}, **FETCH)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {'invalid': True})
+        self.mock.assert_not_called()
+
+    def test_slow_ai_returns_error_json_and_frees_daily_slot(self):
+        from .services.gemini import GeminiTimeoutError
+
+        self.mock.side_effect = GeminiTimeoutError('yavaş')
+        response = self.client.post(reverse('interview_create'), CREATE_DATA, **FETCH)
+        self.assertEqual(response.status_code, 503)
+        self.assertIn('yavaş ya da yoğun', response.json()['error'])
+        self.assertFalse(self.user.interviews.exists())
+
+    def test_plain_post_still_works_without_javascript(self):
+        response = self.client.post(reverse('interview_create'), CREATE_DATA)
+        interview = self.user.interviews.get()
+        self.assertRedirects(response, reverse('interview_detail', args=[interview.pk]))
+
+
+class AsyncGuestTrialTests(TestCase):
+    def setUp(self):
+        self._real_generate = guest_views.generate_questions
+        self._real_evaluate = guest_views.evaluate_answer
+        guest_views.generate_questions = fake_generate_questions
+        guest_views.evaluate_answer = fake_evaluate_answer
+
+    def tearDown(self):
+        guest_views.generate_questions = self._real_generate
+        guest_views.evaluate_answer = self._real_evaluate
+
+    def test_start_returns_redirect_json(self):
+        response = self.client.post(reverse('guest_trial_start'), **FETCH)
+        self.assertEqual(response.json(), {'redirect': reverse('guest_trial')})
+
+    def test_answer_error_returns_json_and_keeps_progress(self):
+        from .services.gemini import GeminiError
+
+        self.client.post(reverse('guest_trial_start'), **FETCH)
+
+        def failing(**kwargs):
+            raise GeminiError('patladı')
+
+        guest_views.evaluate_answer = failing
+        response = self.client.post(reverse('guest_trial_answer'), {'answer': 'cevap'}, **FETCH)
+        self.assertEqual(response.status_code, 503)
+        self.assertIn('Değerlendirme sırasında', response.json()['error'])
+        self.assertEqual(self.client.session['guest_trial']['answers'], [])

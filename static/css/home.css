@@ -43,6 +43,10 @@
     margin: 0;
 }
 
+.home__trial-error {
+    margin-top: var(--space-6);
+}
+
 .home__note {
     margin: 0;
     color: var(--ink-soft);

@@ -37,7 +37,12 @@
         </div>
     </div>
 
-    <form method="post" action="{% url 'guest_trial_answer' %}" class="composer">
+    <div class="notice" id="answer-error" role="alert" hidden><p></p></div>
+    {% include '_async_progress.html' with progress_id='answer-progress' kind='evaluate' %}
+
+    <form method="post" action="{% url 'guest_trial_answer' %}" class="composer" data-async
+          data-error-target="answer-error" data-progress-target="answer-progress"
+          data-network-error="{% trans "Bağlantı koptu ya da sunucu çok geç yanıt verdi. Yazdığın cevap duruyor, tekrar gönderebilirsin." %}">
         {% csrf_token %}
         <label for="answer-text" class="visually-hidden">{% trans "Cevabın" %}</label>
         <textarea id="answer-text" name="answer" rows="4" placeholder="{% trans "Cevabını buraya yaz..." %}" required></textarea>
@@ -48,5 +53,5 @@
         </div>
     </form>
 </section>
-{% include '_submit_lock.html' %}
+<script src="/static/js/async_form.js"></script>
 {% endblock %}

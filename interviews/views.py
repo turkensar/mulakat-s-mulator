@@ -14,6 +14,7 @@ from django.utils.translation import gettext_lazy
 from django.views.decorators.http import require_POST
 
 from accounts.utils import display_name
+from config.async_forms import json_error, json_invalid, json_redirect, wants_json
 
 from .forms import InterviewForm
 from .models import Answer, DAILY_INTERVIEW_LIMIT, Question
@@ -66,7 +67,11 @@ def _today_interview_count(user):
 def create_interview(request):
     if request.method == 'POST':
         form = InterviewForm(request.POST)
-        if form.is_valid():
+        ajax = wants_json(request)
+        if not form.is_valid():
+            if ajax:
+                return json_invalid()
+        else:
             interview = form.save(commit=False)
             interview.user = request.user
             # CV metni kişisel veridir: modele yazılmaz, yalnızca soru üretimine gider.
@@ -80,6 +85,8 @@ def create_interview(request):
                 # birlikte asabilir (race condition).
                 User.objects.select_for_update().get(pk=request.user.pk)
                 if _today_interview_count(request.user) >= DAILY_INTERVIEW_LIMIT:
+                    if ajax:
+                        return json_redirect(reverse('interview_create'))
                     return render(request, 'interviews/create.html', {'limit_reached': True})
                 interview.save()
 
@@ -92,22 +99,24 @@ def create_interview(request):
                     job_posting=interview.job_posting,
                     cv_text=cv_text,
                 )
-            except GeminiQuotaError:
+            except GeminiError as exc:
                 interview.delete()
-                form.add_error(None, QUOTA_MESSAGE)
-            except GeminiTimeoutError:
-                interview.delete()
-                form.add_error(None, SLOW_MESSAGE)
-            except GeminiError:
-                interview.delete()
-                form.add_error(
-                    None, _('Sorular oluşturulurken bir hata oluştu. Lütfen tekrar dene.')
-                )
+                if isinstance(exc, GeminiQuotaError):
+                    error = QUOTA_MESSAGE
+                elif isinstance(exc, GeminiTimeoutError):
+                    error = SLOW_MESSAGE
+                else:
+                    error = _('Sorular oluşturulurken bir hata oluştu. Lütfen tekrar dene.')
+                if ajax:
+                    return json_error(error)
+                form.add_error(None, error)
             else:
                 Question.objects.bulk_create([
                     Question(interview=interview, order=order, text=text, category=category)
                     for order, (text, category) in enumerate(questions, start=1)
                 ])
+                if ajax:
+                    return json_redirect(reverse('interview_detail', kwargs={'pk': interview.pk}))
                 return redirect('interview_detail', pk=interview.pk)
     else:
         if _today_interview_count(request.user) >= DAILY_INTERVIEW_LIMIT:

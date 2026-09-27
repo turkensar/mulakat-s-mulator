@@ -15,7 +15,9 @@
 </section>
 {% else %}
 {% with steps=form.steps %}
-<form method="post" id="create-form" class="create">
+<form method="post" id="create-form" class="create" data-async
+      data-error-target="create-error" data-progress-target="create-progress"
+      data-network-error="{% trans "Bağlantı koptu ya da sunucu çok geç yanıt verdi. Seçimlerin ve yapıştırdığın metinler duruyor, tekrar deneyebilirsin." %}">
     {% csrf_token %}
 
     <header class="create__intro">
@@ -111,6 +113,9 @@
         </div>
     </section>
 
+    <div class="notice create__async-error" id="create-error" role="alert" hidden><p></p></div>
+    {% include '_async_progress.html' with progress_id='create-progress' kind='generate' %}
+
     <div class="summary" role="region" aria-label="{% trans "Seçimlerin özeti" %}">
         <div class="summary__inner">
             <ul class="summary__picks" id="summary-picks" hidden>
@@ -119,12 +124,13 @@
                 {% endfor %}
             </ul>
             <p class="summary__count" id="summary-count" aria-live="polite"></p>
-            <button type="submit" class="btn btn--primary" id="create-submit">{% trans "Mülakatı başlat" %}</button>
+            <button type="submit" class="btn btn--primary" id="create-submit" data-busy="{% trans "Sorular hazırlanıyor..." %}">{% trans "Mülakatı başlat" %}</button>
         </div>
     </div>
 </form>
 {% endwith %}
 
+<script src="/static/js/async_form.js"></script>
 <script>
     (function () {
         var form = document.getElementById('create-form');
@@ -132,11 +138,9 @@
         var picks = document.getElementById('summary-picks');
         var count = document.getElementById('summary-count');
         var total = picks.children.length;
-        var submitLabel = button.textContent;
         var text = {
             ready: '{% trans "Hazırsın!" as t_ready %}{{ t_ready|escapejs }}',
-            selected: '{% trans "seçildi" as t_selected %}{{ t_selected|escapejs }}',
-            preparing: '{% trans "Sorular hazırlanıyor..." as t_preparing %}{{ t_preparing|escapejs }}'
+            selected: '{% trans "seçildi" as t_selected %}{{ t_selected|escapejs }}'
         };
         var postingBox = document.getElementById('posting');
         var posting = document.getElementById('id_job_posting');
@@ -207,17 +211,9 @@
         custom.addEventListener('input', update);
         updateCv();
         form.addEventListener('change', update);
-        form.addEventListener('submit', function () {
-            button.disabled = true;
-            button.textContent = text.preparing;
-        });
-        // Geri tuşuyla dönüldüğünde sayfa önbellekten gelir; buton kilitli kalmasın.
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted) {
-                button.textContent = submitLabel;
-                update();
-            }
-        });
+        // Gönderim, bekleme ekranı ve hata durumu static/js/async_form.js'te; o form
+        // eski haline döndürünce buton seçimlere göre yeniden açılır/kapanır.
+        form.addEventListener('async-form:reset', update);
         update();
     })();
 </script>

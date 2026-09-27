@@ -1,0 +1,26 @@
+{% load i18n %}{% comment %}
+    static/js/async_form.js'in beklerken gösterdiği durum kutusu.
+    Kullanım: {% include '_async_progress.html' with progress_id='create-progress' kind='generate' %}
+    kind: 'generate' (soru üretme) ya da 'evaluate' (cevap değerlendirme).
+{% endcomment %}{% trans "{s} sn" as elapsed_template %}
+<div class="async-progress" id="{{ progress_id }}" role="status" aria-live="polite" hidden
+     data-elapsed="{{ elapsed_template }}">
+    <span class="async-progress__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <p class="async-progress__step" data-step></p>
+    <p class="async-progress__meta">
+        <span data-elapsed-text></span>
+        <span>{% trans "Yapay zeka bazen bir dakikaya kadar düşünebiliyor. Sayfadan ayrılma." %}</span>
+    </p>
+    <ul data-steps hidden>
+        {% if kind == 'evaluate' %}
+            <li>{% trans "Cevabın okunuyor…" %}</li>
+            <li>{% trans "Güçlü yönlerin ve eksiklerin belirleniyor…" %}</li>
+            <li>{% trans "Puanın hesaplanıyor…" %}</li>
+        {% else %}
+            <li>{% trans "Pozisyonun ve seviyen inceleniyor…" %}</li>
+            <li>{% trans "Sorular yazılıyor…" %}</li>
+            <li>{% trans "Sorular son kez gözden geçiriliyor…" %}</li>
+        {% endif %}
+        <li>{% trans "Yapay zeka şu an biraz yoğun, beklemeye devam ediyoruz…" %}</li>
+    </ul>
+</div>
