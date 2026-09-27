@@ -96,7 +96,8 @@
     </section>
 
     <div class="report__actions">
-        <a href="{% url 'interview_create' %}" class="btn btn--primary">{% trans "Yeni mülakat başlat" %}</a>
+        <a href="{% url 'interview_create' %}?tekrar={{ interview.pk }}" class="btn btn--primary">{% trans "Aynı ayarlarla tekrar dene" %}</a>
+        <a href="{% url 'interview_create' %}" class="btn btn--ghost">{% trans "Yeni mülakat başlat" %}</a>
         <a href="{% url 'panel' %}" class="btn btn--ghost">{% trans "Panele dön" %}</a>
     </div>
 </article>

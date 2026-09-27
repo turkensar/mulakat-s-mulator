@@ -79,3 +79,41 @@ class ContactEmailTests(TestCase):
             self.assertContains(response, 'mulakatsimulatoru%40gmail.com' if name == 'home'
                                 else 'mailto:mulakatsimulatoru@gmail.com')
             self.assertNotContains(response, 'turkensar07')
+
+
+class RepeatInterviewTests(TestCase):
+    def setUp(self):
+        from .models import Interview
+
+        self.user = User.objects.create_user(username='t@example.com', email='t@example.com', password='x')
+        self.interview = Interview.objects.create(
+            user=self.user, position='other', custom_position='Hemşire, özel hastane',
+            level='junior', interview_type='behavioral', language='en', question_count=8,
+            job_posting='İlan metni ' * 10, cv_based=True, status='completed',
+        )
+        self.client.force_login(self.user)
+
+    def test_report_offers_repeat_link(self):
+        response = self.client.get(reverse('interview_report', args=[self.interview.pk]))
+        self.assertContains(response, f'?tekrar={self.interview.pk}')
+
+    def test_repeat_prefills_previous_settings(self):
+        response = self.client.get(reverse('interview_create') + f'?tekrar={self.interview.pk}')
+        form = response.context['form']
+        self.assertEqual(form['position'].value(), 'other')
+        self.assertEqual(form['custom_position'].value(), 'Hemşire, özel hastane')
+        self.assertEqual(form['interview_type'].value(), 'behavioral')
+        self.assertEqual(form['language'].value(), 'en')
+        self.assertEqual(form['question_count'].value(), 8)
+        self.assertContains(response, 'yeniden yapıştırman gerekiyor')
+
+    def test_cannot_repeat_someone_elses_interview(self):
+        other = User.objects.create_user(username='o@example.com', email='o@example.com', password='x')
+        self.client.force_login(other)
+        response = self.client.get(reverse('interview_create') + f'?tekrar={self.interview.pk}')
+        self.assertIsNone(response.context.get('repeat_from'))
+        self.assertNotContains(response, 'Hemşire')
+
+    def test_bad_repeat_param_is_ignored(self):
+        response = self.client.get(reverse('interview_create') + '?tekrar=abc')
+        self.assertEqual(response.status_code, 200)

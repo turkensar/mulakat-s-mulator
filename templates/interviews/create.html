@@ -21,6 +21,12 @@
     <header class="create__intro">
         <h1>{% trans "Provanı kuralım" %}</h1>
         <p>{% trans "Beş küçük seçim yap, sana özel sorular hazırlansın." %}</p>
+        {% if repeat_from %}
+            <p class="create__repeat">
+                {% trans "Önceki mülakatının ayarları seçili geldi, istersen değiştirebilirsin. Sorular yeniden üretileceği için bu kez farklı olacak." %}
+                {% if repeat_from.cv_based %}{% trans "O mülakat CV'ne özeldi. CV'ni saklamadığımız için aşağıya yeniden yapıştırman gerekiyor." %}{% endif %}
+            </p>
+        {% endif %}
     </header>
 
     {% if form.non_field_errors %}

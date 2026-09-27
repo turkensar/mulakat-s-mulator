@@ -112,9 +112,27 @@ def create_interview(request):
     else:
         if _today_interview_count(request.user) >= DAILY_INTERVIEW_LIMIT:
             return render(request, 'interviews/create.html', {'limit_reached': True})
+        repeat_from = _repeat_source(request)
+        if repeat_from:
+            form = InterviewForm(initial={
+                name: getattr(repeat_from, name)
+                for name in InterviewForm.Meta.fields
+            })
+            return render(request, 'interviews/create.html', {
+                'form': form, 'repeat_from': repeat_from,
+            })
         form = InterviewForm()
 
     return render(request, 'interviews/create.html', {'form': form})
+
+
+def _repeat_source(request):
+    """?tekrar=<id> ile gelinirse, kullanıcının kendi mülakatı (ayarları forma dolar)."""
+    try:
+        pk = int(request.GET.get('tekrar', ''))
+    except ValueError:
+        return None
+    return request.user.interviews.filter(pk=pk).first()
 
 
 def _prompt_labels(interview):
