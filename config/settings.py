@@ -70,9 +70,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
     'accounts',
     'interviews',
+    'api',
 ]
+
+# Mobil (Android) istemci için JSON API (api/). Web tarafı bundan etkilenmez: kendi
+# session/CSRF akışını kullanmaya devam eder. Token, DRF'nin authtoken app'i ile
+# oluşturulur (rest_framework.authtoken.models.Token); mobil her isteğe
+# "Authorization: Token <key>" header'ı ekler. TokenAuthentication CSRF gerektirmez
+# (CSRF yalnızca SessionAuthentication ile zorunlu tutulur, burada kullanılmıyor).
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

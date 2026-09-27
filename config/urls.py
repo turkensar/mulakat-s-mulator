@@ -34,4 +34,5 @@ urlpatterns = [
     path('kvkk/', TemplateView.as_view(template_name='legal/kvkk.html'), name='kvkk'),
     path('', include('accounts.urls')),
     path('', include('interviews.urls')),
+    path('api/v1/', include('api.urls')),
 ]
