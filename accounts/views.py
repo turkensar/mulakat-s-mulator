@@ -1,6 +1,7 @@
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
@@ -10,7 +11,9 @@ from django_ratelimit.decorators import ratelimit
 
 from config.ratelimit import client_ip
 
-from .forms import LoginForm, NewPasswordForm, RegisterForm, ResetRequestForm
+from .forms import (
+    AccountDeleteForm, LoginForm, NewPasswordForm, RegisterForm, ResetRequestForm,
+)
 from .google_auth import GoogleTokenError, verify_google_credential
 from .utils import unique_username
 
@@ -102,3 +105,23 @@ class RateLimitedPasswordResetView(auth_views.PasswordResetView):
 class NewPasswordView(auth_views.PasswordResetConfirmView):
     template_name = 'accounts/password_reset_confirm.html'
     form_class = NewPasswordForm
+
+
+@login_required
+def account_delete(request):
+    user = request.user
+    if request.method == 'POST':
+        form = AccountDeleteForm(user, request.POST)
+        if form.is_valid():
+            logout(request)
+            # Mülakatlar, sorular ve cevaplar CASCADE ile birlikte silinir.
+            user.delete()
+            messages.success(request, _('Hesabın ve tüm verilerin silindi.'))
+            return redirect('home')
+    else:
+        form = AccountDeleteForm(user)
+
+    return render(request, 'accounts/account_delete.html', {
+        'form': form,
+        'interview_count': user.interviews.count(),
+    })

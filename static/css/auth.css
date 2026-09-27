@@ -103,6 +103,17 @@
     margin-top: var(--space-2);
 }
 
+/* Geri alınamaz işlem (hesap silme): coral, birincil butondan ayrışsın */
+.ds .btn--danger {
+    background: var(--coral);
+    color: var(--on-coral);
+}
+
+.ds .btn--danger:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 0 var(--ink);
+}
+
 .auth__divider {
     display: flex;
     align-items: center;

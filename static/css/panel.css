@@ -228,3 +228,19 @@
         width: 100%;
     }
 }
+
+/* Sayfanın en altında, göze batmayan hesap silme bağlantısı */
+.panel__account {
+    margin: var(--space-12) 0 0;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.panel__account a {
+    color: var(--ink-soft);
+    text-underline-offset: 3px;
+}
+
+.panel__account a:hover {
+    color: var(--ink);
+}

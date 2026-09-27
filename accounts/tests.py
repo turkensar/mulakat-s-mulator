@@ -229,3 +229,70 @@ class PasswordResetTests(TestCase):
     def test_login_page_links_to_reset(self):
         response = self.client.get(reverse('login'))
         self.assertContains(response, reverse('password_reset'))
+
+
+class AccountDeleteTests(TestCase):
+    def setUp(self):
+        from interviews.models import Answer, Interview, Question
+
+        self.user = User.objects.create_user(
+            username='silinecek@example.com', email='silinecek@example.com',
+            password='parola-123456', is_active=True,
+        )
+        interview = Interview.objects.create(
+            user=self.user, position='junior_developer', level='junior',
+            interview_type='technical', language='tr', question_count=5,
+        )
+        question = Question.objects.create(interview=interview, order=1, text='Soru?', category='teknik')
+        Answer.objects.create(question=question, text='Cevap', score=7)
+        self.models = (Interview, Question, Answer)
+
+    def test_requires_login(self):
+        response = self.client.get(reverse('account_delete'))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse('login'), response.url)
+
+    def test_wrong_password_keeps_account(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('account_delete'), {'confirmation': 'yanlis'})
+
+        self.assertContains(response, 'Parola hatalı.')
+        self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
+
+    def test_correct_password_deletes_account_and_all_data(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse('account_delete'), {'confirmation': 'parola-123456'}, follow=True
+        )
+
+        self.assertRedirects(response, reverse('home'))
+        self.assertContains(response, 'Hesabın ve tüm verilerin silindi.')
+        self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
+        for model in self.models:
+            self.assertEqual(model.objects.count(), 0, model.__name__)
+        self.assertFalse('_auth_user_id' in self.client.session)
+
+    def test_passwordless_google_account_confirms_with_email(self):
+        self.user.set_unusable_password()
+        self.user.save()
+        self.client.force_login(self.user)
+
+        wrong = self.client.post(reverse('account_delete'), {'confirmation': 'baska@example.com'})
+        self.assertContains(wrong, 'eşleşmiyor')
+        self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
+
+        self.client.post(reverse('account_delete'), {'confirmation': 'SILINECEK@example.com'})
+        self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
+
+    def test_page_states_interview_count(self):
+        self.client.force_login(self.user)
+        self.assertContains(self.client.get(reverse('account_delete')), '1 mülakatın')
+
+        self.user.interviews.all().delete()
+        response = self.client.get(reverse('account_delete'))
+        self.assertContains(response, 'Hesabın kalıcı olarak silinecek.')
+        self.assertNotContains(response, '0 mülakat')
+
+    def test_panel_links_to_delete_page(self):
+        self.client.force_login(self.user)
+        self.assertContains(self.client.get(reverse('panel')), reverse('account_delete'))

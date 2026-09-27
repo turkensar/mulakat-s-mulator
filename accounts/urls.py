@@ -8,6 +8,7 @@ urlpatterns = [
     path('giris/', views.RateLimitedLoginView.as_view(), name='login'),
     path('google-giris/', views.google_login, name='google_login'),
     path('cikis/', auth_views.LogoutView.as_view(), name='logout'),
+    path('hesabim/sil/', views.account_delete, name='account_delete'),
     path('sifremi-unuttum/', views.RateLimitedPasswordResetView.as_view(), name='password_reset'),
     path(
         'sifremi-unuttum/gonderildi/',

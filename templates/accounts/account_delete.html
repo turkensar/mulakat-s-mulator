@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Hesabımı sil - Mülakat Simülatörü" %}{% endblock %}
+{% block meta_description %}{% trans "Hesabını ve tüm verilerini kalıcı olarak sil." %}{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="/static/css/auth.css">{% endblock %}
+
+{% block content %}
+<section class="auth">
+    <header class="auth__head">
+        <h1>{% trans "Hesabımı sil" %}</h1>
+        <p>
+            {% if not interview_count %}
+                {% trans "Hesabın kalıcı olarak silinecek." %}
+            {% else %}
+            {% blocktrans trimmed count counter=interview_count %}
+                Hesabın ve {{ counter }} mülakatın (soruları, cevapları, puanları ve raporlarıyla birlikte) kalıcı olarak silinecek.
+            {% plural %}
+                Hesabın ve {{ counter }} mülakatın (soruları, cevapları, puanları ve raporlarıyla birlikte) kalıcı olarak silinecek.
+            {% endblocktrans %}
+            {% endif %}
+            {% trans "Bu işlem geri alınamaz." %}
+        </p>
+    </header>
+
+    <form method="post" class="auth__card" id="auth-form">
+        {% csrf_token %}
+        {% include 'accounts/_fields.html' %}
+        <button type="submit" class="btn btn--danger" id="auth-submit" data-busy="{% trans "Siliniyor..." %}">{% trans "Hesabımı kalıcı olarak sil" %}</button>
+    </form>
+
+    <p class="auth__alt"><a href="{% url 'panel' %}">{% trans "Vazgeç, panele dön" %}</a></p>
+</section>
+
+{% include 'accounts/_submit_lock.html' %}
+{% endblock %}

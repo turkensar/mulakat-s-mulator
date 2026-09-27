@@ -115,3 +115,30 @@ class NewPasswordForm(SetPasswordForm):
         **SetPasswordForm.error_messages,
         'password_mismatch': _('Parolalar eşleşmiyor, tekrar dener misin?'),
     }
+
+
+class AccountDeleteForm(forms.Form):
+    """Hesap silme onayı: parolalı hesapta parola, Google ile açılmış (parolasız)
+    hesapta e-posta adresi istenir; açık kalmış bir oturumdan tek tıkla silinmesin."""
+
+    confirmation = forms.CharField(strip=False)
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+        field = self.fields['confirmation']
+        if user.has_usable_password():
+            field.label = _('Parolan')
+            field.widget = forms.PasswordInput(attrs={'autocomplete': 'current-password'})
+        else:
+            field.label = _('E-posta adresin')
+            field.widget = forms.EmailInput(attrs={'autocomplete': 'off'})
+
+    def clean_confirmation(self):
+        value = self.cleaned_data['confirmation']
+        if self.user.has_usable_password():
+            if not self.user.check_password(value):
+                raise forms.ValidationError(gettext_now('Parola hatalı.'))
+        elif value.strip().lower() != (self.user.email or '').lower():
+            raise forms.ValidationError(gettext_now('E-posta adresin eşleşmiyor.'))
+        return value
