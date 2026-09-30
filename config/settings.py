@@ -123,6 +123,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'config.context_processors.google_client_id',
                 'config.context_processors.contact_email',
+                'config.context_processors.profile_menu',
             ],
         },
     },

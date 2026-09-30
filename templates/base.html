@@ -29,10 +29,6 @@
             {% if user.is_authenticated %}
                 <a href="{% url 'panel' %}">{% trans "Panel" %}</a>
                 <a href="{% url 'progress' %}">{% trans "Gelişim" %}</a>
-                <form action="{% url 'logout' %}" method="post" class="navbar__logout-form">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-                    <button type="submit" class="navbar__logout-button">{% trans "Çıkış" %}</button>
-                </form>
             {% else %}
                 <a href="{% url 'login' %}">{% trans "Giriş" %}</a>
                 <a href="{% url 'register' %}">{% trans "Kayıt Ol" %}</a>
@@ -46,6 +42,41 @@
                     <button type="submit" name="language" value="tr" class="navbar__lang-button" lang="tr" title="Türkçe" aria-label="Türkçe">TR</button>
                 {% endif %}
             </form>
+            {% if user.is_authenticated %}
+                <details class="profile" id="profile-menu">
+                    <summary class="profile__button" aria-label="{% trans "Profil menüsü" %}">
+                        <span class="profile__avatar" aria-hidden="true">{{ profile_initial }}</span>
+                        <span class="profile__name">{{ profile_name }}</span>
+                        <svg class="profile__chevron" viewBox="0 0 12 8" width="12" height="8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </summary>
+                    <div class="profile__panel">
+                        <div class="profile__who">
+                            <span class="profile__avatar profile__avatar--lg" aria-hidden="true">{{ profile_initial }}</span>
+                            <div class="profile__ident">
+                                <strong>{{ profile_name }}</strong>
+                                <span class="profile__email">{{ user.email|default:user.username }}</span>
+                            </div>
+                        </div>
+                        <dl class="profile__facts">
+                            <div>
+                                <dt>{% trans "Hesap türü" %}</dt>
+                                <dd>{% if user.has_usable_password %}{% trans "E-posta ve parola" %}{% else %}{% trans "Google hesabı" %}{% endif %}</dd>
+                            </div>
+                            <div>
+                                <dt>{% trans "Üyelik tarihi" %}</dt>
+                                <dd>{{ user.date_joined|date:"j F Y" }}</dd>
+                            </div>
+                        </dl>
+                        <div class="profile__actions">
+                            <form action="{% url 'logout' %}" method="post">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                <button type="submit" class="profile__item">{% trans "Çıkış" %}</button>
+                            </form>
+                            <a href="{% url 'account_delete' %}" class="profile__item profile__item--danger">{% trans "Hesabımı sil" %}</a>
+                        </div>
+                    </div>
+                </details>
+            {% endif %}
         </div>
     </nav>
 
@@ -74,6 +105,7 @@
         </nav>
         <p class="site-footer__note">{% trans "Eğitim amaçlı bir proje; kâr amacı gütmez." %}</p>
     </footer>
+    {% if user.is_authenticated %}<script src="/static/js/navbar.js" defer></script>{% endif %}
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {

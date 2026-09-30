@@ -434,7 +434,7 @@ msgstr "{s} s"
 msgid "ya da"
 msgstr "or"
 
-#: templates/accounts/account_delete.html:12 templates/interviews/panel.html:91
+#: templates/accounts/account_delete.html:12 templates/base.html:75
 msgid "Hesabımı sil"
 msgstr "Delete my account"
 
@@ -640,6 +640,26 @@ msgstr "Sign up - Interview Simulator"
 msgid "Birkaç saniyede ücretsiz hesabını oluştur, ilk mülakat provanı hemen başlasın."
 msgstr "Create your free account in seconds and start your first mock interview right away."
 
+#: templates/base.html:100
+msgid "Alt bilgi bağlantıları"
+msgstr "Footer links"
+
+#: templates/base.html:101
+msgid "İletişim"
+msgstr "Contact"
+
+#: templates/base.html:103 templates/legal/privacy.html:11
+msgid "Gizlilik Politikası"
+msgstr "Privacy Policy"
+
+#: templates/base.html:104 templates/legal/kvkk.html:11
+msgid "KVKK Aydınlatma Metni"
+msgstr "Privacy Notice (KVKK)"
+
+#: templates/base.html:106
+msgid "Eğitim amaçlı bir proje; kâr amacı gütmez."
+msgstr "An educational project; not run for profit."
+
 #: config/pwa.py:18 templates/base.html:14 templates/base.html:26
 msgid "Mülakat"
 msgstr "Interview"
@@ -660,45 +680,45 @@ msgstr "Dashboard"
 msgid "Gelişim"
 msgstr "Progress"
 
-#: templates/base.html:34
-msgid "Çıkış"
-msgstr "Log out"
-
-#: templates/base.html:37
+#: templates/base.html:33
 msgid "Giriş"
 msgstr "Log in"
 
-#: templates/base.html:38
+#: templates/base.html:34
 msgid "Kayıt Ol"
 msgstr "Sign up"
 
-#: templates/base.html:6 templates/base.html:67 templates/home.html:9
+#: templates/base.html:47
+msgid "Profil menüsü"
+msgstr "Profile menu"
+
+#: templates/base.html:6 templates/base.html:98 templates/home.html:9
 msgid "Mülakat Simülatörü"
 msgstr "Interview Simulator"
 
-#: templates/base.html:69
-msgid "Alt bilgi bağlantıları"
-msgstr "Footer links"
+#: templates/base.html:62
+msgid "Hesap türü"
+msgstr "Account type"
+
+#: templates/base.html:63
+msgid "E-posta ve parola"
+msgstr "Email and password"
+
+#: templates/base.html:63
+msgid "Google hesabı"
+msgstr "Google account"
+
+#: templates/base.html:66
+msgid "Üyelik tarihi"
+msgstr "Member since"
 
 #: templates/base.html:7 templates/home.html:13 templates/home.html:19
 msgid "Yapay zeka mülakatçıyla ücretsiz mülakat pratiği yap: pozisyonuna uygun sorular, anında puanlama ve gelişim takibi."
 msgstr "Practice interviews for free with an AI interviewer: questions matched to your role, instant scoring, and progress tracking."
 
-#: templates/base.html:70
-msgid "İletişim"
-msgstr "Contact"
-
-#: templates/base.html:72 templates/legal/privacy.html:11
-msgid "Gizlilik Politikası"
-msgstr "Privacy Policy"
-
-#: templates/base.html:73 templates/legal/kvkk.html:11
-msgid "KVKK Aydınlatma Metni"
-msgstr "Privacy Notice (KVKK)"
-
-#: templates/base.html:75
-msgid "Eğitim amaçlı bir proje; kâr amacı gütmez."
-msgstr "An educational project; not run for profit."
+#: templates/base.html:73
+msgid "Çıkış"
+msgstr "Log out"
 
 #: templates/home.html:100
 msgid "Her cevabın puanlanır; mülakat sonunda güçlü ve gelişime açık yönlerini görürsün."
@@ -1423,8 +1443,8 @@ msgid "6. Saklama Süresi"
 msgstr "6. Retention Period"
 
 #: templates/legal/kvkk.html:32
-msgid "Hesap ve mülakat verilerin, hesabını silene (panelindeki \"Hesabımı sil\" bağlantısıyla, anında ve kalıcı olarak) ya da yasal saklama sürelerinin dolmasına kadar saklanır. CV ve iş ilanı metinleri hiç saklanmaz."
-msgstr "Your account and interview data are kept until you delete your account (instantly and permanently, via the \"Delete my account\" link on your dashboard) or until legal retention periods expire. CV and job posting texts are never stored."
+msgid "Hesap ve mülakat verilerin, hesabını silene (sağ üstteki profil menüsündeki \"Hesabımı sil\" bağlantısıyla, anında ve kalıcı olarak) ya da yasal saklama sürelerinin dolmasına kadar saklanır. CV ve iş ilanı metinleri hiç saklanmaz."
+msgstr "Your account and interview data are kept until you delete your account (instantly and permanently, via the \"Delete my account\" link in the profile menu at the top right) or until legal retention periods expire. CV and job posting texts are never stored."
 
 #: templates/legal/kvkk.html:34
 msgid "7. KVKK Kapsamındaki Hakların"
@@ -1495,8 +1515,8 @@ msgid "6. Haklarını nasıl kullanırsın?"
 msgstr "6. How do you exercise your rights?"
 
 #: templates/legal/privacy.html:32
-msgid "Hesabını ve tüm verilerini, panelinin en altındaki \"Hesabımı sil\" bağlantısıyla istediğin an kendin kalıcı olarak silebilirsin. Verilerine erişmek ya da düzeltmek için bizimle iletişime geçebilirsin."
-msgstr "You can permanently delete your account and all your data yourself at any time using the \"Delete my account\" link at the bottom of your dashboard. To access or correct your data, you can contact us."
+msgid "Hesabını ve tüm verilerini, sağ üstteki profil menüsündeki \"Hesabımı sil\" bağlantısıyla istediğin an kendin kalıcı olarak silebilirsin. Verilerine erişmek ya da düzeltmek için bizimle iletişime geçebilirsin."
+msgstr "You can permanently delete your account and all your data yourself at any time using the \"Delete my account\" link in the profile menu at the top right. To access or correct your data, you can contact us."
 
 #: templates/legal/privacy.html:34
 msgid "7. İletişim"

@@ -85,8 +85,7 @@ body.ds {
     gap: var(--space-4);
 }
 
-.ds .navbar__links a,
-.ds .navbar__logout-button {
+.ds .navbar__links a {
     color: var(--ink-soft);
     font-family: inherit;
     font-size: 1rem;
@@ -97,21 +96,8 @@ body.ds {
     text-decoration: none;
 }
 
-.ds .navbar__links a:hover,
-.ds .navbar__logout-button:hover {
+.ds .navbar__links a:hover {
     color: var(--violet);
-}
-
-.ds .navbar__logout-form {
-    display: inline;
-}
-
-/* Çıkış bir POST formu olduğu için buton, bağlantı gibi görünecek şekilde sıfırlanır */
-.ds .navbar__logout-button {
-    padding: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
 }
 
 /* Dil düğmesi (§2.2 iki dilli arayüz): diğer dilin kodunu gösterir, POST ile çerezi değiştirir */
@@ -136,6 +122,176 @@ body.ds {
 .ds .navbar__lang-button:hover {
     border-color: var(--violet);
     color: var(--violet);
+}
+
+/* Profil menüsü: sağ uçta avatar + ad; açılan kutuda hesap bilgileri, çıkış ve hesap silme.
+   <details> kullanılır (JavaScript olmadan da açılır), dışarı tıklama static/js/navbar.js'de. */
+.ds .profile {
+    position: relative;
+}
+
+.ds .profile__button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 3px var(--space-3) 3px 3px;
+    border: 2px solid var(--line);
+    border-radius: var(--radius-pill);
+    color: var(--ink);
+    font-weight: 500;
+    cursor: pointer;
+    list-style: none;
+}
+
+.ds .profile__button::-webkit-details-marker {
+    display: none;
+}
+
+.ds .profile__button:hover,
+.ds .profile[open] .profile__button {
+    border-color: var(--violet);
+}
+
+.ds .profile__avatar {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--violet);
+    border-radius: 50%;
+    color: var(--on-violet);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.ds .profile__avatar--lg {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+}
+
+.ds .profile__name {
+    max-width: 10ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ds .profile__chevron {
+    color: var(--ink-soft);
+    transition: transform 0.15s;
+}
+
+.ds .profile[open] .profile__chevron {
+    transform: rotate(180deg);
+}
+
+.ds .profile__panel {
+    position: absolute;
+    top: calc(100% + var(--space-3));
+    right: 0;
+    z-index: 20;
+    width: 300px;
+    max-width: calc(100vw - 2 * var(--space-4));
+    padding: var(--space-4);
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-block);
+    box-shadow: 0 6px 0 var(--line);
+}
+
+.ds .profile__who {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.ds .profile__ident {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.ds .profile__ident strong {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+
+.ds .profile__email {
+    overflow: hidden;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ds .profile__facts {
+    margin: var(--space-4) 0 0;
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9rem;
+}
+
+.ds .profile__facts > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-1) 0;
+}
+
+.ds .profile__facts dt {
+    color: var(--ink-soft);
+}
+
+.ds .profile__facts dd {
+    margin: 0;
+    font-weight: 500;
+    text-align: right;
+}
+
+.ds .profile__actions {
+    margin-top: var(--space-2);
+}
+
+.ds .profile__actions form {
+    margin: 0;
+}
+
+/* Çıkış bir POST formu olduğu için buton, menü satırı gibi görünecek şekilde sıfırlanır */
+.ds .profile__item {
+    display: block;
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    background: none;
+    border: none;
+    border-radius: var(--radius-badge);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 500;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.ds .profile__item:hover {
+    background: var(--bg);
+    color: var(--violet);
+}
+
+/* Geri alınamaz işlem: menünün en altında ve sönük; üzerine gelince coral dolgu (coral üstünde koyu yazı) */
+.ds .profile__item--danger {
+    color: var(--ink-soft);
+}
+
+.ds .profile__item--danger:hover {
+    background: var(--coral);
+    color: var(--on-coral);
 }
 
 /* Dar ekranda (375px) logo ve bağlantılar sığacak şekilde küçülür; sığmazsa bağlantılar alta geçer */
@@ -164,6 +320,15 @@ body.ds {
         flex: 1 1 auto;
         justify-content: flex-end;
         gap: var(--space-3);
+    }
+
+    /* Dar ekranda yalnızca avatar görünür */
+    .ds .profile__name {
+        display: none;
+    }
+
+    .ds .profile__button {
+        padding-right: var(--space-2);
     }
 }
 

@@ -159,6 +159,40 @@ class GoogleLoginTests(TestCase):
         )
 
 
+class ProfileMenuTests(TestCase):
+    def test_menu_shows_account_info_logout_and_delete(self):
+        user = User.objects.create_user(
+            username='ilker@example.com', email='ilker@example.com', password='x'
+        )
+        self.client.force_login(user)
+
+        response = self.client.get(reverse('panel'))
+
+        self.assertContains(response, 'id="profile-menu"')
+        self.assertContains(response, 'ilker@example.com')
+        self.assertContains(response, 'E-posta ve parola')
+        self.assertContains(response, f'href="{reverse("account_delete")}"')
+        self.assertContains(response, f'action="{reverse("logout")}"')
+        # Türkçe 'i' avatarda 'İ' olmalı.
+        self.assertContains(response, 'profile__avatar" aria-hidden="true">İ<')
+        # Hesap silme bağlantısı artık panelin altında tekrarlanmaz.
+        self.assertNotContains(response, 'panel__account')
+
+    def test_google_account_is_labelled(self):
+        user = User.objects.create_user(username='g@example.com', email='g@example.com')
+        user.set_unusable_password()
+        user.save()
+        self.client.force_login(user)
+
+        response = self.client.get(reverse('panel'))
+
+        self.assertContains(response, 'Google hesabı')
+
+    def test_anonymous_has_no_profile_menu(self):
+        response = self.client.get(reverse('login'))
+        self.assertNotContains(response, 'id="profile-menu"')
+
+
 class InactiveLoginTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
