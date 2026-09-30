@@ -60,6 +60,12 @@ if not DEBUG:
     # çalıştığı görülünce artırılmalı.
     SECURE_HSTS_SECONDS = 3600
 
+# "Google ile giriş" Google'ın açtığı bir popup penceresi kullanır. Django'nun varsayılanı
+# ('same-origin') popup ile sayfa arasındaki iletişimi keser: hesap seçildikten sonra popup
+# boş kalır ve giriş tamamlanmaz. Google'ın belgelediği değer bu; yine de başka sitelerin
+# bizi pencere olarak erişmesini engeller.
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+
 
 # Application definition
 

@@ -151,6 +151,13 @@ class GoogleLoginTests(TestCase):
         )
         self.assertContains(response, 'doğrulanamadı')
 
+    def test_login_page_allows_google_popup(self):
+        # 'same-origin' Google'ın giriş popup'ını boş bırakır (hesap seçildikten sonra ilerlemez).
+        response = self.client.get(reverse('login'))
+        self.assertEqual(
+            response.headers['Cross-Origin-Opener-Policy'], 'same-origin-allow-popups'
+        )
+
 
 class InactiveLoginTests(TestCase):
     def setUp(self):
