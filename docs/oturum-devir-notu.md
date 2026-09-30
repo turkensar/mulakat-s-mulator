@@ -1,6 +1,6 @@
 # Oturum Devir Notu — Mülakat Simülatörü
 
-Son güncelleme: 2026-09-30. Yeni oturumda **önce bu dosyayı**, sonra `docs/mulakat2.md`'yi oku.
+Son güncelleme: 2026-10-01. Yeni oturumda **önce bu dosyayı**, sonra `docs/mulakat2.md`'yi oku.
 
 ## 1. Yeni oturuma başlarken ilk iş
 
@@ -25,10 +25,13 @@ Sonra yerel sunucuyu başlat (proje `.venv`'i ile):
 - **Adres:** https://mulakat-simulatoru.vercel.app. Eski adres `mulakat-s-mulator.vercel.app`, 308 ile yeniye yönleniyor.
 - **Deploy:** `main`'e her push otomatik production deploy'u tetikler (~30 sn).
 - **Veritabanı:** Supabase Postgres, yerel ve canlı **aynı veritabanını** kullanır. Yerelde çalıştırılan `migrate` canlıyı anında etkiler.
+  - Yerel `.env`'de `DATABASE_URL` açıksa (satır başında `#` yok) Supabase, yorumdaysa yerel SQLite kullanılır. Android oturumu SQLite'a geçmişti; 2026-09-30'da web için Supabase'e döndürüldü.
+  - Canlı veriye dokunmadan denemek için ayrı SQLite sunucusu: PowerShell'de `$env:DATABASE_URL='sqlite:///C:/Users/turke/PycharmProjects/MulakatSımulatoru/db.sqlite3'; .venv/Scripts/python manage.py runserver 8001` (kabuk değişkeni `.env`'yi geçersiz kılar).
 - **Vercel ortam değişkenleri (production):** `SECRET_KEY`, `DEBUG`, `DATABASE_URL`, `ALLOWED_HOSTS`,
   `GEMINI_API_KEY`, `GEMINI_MODEL`, `RECAPTCHA_PUBLIC_KEY`, `RECAPTCHA_PRIVATE_KEY`, `GMAIL_ADDRESS`,
   `GMAIL_APP_PASSWORD`, `GOOGLE_CLIENT_ID`.
-  - **`SENTRY_DSN` henüz eklenmedi**, bu yüzden hata takibi kapalı.
+  - `SENTRY_DSN` (2026-10-01'de eklendi ve canlıda doğrulandı, bkz. §3 madde 13).
+  - `GEMINI_MODEL` Vercel'de tanımlıysa kodun varsayılanını (`gemini-3.6-flash`) ezer; model değiştirirken orayı da kontrol et.
 - **İletişim adresi:** `mulakatsimulatoru@gmail.com` (`config/settings.py` → `CONTACT_EMAIL`).
 
 ## 3. Bu oturumda yapılanlar (hepsi canlıda)
@@ -50,9 +53,14 @@ Sırasıyla:
    - Hata olursa form ve yapıştırılan metinler olduğu gibi kalır.
    - Misafir hata mesajlarının hep Türkçe çıkması da bu sırada düzeltildi.
 10. **Sentry hata takibi** (`sentry-sdk`). `SENTRY_DSN` boşsa kapalı. Form içerikleri, çerezler ve IP gönderilmez; bu, sahte bir alıcıyla test edildi.
+    - 2026-10-01'de canlıda gerçek bir hatayla doğrulandı: olay Sentry'ye ulaştı, yerel değişkenler, istek içeriği, çerez ve IP kaydında yok. (DSN ilk girişte eski/başka bir projeye aitti, `ProjectId` reddi aldı; doğru projenin DSN'iyle düzeldi. Bozuk biçimli, ör. tırnaklı bir DSN `sentry_sdk.init` sırasında `BadDsn` ile tüm siteyi çökertir.)
 11. **Gizlilik/KVKK metinleri güncellendi:** hesap silme, Gmail ve Sentry eklendi, Resend çıkarıldı.
 12. **Logo paketi** hazırlanıp kullanıcıya gönderildi (SVG ve 1024 px PNG).
     - Yeniden üretmek için: `static/img/logo-mark.svg` (şeffaf) ve `static/img/icon.svg` (uygulama simgesi) kaynak dosyalar.
+13. **Sentry doğrulaması** (2026-10-01): geçici bir hata adresiyle yapıldı ve sonra silindi (`5a40deb`'e kadar olan commit'ler). Olaylar `flush` beklemeden de ulaşıyor, Vercel'de ek düzeltme gerekmedi. Sentry panelinde proje `python-django`, veri konumu EU.
+14. **Gemini modeli ve istemi** (2026-09-30): varsayılan model `gemini-3.6-flash`, yedekler `3.5 → 3.7 → 3.8 → 3.1-flash-lite`. `3.8` ve `3.7` o gün 30+ sn'de zaman aşımına düşüyordu; `3.1-flash-lite` yavaş ve sorular daha genel. Soru üretme istemi güçlendirildi (senaryo, çeşitlilik, somut deneyim). Takılan denemeler için deneme süresi 25 sn, bütçeler 120/100/80 sn (Vercel `maxDuration` 300).
+15. **Google girişi düzeltildi:** `SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'`. Django'nun varsayılanı (`same-origin`) Google popup'ını boş bırakıyordu.
+16. **Profil menüsü** (navbar, §12.8): ad, e-posta, hesap türü, üyelik tarihi, Çıkış ve "Hesabımı sil" burada. Panelin altındaki eski bağlantı kaldırıldı.
 
 **Başka bir Claude oturumunda (bulutta) yapılan ve `main`'e birleşen iş:** Android uygulaması için JSON API.
 - Konum: `api/` uygulaması, adres `/api/v1/`. DRF ve token kimlik doğrulaması kullanıyor.
@@ -65,12 +73,7 @@ Testler: `manage.py test accounts interviews --keepdb` (API dalıyla birlikte to
 
 ## 4. Kullanıcının yapması gerekenler (bekleyenler)
 
-- [ ] **Sentry:** sentry.io'da hesap aç (veri konumu olarak EU seç), bir Django projesi oluştur, DSN'i Vercel'e `SENTRY_DSN` olarak ekle, sonra yeniden deploy et.
-- [ ] **Google ile girişi canlıda dene.** Buton zaten görünüyor. `origin_mismatch` hatası çıkarsa Google Cloud'da origin olarak `https://mulakat-simulatoru.vercel.app` ekli mi kontrol et.
-  Google OAuth consent screen "In production" olmalı, yoksa yalnızca test kullanıcıları girebilir.
-- [ ] **Şifremi unuttum'u canlıda dene.** Mail `mulakatsimulatoru@gmail.com` adresinden gelmeli.
-  - Gmail değişkenleri yeni hesaba geçirildi mi, bu doğrulanmadı.
-  - Yeni hesapta uygulama şifresi alınırken "ayar kullanılamıyor" hatası çıkmıştı. Sebep: o hesapta iki adımlı doğrulama kapalıydı.
+Bekleyen iş yok. "Şifremi unuttum" mailinin canlıda çalıştığı 2026-10-01'de kullanıcı tarafından doğrulandı (mail `mulakatsimulatoru@gmail.com` hesabı üzerinden gidiyor, Gmail değişkenleri doğru).
 
 ## 5. Açık kalanlar / fikirler
 

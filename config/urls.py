@@ -21,7 +21,6 @@ from django.views.generic import TemplateView
 from interviews.views import home, panel
 
 from . import pwa
-from .sentry_test import sentry_test
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,5 +35,4 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('', include('interviews.urls')),
     path('api/v1/', include('api.urls')),
-    path('sentry-test-06e236f83de8/', sentry_test),  # GEÇİCİ, doğrulanınca silinecek
 ]
