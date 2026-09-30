@@ -79,7 +79,7 @@ Bekleyen iş yok. "Şifremi unuttum" mailinin canlıda çalıştığı 2026-10-0
 
 - **AI takip soruları:** ertelendi, her cevaba ek bir Gemini çağrısı demek (kota).
 - **Resend'de domain doğrulaması:** artık gerek yok, Gmail kullanılıyor.
-- **Yatay logo** (işaret ve "Mülakat Simülatörü" yazısı): teklif edildi, kullanıcı henüz istemedi.
+- ~~Yatay logo~~ **Yapıldı (2026-10-01):** `static/img/logo-horizontal.svg` (yazı çizgiye çevrilmiş) ve `.png`; ayrıntı docs §12.6. İngilizce sürümü ve koyu zemin sürümü yok.
 - ~~Sorusuz mülakat riski~~ **Çözüldü (2026-10-01):** 10 dakikadan eski sorusuz mülakat açılınca/panel ve mülakat oluşturma sayfası yüklenince silinir (günlük hak geri gelir), daha yeni olana dokunulmaz (üretim sürüyor olabilir); `_complete_interview` cevapsız mülakatta çökmez. Web ve API'de aynı (`interviews/views.py::_purge_abandoned`, `ABANDONED_AFTER`).
 - **HSTS:** `max-age=3600`. İleride artırılabilir, `check --deploy` uyarıları W005/W021 bilinçli.
 

@@ -375,6 +375,8 @@ Google Fonts üzerinden (Türkçe karakter desteği var):
 
 **Uygulama simgesi:** Aynı işaretin tersi: `--violet` zemin, beyaz balon, mor çubuklar, ortadaki çubuk `--coral` (sarı, beyaz balon üzerinde okunmaz). Kaynak `static/img/icon.svg`; PNG'ler (192, 512, maskable, Apple, favicon) bu işaretten üretilir. İşaret, maskable güvenli bölgesinin (merkez %80 daire) içinde kalacak şekilde ölçeklenmiştir. Favicon zeminsiz işaretin kendisidir.
 
+**Yatay logo (2026-10-01):** İşaret solda, sağında tek satır "Mülakat" (`--ink`) + `--sun` "AI" rozeti (içinde `--ink` yazı) + "Simülatörü" (`--violet`). Bricolage Grotesque 800 (opsz 18, sitedeki navbar ile aynı görünüm, harf aralığı -0.01em, çift kerning uygulanmış); **yazı çizgiye çevrilmiştir**, yani dosya yazı tipi gerektirmez. Kaynak `static/img/logo-horizontal.svg` (zeminsiz, açık zeminde kullanılır, en-boy oranı ≈ 7:1) ve 2400 px genişlikte `logo-horizontal.png`. Yazı tipi (Google Fonts, OFL) ve `fonttools` yalnızca üretim sırasında geçici klasörde kullanıldı, projeye girmedi; logo değişirse dosyalar aynı ölçülerle yeniden üretilmeli (işaret `logo-mark.svg` ile aynı koordinatlar, balon gövdesinin dikey ortasına yazı ortalanır). İngilizce sürümü ("Interview AI Simulator") üretilmedi.
+
 **Kurallar:** İşaretin çevresinde en az balon yüksekliğinin dörtte biri boşluk bırak; çubukların sayısını, oranını ya da renklerini değiştirme; navbar'da işaret 36px (mobilde 30px). Dar ekranda (≤480px) yazı küçülür ama iki satırlı düzen korunur; 320px'te bile bağlantılarla birlikte tek satıra sığar.
 
 ### 12.7 Dil düğmesi
