@@ -14,14 +14,14 @@ from .cv import clean_cv_text
 
 logger = logging.getLogger(__name__)
 
-# Tek bir model denemesinin en uzun süresi. Sağlıklı modeller 5 soruyu 5-20 sn'de üretir;
-# 30 sn'yi aşan model yavaş sayılıp yedek zincirdeki sıradaki model denenir (2026-09-21'de Google
-# tarafı yavaşken 3.6 ve 3.7 45 sn'de bile yanıt vermedi, 3.5 15 sn ve 3.1-lite 4 sn'de verdi;
-# 45 sn'lik denemeler bütçeyi bitirip hızlı yedeklere sıra bırakmıyordu).
-# Gerçek üst sınır vercel.json'daki maxDuration (120 sn); bir çağrının yedek modeller dahil
-# toplam süresi aşağıdaki *_BUDGET_SECONDS ile sınırlanır (son cevapta değerlendirme + özet
-# arka arkaya çalıştığı için bütçelerin toplamı 120 sn'nin altındadır).
-_CALL_TIMEOUT_SECONDS = 30
+# Tek bir model denemesinin en uzun süresi. Sağlıklı modeller soruları 4-20 sn'de üretir, bir cevabı
+# 7-16 sn'de değerlendirir; ama Google tarafında arada 50-60 sn'lik takılmalar oluyor (2026-09-30
+# ölçümü: aynı istek yeniden denenince 8 sn). 25 sn'yi aşan deneme yavaş sayılıp yedek zincirdeki
+# sıradaki model denenir; kısa tutmak, takılan bir denemenin bütçeyi yiyip kullanıcıya hata
+# göstermesini önler. Gerçek üst sınır vercel.json'daki maxDuration (300 sn); bir çağrının
+# yedek modeller dahil toplam süresi aşağıdaki *_BUDGET_SECONDS ile sınırlanır (son cevapta
+# değerlendirme + özet arka arkaya çalıştığı için bütçelerin toplamı 300 sn'nin altındadır).
+_CALL_TIMEOUT_SECONDS = 25
 
 # Kotası dolu görülen model bu süre boyunca atlanır; her çağrıda boşuna 429 almamak için.
 # Önbellek veritabanında olduğu için Vercel'in ayrı fonksiyon örnekleri arasında paylaşılır.
@@ -31,12 +31,12 @@ _QUOTA_SKIP_SECONDS = 600
 # her istekte önce yavaş modeli 45 sn beklemeyelim. Atlanmaz, çünkü yavaşlık geçici olabilir.
 _SLOW_DEMOTE_SECONDS = 300
 
-# Bir çağrının (yedek modeller dahil) en fazla harcayabileceği süre. Vercel'in 120 sn'lik
-# fonksiyon sınırı içinde kalmak için: soru üretme 90 sn; son cevapta değerlendirme (60) ve
-# özet (40) arka arkaya çalıştığından toplamları 120 sn'nin altında kalır.
-_GENERATE_BUDGET_SECONDS = 90
-_EVALUATE_BUDGET_SECONDS = 60
-_SUMMARIZE_BUDGET_SECONDS = 40
+# Bir çağrının (yedek modeller dahil) en fazla harcayabileceği süre: 25 sn'lik deneme başına 3-4
+# model denenebilir. Vercel'in 300 sn'lik fonksiyon sınırı içinde kalmak için: soru üretme 120 sn;
+# son cevapta değerlendirme (100) ve özet (80) arka arkaya çalıştığından toplamları 300 sn'nin altında kalır.
+_GENERATE_BUDGET_SECONDS = 120
+_EVALUATE_BUDGET_SECONDS = 100
+_SUMMARIZE_BUDGET_SECONDS = 80
 # Kalan süre bundan azsa yeni bir model denenmez (denemek boşuna beklemek olur).
 _MIN_ATTEMPT_SECONDS = 12
 
