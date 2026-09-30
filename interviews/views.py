@@ -1,7 +1,9 @@
 import json
+from datetime import timedelta
 from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Count, Q
@@ -40,6 +42,7 @@ def home(request):
 
 @login_required
 def panel(request):
+    _purge_abandoned(request.user)
     # Meta.ordering, aggregate içeren sorgularda uygulanmaz; sıralamayı açıkça veriyoruz.
     interviews = request.user.interviews.annotate(
         answered_count=Count('questions', filter=Q(questions__answer__isnull=False))
@@ -57,6 +60,34 @@ def progress(request):
     return render(request, 'interviews/progress.html', build_progress(request.user))
 
 
+# Soru üretimi Vercel'in fonksiyon süresi (maxDuration 300 sn) kadar sürebilir. Bundan uzun süredir
+# sorusuz duran mülakatın üretimi yarıda kesilmiştir (sorusuz mülakat hiç tamamlanamaz); daha
+# yeni olan hâlâ hazırlanıyor olabilir ve dokunulmaz.
+ABANDONED_AFTER = timedelta(minutes=10)
+
+
+def _abandoned_interviews(user):
+    return user.interviews.annotate(question_total=Count('questions')).filter(
+        question_total=0, created_at__lt=timezone.now() - ABANDONED_AFTER,
+    )
+
+
+def _is_abandoned(interview):
+    """Sorusu hiç olmayan ve üretim süresinden uzun zaman önce açılmış mülakat mı?"""
+    return (
+        not interview.questions.exists()
+        and interview.created_at < timezone.now() - ABANDONED_AFTER
+    )
+
+
+def _purge_abandoned(user):
+    """Soruları hiç üretilememiş eski mülakatları siler; günlük mülakat hakkı da geri gelir."""
+    ids = list(_abandoned_interviews(user).values_list('pk', flat=True))
+    if ids:
+        user.interviews.filter(pk__in=ids).delete()
+    return len(ids)
+
+
 def _today_interview_count(user):
     # created_at__date yerel saat diliminde (TIME_ZONE) karşılaştırır; now().date()
     # ise UTC tarihini verir ve gece yarısından sonraki ilk saatlerde tutmaz.
@@ -65,6 +96,7 @@ def _today_interview_count(user):
 
 @login_required
 def create_interview(request):
+    _purge_abandoned(request.user)
     if request.method == 'POST':
         form = InterviewForm(request.POST)
         ajax = wants_json(request)
@@ -215,6 +247,19 @@ def interview_detail(request, pk):
         return redirect('interview_report', pk=interview.pk)
 
     current_question = _current_question(interview)
+    if current_question is None and not interview.questions.exists():
+        # Soruları hiç üretilememiş mülakat (üretim yarıda kesilmiş): tamamlanamaz, açılamaz.
+        if _is_abandoned(interview):
+            interview.delete()
+            messages.info(request, _(
+                'Bu mülakatın soruları hazırlanamamıştı, bu yüzden silindi. '
+                'Yeni bir mülakat başlatabilirsin.'
+            ))
+            return redirect('interview_create')
+        messages.info(request, _(
+            'Bu mülakatın soruları hâlâ hazırlanıyor. Birkaç dakika sonra tekrar dene.'
+        ))
+        return redirect('panel')
     if current_question is None:
         # Tum sorular cevaplanmis ama mulakat "completed" olarak
         # isaretlenmemis: son cevaptan sonraki tamamlama adimi (ozet +
@@ -241,6 +286,8 @@ def interview_detail(request, pk):
 def _complete_interview(interview):
     answers = Answer.objects.filter(question__interview=interview).order_by('question__order')
     scores = [answer.score for answer in answers]
+    if not scores:
+        return  # cevapsız mülakatın puanı olmaz; 0/0 bölmesi (decimal.InvalidOperation) ve boş rapor oluşmasını önler
     interview.overall_score = Decimal(sum(scores)) / Decimal(len(scores))
 
     try:

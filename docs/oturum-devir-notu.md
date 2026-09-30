@@ -80,7 +80,7 @@ Bekleyen iş yok. "Şifremi unuttum" mailinin canlıda çalıştığı 2026-10-0
 - **AI takip soruları:** ertelendi, her cevaba ek bir Gemini çağrısı demek (kota).
 - **Resend'de domain doğrulaması:** artık gerek yok, Gmail kullanılıyor.
 - **Yatay logo** (işaret ve "Mülakat Simülatörü" yazısı): teklif edildi, kullanıcı henüz istemedi.
-- **Bilinen risk:** Vercel bir soru üretimini yarıda keserse sorusuz bir mülakat kalabilir. Böyle bir mülakat açılınca `_complete_interview` sıfıra bölme hatası verir. 300 sn sınırıyla olasılığı çok düşük ama kodda koruma yok.
+- ~~Sorusuz mülakat riski~~ **Çözüldü (2026-10-01):** 10 dakikadan eski sorusuz mülakat açılınca/panel ve mülakat oluşturma sayfası yüklenince silinir (günlük hak geri gelir), daha yeni olana dokunulmaz (üretim sürüyor olabilir); `_complete_interview` cevapsız mülakatta çökmez. Web ve API'de aynı (`interviews/views.py::_purge_abandoned`, `ABANDONED_AFTER`).
 - **HSTS:** `max-age=3600`. İleride artırılabilir, `check --deploy` uyarıları W005/W021 bilinçli.
 
 ## 6. Çalışma kuralları (kullanıcı tercihleri)

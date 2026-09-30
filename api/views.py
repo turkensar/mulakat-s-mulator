@@ -25,6 +25,7 @@ from interviews.services.gemini import (
 )
 from interviews.views import (
     QUOTA_MESSAGE, SLOW_MESSAGE, _complete_interview, _current_question, _prompt_labels,
+    _is_abandoned, _purge_abandoned,
     _today_interview_count,
 )
 
@@ -107,6 +108,7 @@ class GoogleLoginView(APIView):
 
 class InterviewListCreateView(APIView):
     def get(self, request):
+        _purge_abandoned(request.user)
         interviews = request.user.interviews.annotate(
             answered_count=Count('questions', filter=Q(questions__answer__isnull=False))
         ).order_by('-created_at')
@@ -118,6 +120,7 @@ class InterviewListCreateView(APIView):
         })
 
     def post(self, request):
+        _purge_abandoned(request.user)
         if _today_interview_count(request.user) >= DAILY_INTERVIEW_LIMIT:
             return Response({'limit_reached': True}, status=status.HTTP_409_CONFLICT)
 
@@ -172,6 +175,19 @@ class InterviewDetailView(APIView):
             return Response({'id': interview.id, 'status': 'completed'})
 
         current_question = _current_question(interview)
+        if current_question is None and not interview.questions.exists():
+            # interviews/views.py::interview_detail ile aynı: soruları hiç üretilememiş mülakat.
+            if _is_abandoned(interview):
+                interview.delete()
+                return Response(
+                    {'detail': 'Bu mülakatın soruları hazırlanamamıştı, bu yüzden silindi. '
+                               'Yeni bir mülakat başlatabilirsin.'},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            return Response(
+                {'detail': 'Bu mülakatın soruları hâlâ hazırlanıyor. Birkaç dakika sonra tekrar dene.'},
+                status=status.HTTP_409_CONFLICT,
+            )
         if current_question is None:
             # interviews/views.py::interview_detail ile aynı kurtarma: tüm sorular
             # cevaplanmış ama tamamlama adımı önceki bir hata/zaman aşımından kalmışsa tekrar dener.

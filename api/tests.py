@@ -229,3 +229,49 @@ class InterviewApiTests(GeminiMockMixin, TestCase):
 
         response = self.client.get(reverse('api_interview_detail', args=[interview.pk]))
         self.assertEqual(response.status_code, 404)
+
+
+class AbandonedInterviewApiTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='m@example.com', email='m@example.com', password='x')
+        self.client = APIClient()
+        self.client.force_authenticate(self.user)
+
+    def _interview(self, minutes_old):
+        from datetime import timedelta
+
+        from django.utils import timezone
+
+        interview = Interview.objects.create(
+            user=self.user, position='backend_developer', level='junior',
+            interview_type='mixed', language='tr', question_count=5,
+        )
+        Interview.objects.filter(pk=interview.pk).update(
+            created_at=timezone.now() - timedelta(minutes=minutes_old)
+        )
+        return interview
+
+    def test_old_questionless_interview_is_deleted_and_reported(self):
+        interview = self._interview(minutes_old=30)
+
+        response = self.client.get(f'/api/v1/interviews/{interview.pk}/')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('silindi', response.data['detail'])
+        self.assertFalse(Interview.objects.filter(pk=interview.pk).exists())
+
+    def test_recent_questionless_interview_reports_still_preparing(self):
+        interview = self._interview(minutes_old=1)
+
+        response = self.client.get(f'/api/v1/interviews/{interview.pk}/')
+
+        self.assertEqual(response.status_code, 409)
+        self.assertTrue(Interview.objects.filter(pk=interview.pk).exists())
+
+    def test_list_cleans_old_questionless_interviews(self):
+        old = self._interview(minutes_old=30)
+
+        response = self.client.get('/api/v1/interviews/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Interview.objects.filter(pk=old.pk).exists())

@@ -191,3 +191,71 @@ class AsyncGuestTrialTests(TestCase):
         self.assertEqual(response.status_code, 503)
         self.assertIn('Değerlendirme sırasında', response.json()['error'])
         self.assertEqual(self.client.session['guest_trial']['answers'], [])
+
+
+class AbandonedInterviewTests(TestCase):
+    """Soru üretimi yarıda kesilirse sorusuz kalan mülakat: açılınca çökmez, temizlenir."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='a@example.com', email='a@example.com', password='x')
+        self.client.force_login(self.user)
+
+    def _interview(self, minutes_old):
+        from datetime import timedelta
+
+        from django.utils import timezone
+
+        from .models import Interview
+
+        interview = Interview.objects.create(
+            user=self.user, position='backend_developer', level='junior',
+            interview_type='mixed', language='tr', question_count=5,
+        )
+        Interview.objects.filter(pk=interview.pk).update(
+            created_at=timezone.now() - timedelta(minutes=minutes_old)
+        )
+        return interview
+
+    def test_old_questionless_interview_is_removed_with_message(self):
+        from .models import Interview
+
+        interview = self._interview(minutes_old=30)
+
+        response = self.client.get(reverse('interview_detail', args=[interview.pk]), follow=True)
+
+        self.assertRedirects(response, reverse('interview_create'))
+        self.assertContains(response, 'soruları hazırlanamamıştı')
+        self.assertFalse(Interview.objects.filter(pk=interview.pk).exists())
+
+    def test_recent_questionless_interview_is_left_alone(self):
+        from .models import Interview
+
+        interview = self._interview(minutes_old=1)
+
+        response = self.client.get(reverse('interview_detail', args=[interview.pk]), follow=True)
+
+        self.assertRedirects(response, reverse('panel'))
+        self.assertContains(response, 'hâlâ hazırlanıyor')
+        self.assertTrue(Interview.objects.filter(pk=interview.pk).exists())
+
+    def test_panel_cleans_old_ones_only_and_frees_daily_limit(self):
+        from .models import DAILY_INTERVIEW_LIMIT, Interview
+
+        old = [self._interview(minutes_old=30) for _ in range(DAILY_INTERVIEW_LIMIT)]
+        recent = self._interview(minutes_old=1)
+
+        self.assertEqual(self.client.get(reverse('panel')).status_code, 200)
+
+        self.assertFalse(Interview.objects.filter(pk__in=[i.pk for i in old]).exists())
+        self.assertTrue(Interview.objects.filter(pk=recent.pk).exists())
+
+    def test_complete_without_answers_does_not_crash(self):
+        from .views import _complete_interview
+
+        interview = self._interview(minutes_old=30)
+
+        _complete_interview(interview)  # 0/0 Decimal bölmesi decimal.InvalidOperation fırlatırdı
+
+        interview.refresh_from_db()
+        self.assertEqual(interview.status, 'in_progress')
+        self.assertIsNone(interview.overall_score)
