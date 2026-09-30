@@ -274,7 +274,13 @@ def generate_questions(
         f'Tüm soruları {language_name} dilinde üret. '
         "Her sorunun category alanı 'teknik' veya 'davranissal' değerlerinden biri olmalı; "
         "mülakat türü teknikse tüm sorular 'teknik', davranışsalsa tüm sorular 'davranissal', "
-        "karışıksa ikisinin dengeli bir karışımı olmalı."
+        "karışıksa ikisinin dengeli bir karışımı olmalı. "
+        'Sorular yalnızca tanım ezberletmesin: konuları çeşitlendir (aynı alt konudan iki soru sorma), '
+        'teknik soruların en az birini kısa bir senaryo, karşılaştırma ya da "neden / ne zaman" tarzı '
+        'bir problem olarak kur; aday gerekçe ve örnek vererek düşünebilsin. İlk derste öğrenilen '
+        'en temel tanımlara takılma: seviyeye uygun ama bir adım düşündüren sorular sor. '
+        'Davranışsal sorular adayın yaşadığı somut bir durumu (durum, yaptığı, sonuç) anlatmasını '
+        'gerektirsin. Her soru kısa ve net olsun, en fazla iki alt soru içersin.'
     )
 
     # Kullanıcının kendi yazdığı pozisyon güvenilmez metindir: etiketler atılır, <pozisyon>
