@@ -4,6 +4,10 @@ from django.utils.translation import gettext_lazy as _
 
 DAILY_INTERVIEW_LIMIT = 3
 
+# Bir cevabın en fazla uzunluğu (web, API ve misafir denemesi). Sınırsız metin Gemini'yi
+# yavaşlatır/zaman aşımına sokar ve ücretsiz veritabanını doldurabilir.
+MAX_ANSWER_LENGTH = 5000
+
 POSITION_CHOICES = [
     ('junior_developer', _('Junior Yazılım Geliştirici')),
     ('frontend_developer', _('Frontend Geliştirici')),

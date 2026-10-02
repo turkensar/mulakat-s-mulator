@@ -67,7 +67,8 @@ Sırasıyla:
 - Yeni bağımlılık: `djangorestframework`.
 - `authtoken` migration'ı paylaşımlı veritabanına uygulanmış durumda.
 - Canlıda doğru yanıt veriyor: giriş yapılmadan 401, eksik alanla 400.
-- Mobil kayıtta reCAPTCHA bilerek yok, hız sınırı var.
+- Mobil kayıtta reCAPTCHA bilerek yok. **Hız sınırı başta YOKTU** (API commit mesajı "var" diyordu, yanlıştı); 2026-10-02 güvenlik incelemesinde bulundu ve eklendi: kayıt 5/saat, giriş 10/saat, Google 15/saat (IP başına, `config/ratelimit.py::client_ip`, aşılınca 429). Cevaplar ek olarak 5000 karakterle sınırlı (`MAX_ANSWER_LENGTH`, web + API + misafir).
+- **Güvenlik incelemesinden kalanlar (2026-10-02, sırayla):** (2) Yüksek: e-posta doğrulaması yokken Google girişi aynı e-postalı parolalı hesaba bağlanıyor → hesap ön-ele geçirme; çözüm: Google girişinde mevcut parolayı geçersiz kıl + token'ları sil. (4) Orta: cevap gönderiminde sayı olmayan `question_id`/liste gövdesi/eşzamanlı gönderim 500 veriyor. (5) Orta: API token'ı süresiz, çıkış uç noktası yok, parola sıfırlanınca silinmiyor. Düşük: Google-only hesap silme onayı yalnız e-posta, misafir denemesinde CAPTCHA yok, CSP yok.
 
 Testler: `manage.py test accounts interviews --keepdb` (API dalıyla birlikte toplam 54 test).
 

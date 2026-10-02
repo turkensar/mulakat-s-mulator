@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from django_ratelimit.decorators import ratelimit
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
@@ -18,21 +20,32 @@ from rest_framework.views import APIView
 
 from accounts.google_auth import GoogleTokenError, verify_google_credential
 from accounts.utils import unique_username
+from config.ratelimit import client_ip
 from interviews.forms import InterviewForm
-from interviews.models import Answer, DAILY_INTERVIEW_LIMIT, Question
+from interviews.models import Answer, DAILY_INTERVIEW_LIMIT, MAX_ANSWER_LENGTH, Question
 from interviews.services.gemini import (
     GeminiError, GeminiQuotaError, GeminiTimeoutError, evaluate_answer, generate_questions,
 )
 from interviews.views import (
     QUOTA_MESSAGE, SLOW_MESSAGE, _complete_interview, _current_question, _prompt_labels,
     _is_abandoned, _purge_abandoned,
-    _today_interview_count,
+    _today_interview_count, answer_too_long_message,
 )
 
 from .serializers import (
     AnsweredQuestionSerializer, GoogleLoginSerializer, InterviewListItemSerializer,
     LoginSerializer, QuestionSerializer, RegisterSerializer, ReportAnswerSerializer,
 )
+
+
+# Kimlik doğrulama uç noktaları web'deki sınırlarla aynıdır (accounts/views.py): web'de kayıt 5/saat,
+# giriş 10/saat, Google 15/saat. Mobil kayıtta reCAPTCHA yok; sınırsız hesap açılıp paylaşılan Gemini
+# kotasının tüketilmesini ve parola denemesini bu sınırlar engeller.
+def _too_many_attempts():
+    return Response(
+        {'detail': 'Çok fazla deneme yapıldı. Lütfen bir süre sonra tekrar dene.'},
+        status=status.HTTP_429_TOO_MANY_REQUESTS,
+    )
 
 
 def _gemini_error_response(exc):
@@ -44,10 +57,13 @@ def _gemini_error_response(exc):
     return 'Sorular oluşturulurken bir hata oluştu. Lütfen tekrar dene.', status.HTTP_502_BAD_GATEWAY
 
 
+@method_decorator(ratelimit(key=client_ip, rate='5/h', method='POST', block=False), name='post')
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        if getattr(request, 'limited', False):
+            return _too_many_attempts()
         serializer = RegisterSerializer(data=request.data)
         if not serializer.is_valid():
             return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -56,10 +72,13 @@ class RegisterView(APIView):
         return Response({'token': token.key}, status=status.HTTP_201_CREATED)
 
 
+@method_decorator(ratelimit(key=client_ip, rate='10/h', method='POST', block=False), name='post')
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        if getattr(request, 'limited', False):
+            return _too_many_attempts()
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = authenticate(
@@ -79,10 +98,13 @@ class LoginView(APIView):
         return Response({'token': token.key})
 
 
+@method_decorator(ratelimit(key=client_ip, rate='15/h', method='POST', block=False), name='post')
 class GoogleLoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        if getattr(request, 'limited', False):
+            return _too_many_attempts()
         serializer = GoogleLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
@@ -214,6 +236,8 @@ class AnswerView(APIView):
         answer_text = str(request.data.get('text', '')).strip()
         if not question_id or not answer_text:
             return Response({'detail': 'Cevap boş olamaz.'}, status=status.HTTP_400_BAD_REQUEST)
+        if len(answer_text) > MAX_ANSWER_LENGTH:
+            return Response({'detail': answer_too_long_message()}, status=status.HTTP_400_BAD_REQUEST)
 
         question = get_object_or_404(
             Question, pk=question_id, interview=interview, answer__isnull=True

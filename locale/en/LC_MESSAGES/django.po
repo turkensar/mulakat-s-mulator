@@ -230,71 +230,75 @@ msgstr "e.g. Marketing specialist, e-commerce company"
 msgid "İlan metnini buraya yapıştır (görev tanımı, aranan nitelikler, kullanılan teknolojiler...)"
 msgstr "Paste the job posting here (responsibilities, requirements, technologies used...)"
 
-#: interviews/guest_views.py:113 interviews/views.py:204 interviews/views.py:328
+#: interviews/guest_views.py:115 interviews/views.py:208 interviews/views.py:333
 msgid "Cevap boş olamaz."
 msgstr "The answer can't be empty."
 
-#: interviews/guest_views.py:127 interviews/views.py:358
+#: interviews/guest_views.py:119 interviews/views.py:194
+msgid "Cevabın çok uzun; en fazla %(max)d karakter olabilir."
+msgstr "Your answer is too long; it can be at most %(max)d characters."
+
+#: interviews/guest_views.py:135 interviews/views.py:367
 msgid "Değerlendirme sırasında bir hata oluştu. Lütfen tekrar dene."
 msgstr "An error occurred during evaluation. Please try again."
 
-#: interviews/guest_views.py:19 interviews/views.py:29
+#: interviews/guest_views.py:20 interviews/views.py:29
 msgid "Yapay zeka servisi şu an yavaş ya da yoğun. Birkaç dakika sonra tekrar dene."
 msgstr "The AI service is slow or busy right now. Try again in a few minutes."
 
-#: interviews/guest_views.py:20
+#: interviews/guest_views.py:21
 msgid "Yapay zeka servisinin ücretsiz kullanım kotası şu an dolu. Birkaç dakika sonra tekrar dene."
 msgstr "The AI service’s free usage quota is full right now. Try again in a few minutes."
 
-#: interviews/guest_views.py:57
+#: interviews/guest_views.py:58
 msgid "Bugünlük misafir deneme hakkını kullandın. Yarın tekrar deneyebilir ya da hesap açabilirsin."
 msgstr "You've used today's guest trial. Try again tomorrow, or create an account."
 
-#: interviews/guest_views.py:118 interviews/guest_views.py:63
+#: interviews/guest_views.py:126 interviews/guest_views.py:64
 msgid "Genel"
 msgstr "General"
 
-#: interviews/guest_views.py:119 interviews/guest_views.py:64 interviews/models.py:20
+#: interviews/guest_views.py:127 interviews/guest_views.py:65 interviews/models.py:24
 msgid "Junior"
 msgstr "Junior"
 
-#: interviews/guest_views.py:65 interviews/models.py:26
+#: interviews/guest_views.py:66 interviews/models.py:30
 msgid "Karışık"
 msgstr "Mixed"
 
-#: interviews/guest_views.py:72 interviews/views.py:141
+#: interviews/guest_views.py:73 interviews/views.py:141
 msgid "Sorular oluşturulurken bir hata oluştu. Lütfen tekrar dene."
 msgstr "An error occurred while creating the questions. Please try again."
 
-#: interviews/models.py:15
+#: interviews/models.py:19
 msgid "Diğer"
 msgstr "Other"
 
-#: interviews/models.py:19
+#: interviews/models.py:23
 msgid "Stajyer"
 msgstr "Intern"
 
-#: interviews/models.py:25
+#: interviews/models.py:29
 msgid "İK (Davranışsal)"
 msgstr "HR (Behavioral)"
 
-#: interviews/models.py:30 interviews/views.py:281
+#: interviews/models.py:34 interviews/views.py:286
 msgid "Türkçe"
 msgstr "Turkish"
 
-#: interviews/models.py:31 interviews/views.py:281
+#: interviews/models.py:35 interviews/views.py:286
 msgid "İngilizce"
 msgstr "English"
 
-#: interviews/models.py:41
+#: interviews/models.py:45
 msgid "Devam Ediyor"
 msgstr "In progress"
 
-#: interviews/models.py:42
+#: interviews/models.py:46
 msgid "Tamamlandı"
 msgstr "Completed"
 
-#: interviews/models.py:47
+#: interviews/models.py:51
 msgid "Davranışsal"
 msgstr "Behavioral"
 
@@ -302,95 +306,95 @@ msgstr "Behavioral"
 msgid "%(low)s sorularında ortalaman %(low_avg)s, %(high_lower)s sorularında %(high_avg)s. Önce %(low_lower)s alana odaklanabilirsin."
 msgstr "Your average for %(low_lower)s questions is %(low_avg)s, and for %(high_lower)s questions it's %(high_avg)s. You could focus on the %(low_lower)s area first."
 
-#: interviews/views.py:206
+#: interviews/views.py:210
 msgid "Cevabın değerlendiriliyor ve raporun hazırlanıyor"
 msgstr "Evaluating your answer and preparing your report"
 
-#: interviews/views.py:207
+#: interviews/views.py:211
 msgid "Bağlantı hatası. Lütfen tekrar dene."
 msgstr "Connection error. Please try again."
 
-#: interviews/views.py:208
+#: interviews/views.py:212
 msgid "Bir hata oluştu. Lütfen tekrar dene."
 msgstr "Something went wrong. Please try again."
 
-#: interviews/views.py:209
+#: interviews/views.py:213
 msgid "Soru"
 msgstr "Question"
 
-#: interviews/views.py:211
+#: interviews/views.py:215
 msgid "⏹ Durdur"
 msgstr "⏹ Stop"
 
-#: interviews/views.py:213
+#: interviews/views.py:217
 msgid "Bu cihazda %(lang)s konuşma sesi bulunamadı; soruları sesli okuma kullanılamıyor."
 msgstr "No %(lang)s speech voice was found on this device; reading questions aloud isn't available."
 
-#: interviews/views.py:217
+#: interviews/views.py:221
 msgid "⏳ Başlıyor…"
 msgstr "⏳ Starting…"
 
-#: interviews/views.py:218
+#: interviews/views.py:222
 msgid "⏹ Bitir"
 msgstr "⏹ Finish"
 
-#: interviews/views.py:219
+#: interviews/views.py:223
 msgid "Cevap gönderilirken sesle yazılamaz; değerlendirme bitince tekrar dene."
 msgstr "You can't dictate while your answer is being sent; try again once the evaluation is done."
 
-#: interviews/views.py:220
+#: interviews/views.py:224
 msgid "Ses tanıma henüz başlamadı. Adres çubuğunda mikrofon izni penceresi varsa \"İzin ver\"e bas; yoksa sayfayı Ctrl+F5 ile yenileyip tekrar dene ya da Chrome/Edge kullan."
 msgstr "Speech recognition hasn't started yet. If a microphone permission prompt is shown in the address bar, click \"Allow\"; otherwise refresh the page with Ctrl+F5 and try again, or use Chrome/Edge."
 
-#: interviews/views.py:224
+#: interviews/views.py:228
 msgid "Ses tanıma başlamadan kapandı. Tekrar dene; sürerse Chrome/Edge kullan."
 msgstr "Speech recognition closed before it started. Try again; if it keeps happening, use Chrome/Edge."
 
-#: interviews/views.py:225
+#: interviews/views.py:229
 msgid "Ses tanıma başlatılamadı (%(error)s). Birkaç saniye sonra tekrar dene."
 msgstr "Couldn't start speech recognition (%(error)s). Try again in a few seconds."
 
-#: interviews/views.py:226
+#: interviews/views.py:230
 msgid "Ses tanıma sırasında bir sorun oluştu (%(error)s)."
 msgstr "A problem occurred during speech recognition (%(error)s)."
 
-#: interviews/views.py:227
+#: interviews/views.py:231
 msgid "bilinmeyen hata"
 msgstr "unknown error"
 
-#: interviews/views.py:229
+#: interviews/views.py:233
 msgid "Mikrofon izni verilmedi. Tarayıcının adres çubuğundaki izin ayarından mikrofona izin ver."
 msgstr "Microphone permission wasn't granted. Allow the microphone in your browser's address bar permission settings."
 
-#: interviews/views.py:232
+#: interviews/views.py:236
 msgid "Bu tarayıcı ses tanıma hizmetine izin vermiyor."
 msgstr "This browser doesn't allow the speech recognition service."
 
-#: interviews/views.py:233
+#: interviews/views.py:237
 msgid "Ses algılanmadı. Mikrofona yakın konuşup tekrar dene."
 msgstr "No speech was detected. Speak close to the microphone and try again."
 
-#: interviews/views.py:234
+#: interviews/views.py:238
 msgid "Mikrofon bulunamadı. Bir mikrofon bağlı olduğundan emin ol."
 msgstr "No microphone found. Make sure a microphone is connected."
 
-#: interviews/views.py:235
+#: interviews/views.py:239
 msgid "Ses tanıma hizmetine ulaşılamadı. İnternet bağlantını kontrol edip tekrar dene."
 msgstr "Couldn't reach the speech recognition service. Check your internet connection and try again."
 
-#: interviews/views.py:238
+#: interviews/views.py:242
 msgid "%(lang)s için ses tanıma bu tarayıcıda desteklenmiyor."
 msgstr "Speech recognition for %(lang)s isn't supported in this browser."
 
-#: interviews/views.py:254
+#: interviews/views.py:258
 msgid "Bu mülakatın soruları hazırlanamamıştı, bu yüzden silindi. Yeni bir mülakat başlatabilirsin."
 msgstr "The questions for this interview could not be prepared, so it was deleted. You can start a new interview."
 
-#: interviews/views.py:259
+#: interviews/views.py:263
 msgid "Bu mülakatın soruları hâlâ hazırlanıyor. Birkaç dakika sonra tekrar dene."
 msgstr "The questions for this interview are still being prepared. Try again in a few minutes."
 
-#: interviews/views.py:324
+#: interviews/views.py:329
 msgid "Geçersiz istek."
 msgstr "Invalid request."
 
@@ -398,7 +402,7 @@ msgstr "Invalid request."
 msgid "Yapay zeka servisinin ücretsiz kullanım kotası şu an dolu. Birkaç dakika sonra ya da yarın tekrar dene."
 msgstr "The AI service's free usage quota is full right now. Try again in a few minutes or tomorrow."
 
-#: interviews/views.py:346 interviews/views.py:351
+#: interviews/views.py:355 interviews/views.py:360
 msgid "Yazdığın cevap korundu."
 msgstr "Your answer was kept."
 
@@ -736,23 +740,23 @@ msgstr "Every answer is scored; at the end you’ll see your strengths and areas
 msgid "Hangi pozisyonlar için?"
 msgstr "Which roles is it for?"
 
-#: interviews/models.py:8 templates/home.html:108
+#: interviews/models.py:12 templates/home.html:108
 msgid "Junior Yazılım Geliştirici"
 msgstr "Junior Software Developer"
 
-#: interviews/models.py:10 templates/home.html:110
+#: interviews/models.py:14 templates/home.html:110
 msgid "Backend Geliştirici"
 msgstr "Backend Developer"
 
-#: interviews/models.py:11 templates/home.html:111
+#: interviews/models.py:15 templates/home.html:111
 msgid "Veri Analisti"
 msgstr "Data Analyst"
 
-#: interviews/models.py:12 templates/home.html:112
+#: interviews/models.py:16 templates/home.html:112
 msgid "İş Analisti"
 msgstr "Business Analyst"
 
-#: interviews/models.py:13 templates/home.html:113
+#: interviews/models.py:17 templates/home.html:113
 msgid "Stajyer (Genel)"
 msgstr "Intern (General)"
 
@@ -900,11 +904,11 @@ msgstr "Already have an account?"
 msgid "Örnek bir mülakattan kesit"
 msgstr "Excerpt from a sample interview"
 
-#: interviews/models.py:9 templates/home.html:109 templates/home.html:58
+#: interviews/models.py:13 templates/home.html:109 templates/home.html:58
 msgid "Frontend Geliştirici"
 msgstr "Frontend Developer"
 
-#: interviews/models.py:24 interviews/models.py:46 templates/home.html:59
+#: interviews/models.py:28 interviews/models.py:50 templates/home.html:59
 msgid "Teknik"
 msgstr "Technical"
 
@@ -1088,11 +1092,11 @@ msgstr "Interview chat"
 msgid "Soru %(order)s · %(category)s"
 msgstr "Question %(order)s · %(category)s"
 
-#: interviews/views.py:212 templates/interviews/detail.html:49 templates/interviews/detail.html:63
+#: interviews/views.py:216 templates/interviews/detail.html:49 templates/interviews/detail.html:63
 msgid "Soruyu sesli oku"
 msgstr "Read the question aloud"
 
-#: interviews/views.py:210 templates/interviews/detail.html:49 templates/interviews/detail.html:63
+#: interviews/views.py:214 templates/interviews/detail.html:49 templates/interviews/detail.html:63
 msgid "🔊 Dinle"
 msgstr "🔊 Listen"
 
@@ -1100,7 +1104,7 @@ msgstr "🔊 Listen"
 msgid "Sorulara cevap ver, anında yapay zeka değerlendirmesi al."
 msgstr "Answer the questions and get instant AI feedback."
 
-#: interviews/views.py:205 templates/interviews/detail.html:74
+#: interviews/views.py:209 templates/interviews/detail.html:74
 msgid "Cevabın değerlendiriliyor"
 msgstr "Evaluating your answer"
 
@@ -1120,7 +1124,7 @@ msgstr "🎙️ When you dictate, your browser may use its own speech recognitio
 msgid "Ctrl + Enter ile gönder"
 msgstr "Send with Ctrl + Enter"
 
-#: interviews/views.py:216 templates/interviews/detail.html:90
+#: interviews/views.py:220 templates/interviews/detail.html:90
 msgid "🎙️ Sesle yaz"
 msgstr "🎙️ Dictate"
 

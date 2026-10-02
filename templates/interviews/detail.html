@@ -80,7 +80,7 @@
     <form id="answer-form" class="composer" data-question-id="{{ current_question.id }}">
         {% csrf_token %}
         <label for="answer-text" class="visually-hidden">{% trans "Cevabın" %}</label>
-        <textarea id="answer-text" rows="3" placeholder="{% trans "Cevabını buraya yaz..." %}"></textarea>
+        <textarea id="answer-text" rows="3" maxlength="{{ max_answer_length }}" placeholder="{% trans "Cevabını buraya yaz..." %}"></textarea>
         <p class="notice composer__voice" id="voice-note" role="status" hidden></p>
         <p class="notice composer__error" id="answer-error" role="alert" hidden></p>
         <p class="composer__privacy">{% trans "🎙️ Sesle yazarken tarayıcın, sesini yazıya çevirmek için kendi ses tanıma hizmetini (örneğin Google) kullanabilir." %}</p>

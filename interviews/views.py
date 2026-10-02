@@ -19,7 +19,7 @@ from accounts.utils import display_name
 from config.async_forms import json_error, json_invalid, json_redirect, wants_json
 
 from .forms import InterviewForm
-from .models import Answer, DAILY_INTERVIEW_LIMIT, Question
+from .models import Answer, DAILY_INTERVIEW_LIMIT, MAX_ANSWER_LENGTH, Question
 from .services.gemini import (
     GeminiError, GeminiQuotaError, GeminiTimeoutError, evaluate_answer, generate_questions,
     summarize_interview,
@@ -190,6 +190,10 @@ def _prompt_labels(interview):
         }
 
 
+def answer_too_long_message():
+    return _('Cevabın çok uzun; en fazla %(max)d karakter olabilir.') % {'max': MAX_ANSWER_LENGTH}
+
+
 def _current_question(interview):
     return interview.questions.filter(answer__isnull=True).order_by('order').first()
 
@@ -277,6 +281,7 @@ def interview_detail(request, pk):
         'answered_count': answered_questions.count(),
         'total_count': interview.question_count,
         'js_strings': _detail_js_strings(),
+        'max_answer_length': MAX_ANSWER_LENGTH,
         # Sesli okuma/dikte için mülakat dilinin adı, ARAYÜZ dilinde gösterilir.
         'speech_name': _('Türkçe') if interview.language == 'tr' else _('İngilizce'),
     }
@@ -326,6 +331,10 @@ def submit_answer(request, pk):
     if not answer_text:
         return JsonResponse(
             {'status': 'error', 'message': _('Cevap boş olamaz.')}, status=400
+        )
+    if len(answer_text) > MAX_ANSWER_LENGTH:
+        return JsonResponse(
+            {'status': 'error', 'message': answer_too_long_message()}, status=400
         )
 
     question = get_object_or_404(

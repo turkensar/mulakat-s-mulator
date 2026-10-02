@@ -11,6 +11,7 @@ from django_ratelimit.decorators import ratelimit
 from config.async_forms import json_error, json_redirect, wants_json
 from config.ratelimit import client_ip
 
+from .models import MAX_ANSWER_LENGTH
 from .services.gemini import GeminiError, GeminiQuotaError, GeminiTimeoutError, evaluate_answer, generate_questions
 
 SESSION_KEY = 'guest_trial'
@@ -93,6 +94,7 @@ def guest_trial(request):
     context = {
         'question': trial['questions'][index],
         'question_number': index + 1,
+        'max_answer_length': MAX_ANSWER_LENGTH,
         'total_questions': len(trial['questions']),
     }
     return render(request, 'interviews/guest_trial.html', context)
@@ -111,6 +113,12 @@ def guest_trial_answer(request):
     answer_text = request.POST.get('answer', '').strip()
     if not answer_text:
         return _fail(request, _('Cevap boş olamaz.'), 'guest_trial')
+    if len(answer_text) > MAX_ANSWER_LENGTH:
+        return _fail(
+            request,
+            _('Cevabın çok uzun; en fazla %(max)d karakter olabilir.') % {'max': MAX_ANSWER_LENGTH},
+            'guest_trial',
+        )
 
     question = trial['questions'][index]
     try:

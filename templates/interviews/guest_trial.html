@@ -45,7 +45,7 @@
           data-network-error="{% trans "Bağlantı koptu ya da sunucu çok geç yanıt verdi. Yazdığın cevap duruyor, tekrar gönderebilirsin." %}">
         {% csrf_token %}
         <label for="answer-text" class="visually-hidden">{% trans "Cevabın" %}</label>
-        <textarea id="answer-text" name="answer" rows="4" placeholder="{% trans "Cevabını buraya yaz..." %}" required></textarea>
+        <textarea id="answer-text" name="answer" rows="4" maxlength="{{ max_answer_length }}" placeholder="{% trans "Cevabını buraya yaz..." %}" required></textarea>
         <div class="composer__actions">
             <div class="composer__buttons">
                 <button type="submit" class="btn btn--primary" data-busy="{% trans "Değerlendiriliyor…" %}">{% trans "Cevabı gönder" %}</button>

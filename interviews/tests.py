@@ -259,3 +259,65 @@ class AbandonedInterviewTests(TestCase):
         interview.refresh_from_db()
         self.assertEqual(interview.status, 'in_progress')
         self.assertIsNone(interview.overall_score)
+
+
+class AnswerLengthTests(TestCase):
+    """Cevap uzunluğu sınırı (web ve misafir): Gemini'ye gitmeden reddedilir."""
+
+    def setUp(self):
+        from .models import Interview, Question
+
+        self.user = User.objects.create_user(username='l@example.com', email='l@example.com', password='x')
+        self.client.force_login(self.user)
+        self.interview = Interview.objects.create(
+            user=self.user, position='backend_developer', level='junior',
+            interview_type='mixed', language='tr', question_count=5,
+        )
+        self.question = Question.objects.create(
+            interview=self.interview, order=1, text='Soru?', category='teknik',
+        )
+
+    def test_web_answer_too_long_is_rejected_before_gemini(self):
+        import json
+        from unittest.mock import patch
+
+        from .models import MAX_ANSWER_LENGTH, Answer
+
+        with patch('interviews.views.evaluate_answer') as evaluate:
+            response = self.client.post(
+                reverse('interview_answer', args=[self.interview.pk]),
+                data=json.dumps({'question_id': self.question.pk, 'text': 'a' * (MAX_ANSWER_LENGTH + 1)}),
+                content_type='application/json',
+            )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(str(MAX_ANSWER_LENGTH), response.json()['message'])
+        evaluate.assert_not_called()
+        self.assertFalse(Answer.objects.exists())
+
+    def test_detail_textarea_has_maxlength(self):
+        from .models import MAX_ANSWER_LENGTH
+
+        response = self.client.get(reverse('interview_detail', args=[self.interview.pk]))
+        self.assertContains(response, f'maxlength="{MAX_ANSWER_LENGTH}"')
+
+    def test_guest_answer_too_long_is_rejected_before_gemini(self):
+        from unittest.mock import patch
+
+        from .models import MAX_ANSWER_LENGTH
+
+        self.client.logout()
+        session = self.client.session
+        session['guest_trial'] = {
+            'questions': [{'text': 'Soru?', 'category': 'teknik'}], 'answers': [], 'language': 'tr',
+        }
+        session.save()
+
+        with patch('interviews.guest_views.evaluate_answer') as evaluate:
+            response = self.client.post(
+                reverse('guest_trial_answer'), {'answer': 'a' * (MAX_ANSWER_LENGTH + 1)}, follow=True,
+            )
+
+        evaluate.assert_not_called()
+        self.assertContains(response, str(MAX_ANSWER_LENGTH))
+        self.assertEqual(self.client.session['guest_trial']['answers'], [])
