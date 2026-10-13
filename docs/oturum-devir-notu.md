@@ -25,7 +25,7 @@ Sonra yerel sunucuyu başlat (proje `.venv`'i ile):
 - **Adres:** https://mulakat-simulatoru.vercel.app. Eski adres `mulakat-s-mulator.vercel.app`, 308 ile yeniye yönleniyor.
 - **Deploy:** `main`'e her push otomatik production deploy'u tetikler (~30 sn).
 - **Veritabanı:** Supabase Postgres, yerel ve canlı **aynı veritabanını** kullanır. Yerelde çalıştırılan `migrate` canlıyı anında etkiler.
-  - Yerel `.env`'de `DATABASE_URL` açıksa (satır başında `#` yok) Supabase, yorumdaysa yerel SQLite kullanılır. Android oturumu SQLite'a geçmişti; 2026-09-30'da web için Supabase'e döndürüldü.
+  - **RLS (2026-10-14):** Supabase uyarısı üzerine public şemadaki 15 tablonun hepsinde RLS açıldı, `anon`/`authenticated` rollerine \ (satır başında `#` yok) Supabase, yorumdaysa yerel SQLite kullanılır. Android oturumu SQLite'a geçmişti; 2026-09-30'da web için Supabase'e döndürüldü.
   - Canlı veriye dokunmadan denemek için ayrı SQLite sunucusu: PowerShell'de `$env:DATABASE_URL='sqlite:///C:/Users/turke/PycharmProjects/MulakatSımulatoru/db.sqlite3'; .venv/Scripts/python manage.py runserver 8001` (kabuk değişkeni `.env`'yi geçersiz kılar).
 - **Vercel ortam değişkenleri (production):** `SECRET_KEY`, `DEBUG`, `DATABASE_URL`, `ALLOWED_HOSTS`,
   `GEMINI_API_KEY`, `GEMINI_MODEL`, `RECAPTCHA_PUBLIC_KEY`, `RECAPTCHA_PRIVATE_KEY`, `GMAIL_ADDRESS`,
